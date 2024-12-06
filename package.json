@@ -1,0 +1,15 @@
+{
+  "name": "zeta",
+  "version": "1.0.0",
+  "description": "Software utilizando MVC(plantilla)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ZETA",
+  "license": "MIT",
+  "dependencies": {
+    "chart.js": "^4.3.0",
+    "fullcalendar": "^6.1.15"
+  }
+}

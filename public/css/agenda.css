@@ -1,0 +1,21 @@
+table{
+    border-radius: none !important;
+    box-shadow: none;
+    overflow: none !important;
+  }
+  tr, th, td{
+    font-size: 1.5rem !important;
+  }
+  thead{
+    border: none;
+    background: none !important;
+    border-radius:none !important;
+  }
+  tbody{
+    border: none !important;
+  }
+  thead th{
+    color: none !important;
+    font-weight: 800 !important;
+    text-align: center;
+  }

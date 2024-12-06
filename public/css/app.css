@@ -1,0 +1,306 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+/* Paleta de colores */
+:root {
+  --fondo: #f0ffff;
+  --blanco: #fff;
+  --azul: #0470db;
+  --azul: #3f7ccf;
+  --azul-pastel: #86abea;
+  --azul-oscuro: #217093;
+  --azul-electrico: #00FFFF;
+  --azul-claro: #a0d2f3;
+  --verde: #95fab9;
+  --amarillo: #f4fab4;
+  --rojo: #fa5f49;
+  --rojo-claro: #f7cae4;
+  --negro: #1c1c1cba;
+  --azul-marino: #364876;
+  --azul-real:#4a8bdf;
+  --background: #d9e0ea;
+  /*para botones*/
+  --verde-pastel: #a5fab9;
+  /* --verde-pastel: #85fab9; */
+  --amarrillo-pastel-claro: #f4fab4;
+  --amarrillo-pastel: #ffee93;
+  --rojo-pastel: #fa5f49;
+  --gris-pastel: #9b9b9b;
+  --morado-pastel: #f15fff;
+  --text-negro: #222;
+}
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Lato" !important;
+  color: var(--negro);
+  box-sizing: border-box !important;
+  font-size: 20px;
+}
+body {
+  width: 100%;
+  height: 100%;
+  /*fondo degradado quitar para que se quede en blanco*/
+  background-color: var(--background);
+}
+h1,h2,h3,h4,h5,h6,p {
+  background-color: inherit;
+}
+ul,
+li {
+  background-color: inherit;
+}
+i {
+  font-family: "Font Awesome 5 Free" !important;
+}
+/*NAVEGACION*/
+.nav {
+  position: relative;
+  width: 100%;
+  height: 5rem;
+  background-color: var(--azul-white);
+  flex-wrap: wrap;
+  display: flex;
+  margin-bottom: 2em;
+  color: #f0ffff;
+  font-weight: 700;
+}
+.nav::before{
+  content: '';
+  position:absolute;
+  width: 100%;
+  height: 70%;
+  background-color: var(--azul);
+  z-index: 2;
+}
+.nav::after{
+  content: '';
+  position: absolute;
+  width: 50%;
+  height: 20%;
+  background-color: var(--azul);
+  left: 25%;
+  bottom: 15%;
+  z-index: 1;
+  border-radius: 0 0 15px 15px;
+}
+/*BOX CONTAINER*/
+.nav .nav__box {
+  color: inherit;
+  background-color: inherit;
+  width: 33.3333%;
+  height: 100%;
+  font-size: 1.8rem;
+  display: flex;
+  z-index: 10;
+  /* border: 1px solid red; */
+}
+/*Logo*/
+.nav--logo {
+  justify-content: space-around;
+  letter-spacing: 2px;
+}
+.nav--logo .logo{
+  display: flex;
+  background-color: inherit;
+}
+.nav--logo .logo div{
+  font-size: 2.2rem;
+  color: var(--blanco) !important;
+  background-color: inherit;
+}
+.logo__icon i{
+  color: var(--blanco) !important;
+  font-size: 2.2rem;
+  background-color: inherit;
+}
+.logo__title{
+  letter-spacing: 10px;
+}
+
+/*MENU*/
+.nav--menu {
+  justify-content: center;
+}
+.nav__list {
+  align-items: end;
+  width: 100%;
+  height: 100%;
+  justify-content: space-around;
+  color: inherit;
+  display: flex;
+  font-size: inherit;
+  /* border: 1px solid white; */
+}
+.nav__list li {
+  cursor: pointer;
+  position: relative;
+  padding: 0.4rem;
+  color: inherit;
+  list-style: none;
+  border-radius: 5px 5px 15px 15px;
+  background-color: var(--azul-oscuro);
+  /* border: 1px solid yellow; */
+}
+.nav__list li:hover:not(.nav--selected){
+  scale: 1.2;
+  color: var(--blanco) !important;
+  background-color: var(--azul-real) !important;
+}
+.nav__list li a {
+  text-decoration: none;
+  color: inherit;
+  font-weight: inherit;
+  font-size: 2.2rem;
+  /* border: 2px solid #0f0; */
+}
+@media screen and (max-width: 1400px) {
+  .nav__list li a {
+    font-size: 1.8rem;
+  }
+}
+@media screen and (max-width: 850px) {
+  .nav__list li a {
+    font-size: 1rem;
+  }
+}
+.nav--selected {
+  scale: 1.2;
+  color: var(--blanco) !important;
+  background-color: var(--azul-marino) !important;
+  /* background-color: #fa3 !important; */
+}
+
+/* NAV ICONS BTN*/
+.nav--btn{
+  justify-content: end;
+  padding-right: 1%;
+}
+.nav__icons{
+  margin: 0.5rem 1rem;
+  background-color: inherit;
+}
+.nav__icons a i{
+  color: var(--blanco);
+  font-size: 2.2rem;
+  background-color: inherit;
+}
+
+/* GLOBALES COMO BOTONES-TABLAS-HEADERS-H1-H2-H3-P -------------------------------*/
+html,.grid-container,.full,small,span{
+  background-color: inherit !important;
+}
+.button{
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 0.6rem 1rem !important;
+  border-radius: 10px !important;
+  border: none !important;
+  background-color: var(--azul) !important;
+}
+i{
+  background-color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+/*TABLE*/
+table{
+  border-radius: 20px !important;
+  box-shadow: 0 0 10px #0005 !important;
+  overflow: hidden !important;
+}
+tr, th, td{
+  font-size: 1.5rem !important;
+}
+thead{
+  border: none;
+  background: var(--azul) !important;
+  border-radius: 20px !important;
+}
+tbody{
+  border: none
+}
+thead th{
+  color: var(--blanco) !important;
+  font-weight: 800 !important;
+  text-align: center;
+}
+input{
+  border-radius: 10px !important;
+  box-shadow: 0 5px 10px #0005 !important;
+  font-size: 1.5rem !important;
+  color: var(--text-negro) !important;
+}
+select{
+  border-radius: 10px !important;
+  box-shadow: 0 5px 10px #0005 !important;
+  font-size: 1.5rem !important;
+  color: var(--text-negro) !important;
+}
+label{
+  color: var(--azul-marino);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/*BOTONES ZETA CON COLORES PASTEL*/
+.btn-info{
+  background-color: var(--gris-pastel) !important;
+}
+.btn-success{
+  background-color: var(--verde-pastel) !important;
+  color: var(--text-negro);
+}
+.btn-warning{
+  background-color: var(--amarrillo-pastel-claro) !important;
+  color: var(--text-negro);
+}
+.btn-primary{
+  background-color: var(--azul-pastel) !important;
+  color: var(--text-negro);
+}
+.btn-danger{
+  background-color: var(--rojo-pastel) !important;
+}
+.btn-cancel{
+  background-color: var(--gris-pastel) !important;
+  color: var(--text-negro);
+}
+.btn-accept{
+  background-color: var(--verde-pastel) !important;
+  color: #000;
+  text-transform: capitalize !important;
+}
+.btn-accept:hover{
+  background-color: var(--verde-oscuro) !important;
+}
+/* MODALES DE SUCCESS Y ERROR*/
+.modal__message{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  max-width: 30rem;
+  border-radius: 15px;
+  background-color: var(--background) !important;
+  z-index: 1000;
+  transform: translate(-50%, -50%);
+  display: none;
+  /* display: block; */
+}
+.modal__icon i{
+  font-size: 7rem;
+}
+.modal--success i{
+  color: var(--verde);
+}
+.modal--error i{
+  color: var(--rojo-pastel);
+}
+.modal__text h3{
+  font-size: 2rem;
+  color: var(--azul-marino);
+}
+
+/* MODALES DE SUCCESS Y ERROR END */
+
+
+/*GLOBALES END -------------------------------------------------------------*/

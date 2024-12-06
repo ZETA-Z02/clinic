@@ -1,0 +1,33 @@
+.grid-container {
+    padding-right: 0.625rem;
+    padding-left: 0.625rem;
+    max-width: 100rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+/* CARDS DE ENLACES*/
+.card {
+  border-radius: 20px;
+  box-shadow: 0 0 20px #0008;
+  height: 40vh;
+}
+.card:hover{
+    box-shadow: 0 0 20px #0008;
+    scale: 1.2;
+}
+.card p{
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 3px
+}
+.card i{
+    font-size: 25vh;
+}
+.cards__enlaces .card .card-divider {
+  margin: 0;
+  background-color: var(--azul-claro);
+}
+
+.card-clientes{
+
+}
