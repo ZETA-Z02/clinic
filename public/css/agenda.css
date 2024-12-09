@@ -1,21 +1,204 @@
-table{
-    border-radius: none !important;
-    box-shadow: none;
-    overflow: none !important;
+table {
+  background-color: white !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  margin-bottom: 0;
+}
+thead {
+  background: white !important;
+}
+thead th {
+  font-weight: 800 !important;
+  text-align: center;
+}
+.nav {
+  margin-bottom: 1rem !important;
+}
+.footer-katari {
+  display: none;
+}
+
+/* CALENDARIO STYLOS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/--/--/-/-/-*/
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+.fc,
+.fc *,
+.fc ::after,
+.fc ::before {
+  box-sizing: border-box;
+}
+.fc-header-toolbar {
+  height: 3vh !important;
+  /* border: 1px solid red; */
+  font-size: 0.7vh;
+}
+.fc-button {
+  padding: 0.4vh 0.4vh !important;
+  font-size: 1.2vh;
+}
+.fc-toolbar-title {
+  font-size: 1vh;
+}
+.fc-daygrid-day {
+  height: auto;
+}
+.fc-daygrid-day-top {
+  justify-content: center;
+}
+.calendario-container {
+  height: 90.5vh;
+  /* border: 1px solid blue; */
+}
+/*  PERSONALIZACION DE LAS CITAS*/
+.fc-event-custom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Espaciado entre título y hora */
+  padding: 5px; /* Espaciado interno */
+  font-size: 12px;
+  border-radius: 4px; /* Bordes redondeados */
+  background-color: #fff; /* Fondo blanco */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para efecto */
+}
+.fc-event-custom .fc-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px; /* Espaciado con el título */
+}
+.fc-event-custom span {
+  white-space: nowrap; /* Evita que el texto se rompa */
+}
+.fc-event-custom span:last-child {
+  margin-left: auto; /* Alinea la hora a la derecha */
+}
+/*  PERSONALIZACION DE LAS CITAS END*/
+
+/* CALENDARIO STYLOS /-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/--/--/-/-/-/-/-*/
+
+/* formulario del calendario para guardar cita -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
+.calendar-forms {
+  display: none;
+  /* border: 1px solid green; */
+}
+.cld__box {
+  padding: 1rem;
+  border: 0.1px solid var(--gris-pastel);
+}
+.cld--title input {
+  margin: 0 0 0 0;
+  border: none;
+  box-shadow: none !important;
+  background-color: transparent;
+  color: #000 !important;
+}
+.cld--title input:focus {
+  margin: 0 0 0 0;
+  border: none;
+  box-shadow: none;
+  background-color: transparent;
+}
+.cld--title input::placeholder {
+  color: #000;
+}
+.cld__box--item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.cld__box--item input {
+  margin: 0 0 0 0;
+  border: none;
+  box-shadow: none !important;
+}
+.cld__box--item select {
+  margin: 0 0 0 0;
+  border: none;
+  box-shadow: none !important;
+}
+.cld__box--item label {
+  min-width: 5rem;
+  max-width: 5rem;
+}
+@media screen and (max-width: 1600px) {
+  .cld__box--item {
+    flex-direction: column;
+    gap: 10px;
   }
-  tr, th, td{
-    font-size: 1.5rem !important;
-  }
-  thead{
-    border: none;
-    background: none !important;
-    border-radius:none !important;
-  }
-  tbody{
-    border: none !important;
-  }
-  thead th{
-    color: none !important;
-    font-weight: 800 !important;
-    text-align: center;
-  }
+}
+.cld__box--etiqueta {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  align-items: center;
+}
+.cld__box--etiqueta select {
+  margin: 0 0 0 0;
+  border: none;
+  box-shadow: none !important;
+  color: #000 !important;
+}
+.cld__box--etiqueta i {
+  margin-left: 0.5rem;
+  font-size: 2rem;
+}
+.cld__box--mensaje textarea {
+  width: 100%;
+  height: 6rem;
+  resize: none;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  box-shadow: none !important;
+  color: #000 !important;
+  margin: 0 0 0 0;
+}
+.cld__box--mensaje textarea:focus {
+  margin: 0 0 0 0;
+  border: none;
+  box-shadow: none;
+}
+.rojo {
+  color: var(--rojo-pastel);
+}
+.azul {
+  color: var(--azul-pastel);
+}
+.verde {
+  color: var(--verde);
+}
+/*SUGERENCIAS DE CLIENTE INPUT*/
+.cliente-search {
+  position: relative;
+}
+.cliente-search input {
+  border: none;
+  box-shadow: none !important;
+}
+.sugerencias {
+  position: absolute;
+  width: 94%;
+  top: 79%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 150px;
+  overflow-y: auto;
+  border-radius: 0 0 15px 15px;
+  z-index: 1000;
+}
+.sugerencias li {
+  padding: 5px;
+  cursor: pointer;
+}
+.sugerencias li:hover {
+  background: #f0f0f0;
+}

@@ -13,7 +13,7 @@
         </div>
         <div class="cell large-3 add">
             <div class="cell add_item">
-                <button class="button search" id="btn-nuevopersonal"><i class="fa fa-plus"></i> Agregar Cliente</button>
+                <button class="button search" id="btn-nuevopersonal"><i class="fa fa-plus"></i> Agregar Personal</button>
             </div>
         </div>
     </div>

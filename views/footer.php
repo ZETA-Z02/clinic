@@ -4,7 +4,7 @@
 </div> -->
 <!-- Cierrre de Off-Canvas y del contenedor principal -->
 <!-- Pie de pagina -->
-<div class="grid-container fluid">
+<div class="grid-container fluid footer-katari">
   <div class="grid-container">
     <div class="cell small-12 medium-4 large-3 text-center">
       <small class="copyright">

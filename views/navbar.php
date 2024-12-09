@@ -8,8 +8,8 @@
   <!-- Titulo de la pagina -->
   <title>CHIC | Welcome</title>
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-  <!-- CHARTJS-GRAFICOS -->
-  <script src="<?php getrute('node_modules/chart.js/dist/chart.umd.js')?>"></script>
+  <!-- CHARTJS-GRAFICOS
+  <script src="<?php getrute('node_modules/chart.js/dist/chart.umd.js')?>"></script> -->
   <!-- ICONOS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
@@ -61,4 +61,4 @@
         </div>
     </nav>
     <?php require 'modales.php';?>
-    <div class="gird-container full">
+    <div class="grid-container full">
