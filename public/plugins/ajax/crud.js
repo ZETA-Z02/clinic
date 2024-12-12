@@ -47,18 +47,17 @@ async function getOne(id,controller,method='getOne'){
         throw error;
     }
 }
-function delet(id,controller,method='getOne'){
+function delet(id,controller,method='delete'){
     if(confirm('Desea eliminar el registro?')){
         $.ajax({
             type: "POST",
             url: `http://${host}/${proyect}/${controller}/${method}`,
             data: {id},
-            dataType: "json",
             success: function (response) {
-                console.log('success DELETE');
+                console.log('success DELETE',response);
                 modalSuccess();
             },error: function (error){
-                console.log('error DELETE');
+                console.log('error DELETE',error);
                 modalError();
             }
         });

@@ -18,6 +18,7 @@ class Login extends Controller
 		$data = $this->model->User($username);
 		if($data['estado'] == 0){
 			$this->render();
+			return;
 		}
 		if($data['username']==$username && password_verify($password,$data['password'])){
 			$_SESSION['katari'] = 'katariEnterprice';

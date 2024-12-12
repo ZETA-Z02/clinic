@@ -15,31 +15,29 @@ class Agenda extends Controller
 	public function get():void{
 		$data = $this->model->Get();
         while($row = mysqli_fetch_array($data)){
+			$color = $row['etiqueta'];
+			switch ($color) {
+				case 'verde':
+					$color = '#00c853';
+					break;
+				case 'rojo':
+					$color = '#ff0000';
+					break;
+				case 'azul':
+					$color = '#0000ff';
+					break;
+			}
             $json[] = array(
-				'id'=> $row['idcliente'],
+				'id'=> $row['idcita'],
                 'title' => $row['nombre'].' '.$row['titulo'],
                 'start' => $row['fecha_ini'].'T'.$row['hora_ini'],
                 'end'   => $row['fecha_fin'].'T'.$row['hora_fin'],
-                'borderColor' => '#000000',
-                'backgroundColor' => '#00c853',
+                'borderColor' => $color,
+                'backgroundColor' => $color,
                 'textColor' => '#ffffff'
             );
         }
         echo json_encode($json);
-		// [
-		// 	{
-		// 	  id: "1",
-		// 	  title: "Cita 1",
-		// 	  start: "2024-12-05T09:30:00",
-		// 	  color: "#00c853",
-		// 	},
-		// 	{
-		// 	  id: "2",
-		// 	  title: "Cita 2",
-		// 	  start: "2024-12-05T22:30:00",
-		// 	  color: "#00c853",
-		// 	},
-		//   ],
 	}
 	public function searchCustomers(){
 		$query = $_POST['query'];
@@ -69,6 +67,20 @@ class Agenda extends Controller
 			echo "ok";
 		}else{
 			throw new Exception("Error al crear la cita");
+		}
+	}
+	public function infoCita(){
+		$idcita = $_POST['id'];
+		$data = $this->model->InfoCita($idcita);
+		echo json_encode($data);
+	}
+	public function delete(){
+		$idcita = $_POST['id'];
+		if($this->model->Delete($idcita)){
+			echo "ok";
+		}else{
+			//throw new Exception("Error al eliminar la cita");
+			echo "Orror";
 		}
 	}
 }

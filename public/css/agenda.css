@@ -84,6 +84,7 @@ body {
 /* formulario del calendario para guardar cita -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 .calendar-forms {
   display: none;
+  background-color: #f0f0f0;
   /* border: 1px solid green; */
 }
 .cld__box {
@@ -201,4 +202,20 @@ body {
 }
 .sugerencias li:hover {
   background: #f0f0f0;
+}
+
+
+/* MOSTRAR INFO CITA*/
+.info-citas{
+  background-color: #f9f9f9;
+  display: none;
+}
+#cita-title{
+  font-weight: 700;
+}
+.info--date i{
+  font-size: 3.5rem;
+}
+.green {
+  color: green;
 }

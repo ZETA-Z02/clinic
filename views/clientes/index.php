@@ -1,5 +1,7 @@
 <?php require 'views/navbar.php'; ?>
+<link rel="stylesheet" href="<?php getrute('public/plugins/paginador/jpaginate.css') ?>">
 <link rel="stylesheet" href="<?php css('clientes') ?>">
+
 <div class="grid-container" id="clientes-main">
     <div class="grid-x grid-margin-x margin-top-3">
         <div class="cell large-9 search">
@@ -27,7 +29,7 @@
                     </tr>
                 </thead>
                 <tbody id="clientes-data">
-                    <tr>
+                    <!-- <tr>
                         <td><button class="button btn-info">Detalles</button></td>
                         <td>Jersson Pelayo</td>
                         <td>Quispe Apaza</td>
@@ -36,14 +38,16 @@
                         <td><button class="button btn-primary">Citas</button></td>
                         <td><button class="button btn-warning">Pagos</button></td>
                         <td><button class="button btn-success">Nuevo Pago</button></td>
-                    </tr>
+                    </tr> -->
                 </tbody>
             </table>
+            <div id="paginador-clientes"></div>
         </div>
     </div>
 </div>
 <?PHP require 'nuevocliente.php';?>
 <?PHP require 'nuevopago.php';?>
 <!-- scripts -->
+<script src="<?php plugin('paginador/jpaginate');?>"></script>
 <script src="<?php js('clientes') ?>"></script>
 <?php require 'views/footer.php'; ?>

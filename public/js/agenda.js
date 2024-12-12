@@ -1,9 +1,5 @@
 // CALENDAR --------------------------------
 $(document).ready(function () {
-  //Funcionaes
-  sugerencias();
-  tags();
-
   var calendarEl = document.getElementById("calendar");
   var calendar = new FullCalendar.Calendar(calendarEl, {
     selectable: true,
@@ -14,7 +10,7 @@ $(document).ready(function () {
       left: "prev,next today",
       right: "title",
     },
-    editable: true,
+    // editable: true,
     locale: "es",
     eventSources: [
       {
@@ -27,7 +23,7 @@ $(document).ready(function () {
       minute: "2-digit",
       meridiem: true,
       hour12: true,
-    }
+    },
     // eventContent: function (info) {
     //   // Crear elementos para la estructura visual
     //   let dot = document.createElement("span");
@@ -48,20 +44,13 @@ $(document).ready(function () {
   SeleccionFecha(calendar);
   cancelarCita(calendar);
   GuardarCita(calendar);
+  infoCita(calendar);
+  //Funcionaes
+  sugerencias();
+  tags();
+  eliminarCita(calendar);
+  cerrarCita(calendar);
 });
-//console.log('fecha: '+info.dateStr);
-// console.log('fecha: '+info.date);
-// console.log('todo el dia '+info.allDay);
-// console.log('day El '+info.dayEl);
-// console.log('Cordinales: '+info.jsEvent.pageX+','+info.jsEvent.pageY);
-// console.log('Current view type: '+info.view.type);
-// console.log('Current view: '+info.view);
-// console.log('Current view title: '+info.view.title);
-// console.log('Current view activeStart: '+info.view.activeStart);
-// console.log('Current view activeEnd: '+info.view.activeEnd);
-// console.log('Current view currentStart: '+info.view.currentStart);
-// console.log('Current view currentEnd: '+info.view.currentEnd);
-
 function SeleccionFecha(calendar) {
   calendar.on("dateClick", function (info) {
     let date = info.dateStr;
@@ -75,9 +64,11 @@ function SeleccionFecha(calendar) {
 }
 function mostrarFormulario() {
   // Mostrar el formulario y ajustar tamaños
-  $("#calendar-forms").css("display", "block");
-  $("#calendario").addClass("large-9");
-  $("#calendar-forms").addClass("large-3");
+  if (!$("#info-citas").hasClass("large-3")) {
+    $("#calendar-forms").css("display", "block");
+    $("#calendario").addClass("large-9");
+    $("#calendar-forms").addClass("large-3");
+  }
 }
 function cancelarCita(calendar) {
   $("#btn-cerrar-agenda").on("click", function () {
@@ -143,6 +134,10 @@ function GuardarCita(calendar) {
     insert(data, "agenda", "guardarCita");
     e.target.reset();
     calendar.refetchEvents();
+    // Cerrar el formulario
+    $("#calendar-forms").css("display", "none");
+    $("#calendar-forms").removeClass("large-3");
+    $("#calendario").removeClass("large-9");
   });
 }
 
@@ -164,10 +159,82 @@ function tags() {
     }
   });
 }
-function infoCita(calendar){
-  calendar.on("eventClick",function(info){
+function infoCita(calendar) {
+  calendar.on("eventClick", function (info) {
     let cita = info.event;
     let id = cita.id;
-    console.log(id);
+    //console.log(id);
+    (async () => {
+      try {
+        const data = await getOne(id, "agenda", "infoCita");
+        //console.log(data);
+        let nombres = data.nombre + " " + data.apellido;
+        $("#cita-title").html(data.titulo);
+        $("#cita-nombre").html(nombres);
+        $("#cita-etiqueta").html(data.etiqueta);
+        $("#cita-fecha-inicio").html(data.fecha_ini);
+        $("#cita-hora-inicio").html(convertirHora24a12(data.hora_ini));
+        $("#cita-fecha-fin").html(data.fecha_fin);
+        $("#cita-hora-fin").html(convertirHora24a12(data.hora_fin));
+        $("#cita-mensaje").html(data.mensaje);
+        $("#btn-eliminar-cita").attr("id-data", data.idcita);
+        colorInfo(data.etiqueta);
+        mostrarCita(calendar);
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
   });
+}
+function eliminarCita(calendar) {
+  $("#info-cita").on("click", "#btn-eliminar-cita", function () {
+    let id = $(this).attr("id-data");
+    console.log(id);
+    delet(id, "agenda", "delete");
+    calendar.refetchEvents();
+  });
+}
+
+function cerrarCita(calendar) {
+  $("#btn-cerrar-info-cita").click(function () {
+    $("#info-citas").css("display", "none");
+    $("#info-citas").removeClass("large-3");
+    $("#calendario").removeClass("large-9");
+    calendar.render();
+  });
+}
+function mostrarCita(calendar) {
+  // Mostrar el modal
+  if (!$("#calendar-forms").hasClass("large-3")) {
+    $("#info-citas").css("display", "block");
+    $("#calendario").addClass("large-9");
+    $("#info-citas").addClass("large-3");
+    calendar.render();
+  }
+}
+
+function colorInfo(color) {
+  if (color == "verde") {
+    $("#cita-title").addClass("green");
+    $("#cita-flecha-icon").addClass("verde");
+    $("#cita-flecha-icon,#cita-title").removeClass("rojo azul");
+  } else if (color == "rojo") {
+    $("#cita-flecha-icon,#cita-title").addClass("rojo");
+    $("#cita-flecha-icon,#cita-title").removeClass("green azul verde");
+  } else if (color == "azul") {
+    $("#cita-flecha-icon,#cita-title").addClass("azul");
+    $("#cita-flecha-icon,#cita-title").removeClass("rojo green verde");
+  }
+}
+
+function convertirHora24a12(hora24) {
+  // Separar las horas, minutos y segundos
+  let [hora, minutos] = hora24.split(":").map(Number);
+  // Determinar si es AM o PM
+  let periodo = hora >= 12 ? "PM" : "AM";
+  // Convertir la hora a formato de 12 horas
+  hora = hora % 12 || 12;
+  // Si la hora es 0 (medianoche), mostrar como 12
+  // Devolver el formato final
+  return `${hora}:${minutos.toString().padStart(2, "0")} ${periodo}`;
 }

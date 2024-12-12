@@ -41,6 +41,7 @@ function getclientes() {
                         `;
       });
       $("#clientes-data").html(html);
+      initPaginador(5, "clientes-data", "paginador-clientes");
     } catch (error) {
       console.log("ERROR EN GET", error);
     }

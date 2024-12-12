@@ -111,6 +111,46 @@
 			</div>
 			</form>
 		</div>
+		<!-- INFO CITA-UPDATE AND DELETE -->
+		 <div class="cell info-citas" id="info-citas">
+			<div class="grid-x info">
+				<div class="cell cld__box info__box info--title text-center">
+					<h4 id="cita-title">Información de la cita</h4>
+					<h6 id="cita-nombre">Nombre del Cliente</h6>
+					<span id="cita-etiqueta">Tags</span>
+				</div>
+				<div class="cell cld__box info__box info--date">
+					<div class="grid-x">
+						<div class="cell large-4">
+							<div class="info__date--fecha" id="cita-fecha-inicio">
+								2024-01-01
+							</div>
+							<div class="info__date--hora" id="cita-hora-inicio">
+								9:00 AM
+							</div>
+						</div>
+						<div class="cell large-4 text-center">
+							<i class="fa-solid fa-chevron-right" id="cita-flecha-icon"></i>
+						</div>
+						<div class="cell large-4">
+							<div class="info__date--fecha" id="cita-fecha-fin">	
+								2024-01-01
+							</div>
+							<div class="info__date--hora" id="cita-hora-fin">
+								9:00 AM
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="cell cld__box info__box info--message">
+					<p id="cita-mensaje">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+				</div>
+				<div class="cell cld__box grid-x align-spaced">
+					<button class="button btn-danger" id="btn-cerrar-info-cita">Cerrar</button>
+					<button class="button btn-danger" id="btn-eliminar-cita">Eliminar Cita</button>
+				</div>
+			</div>
+		 </div>
 	</div>
 </div>
 <script src="<?php js('agenda'); ?>"></script>
