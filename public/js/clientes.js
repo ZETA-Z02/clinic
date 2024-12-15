@@ -18,6 +18,7 @@ $(document).ready(function () {
   modalNuevoPago();
   calcularPago();
   nuevoPago();
+  boleta()
   //verificarPago();
   /* MODAL NUEVO PAGO END*/
 });
@@ -47,7 +48,6 @@ function getclientes() {
     }
   })();
 }
-
 // MODAL NUEVO CLIENTE --------------*-*-*-*-*-*-*-*-*-*-*-
 function modalNuevoCliente() {
   $("#btn-nuevocliente").click(function () {
@@ -104,11 +104,14 @@ function modalNuevoPago() {
     (async () => {
       try {
         const data = await getOne(id, "clientes", "getProcedimientosOne");
+        const cliente = await getOne(id, "clientes", "getCliente");
         //console.log(data);
         let html = "";
         data.forEach((element) => {
           html += `<option value="${element.idpago}" id-data="${element.idprocedimiento}">${element.procedimiento}</option>`;
         });
+        console.log(cliente);
+        $("#cliente-nombre").html(cliente.nombre + ' '+ cliente.apellido);
         $("#tratamiento").html(html);
         $("#tratamiento").trigger("updated");
       } catch (error) {
@@ -212,11 +215,11 @@ function nuevoPago(){
     }
   });
 }
-// function verificarPago(){
-//   let deuda = $('#mostrar-totaldeuda').val();
-//   console.log(deuda);
-//   if(deuda == 0){
-//     $("#nuevopago-footer").hide();
-//   }
-// }
+function boleta(){
+  $("#btn-boleta-todo").click(function(){
+    let id = $("#id-nuevopago-cliente").val();
+    console.log(id)
+    window.open(`http://${host}/${proyect}/clientes/boletaPagos/${id}`);
+  });
+}
 // MODAL NUEVO PAGO END -/--/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/

@@ -111,4 +111,9 @@ class ClientesModel extends Model{
         $result = $this->conn->ConsultaSin($sql);
         return $result;
     }
+    public function DataPagos($id){
+        $sql = "SELECT p.total_pagar, proce.procedimiento FROM pagos p join procedimientos proce on proce.idprocedimiento = p.idprocedimiento WHERE idcliente = '$id';";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
+    }
 }

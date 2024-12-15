@@ -43,6 +43,7 @@ function getpersonal(){
                 `;
             });
             $("#data-personal").html(html);
+            initPaginador(5, "data-personal", "paginador");
         } catch (error){
             console.error("ERROR en obtener personal",error);
         }

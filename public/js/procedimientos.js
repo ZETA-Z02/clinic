@@ -10,7 +10,7 @@ function get(){
         url: `http://${host}/${proyect}/procedimientos/get`,
         dataType: "json",
         success: function (response) {
-            console.log(response);
+            //console.log(response);
             let html = '';
             response.forEach((element) => {
                 html += `

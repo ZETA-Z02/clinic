@@ -1,4 +1,5 @@
 <?php require 'views/sidebar.php';?>
+<link rel="stylesheet" href="<?php getrute('public/plugins/paginador/jpaginate.css') ?>">
 <link rel="stylesheet" href="<?php css('personal') ?>">
 <div class="grid-container">
     <div class="grid-x align-center">
@@ -40,9 +41,11 @@
                     </tr>
                 </tbody>
             </table>
+            <div id="paginador"></div>
         </div>
     </div>
 </div>
 <?php require('nuevopersonal.php'); ?>
 <script src="<?php js('personal');?>"></script>
+<script src="<?php plugin('paginador/jpaginate');?>"></script>
 <?php require 'views/footerSidebar.php';?>

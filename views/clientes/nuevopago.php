@@ -1,7 +1,7 @@
 <div class="grid-container" id="nuevopago-view">
     <form id="form-nuevo-pago" method="POST" class="">
         <div class="grid-x align-center">
-            <h2>Nuevo Pago de <span id="cliente-nombre"></span></h2>
+            <h2>Nuevo Pago de:<h2 id="cliente-nombre"></h2></h2>
         </div>
         <div class="grid-x grid-margin-x">
             <div class="cell large-4">
@@ -57,16 +57,17 @@
             </div>
             <div class="cell large-6">
                 <!-- ESTE TIENE EL ID DEL PROCEDIMIENTO -->
-                <input type="text" name="idprocedimiento" id="idprocedimiento" hidden style="display:none;">
+                <input type="hidden" name="idprocedimiento" id="idprocedimiento">
                 <!-- ESTE TIENE EL ID DE CLIENTE -->
-                <input type="text" name="idcliente" id="id-nuevopago-cliente" hidden style="display:none;">
+                <input type="hidden" name="idcliente" id="id-nuevopago-cliente">
                 <!-- <input type="text" name="idcliente" id="id-nuevopago-cliente">
                 <input type="text" name="idprocedimiento" id="idprocedimiento"> -->
                 <!-- BOTONES ACCIONES -->
                 <div class="grid-x align-spaced">
-                <button class="button btn-info" type="button">Enviar</button>
-                <button class="button btn-warning" type="button">Imprimir Todo</button>
-                <button class="button btn-success" type="submit">Guardar y emitir boleta</button></div>
+                    <button class="button btn-info" type="button">Enviar</button>
+                    <button class="button btn-warning" type="button" id="btn-boleta-todo">Imprimir Todo</button>
+                    <button class="button btn-success" type="submit">Guardar y emitir boleta</button>
+            </div>
             </div>
         </div>
     </form>
