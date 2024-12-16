@@ -64,10 +64,10 @@ function nuevocliente() {
     e.preventDefault();
     let data = $(this).serialize();
     insert(data, "clientes", "nuevoCliente");
+    getclientes();
     $(".nuevocliente").css("display", "none");
     $(".overlay").css("display", "none");
     e.target.reset();
-    getclientes();
   });
 }
 function getProcedimientos() {
@@ -123,6 +123,7 @@ function modalNuevoPago() {
   $("#btn-nuevopago-volver").click(function () {
     $("#nuevopago-view").hide();
     $("#clientes-main").show();
+    getclientes();
   });
   // SELECCIONAR TRATAMIENTO
   $("#tratamiento").on("updated", function () {
@@ -210,8 +211,8 @@ function nuevoPago(){
     }else{
       let data = $(this).serialize();
       insert(data, "clientes", "nuevoPago");
-      tablaNuevoPago();
       e.target.reset();
+      tablaNuevoPago();
     }
   });
 }

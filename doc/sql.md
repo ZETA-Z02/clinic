@@ -9,7 +9,7 @@ CREATE TABLE `personal` (
   `foto` varchar(200) DEFAULT NULL,
   `fechaNac` date DEFAULT NULL,
   `feCreate` datetime DEFAULT current_timestamp(),
-  `feUpdate` date DEFAULT current_timestamp(),
+  `feUpdate` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`idpersonal`),
   UNIQUE KEY `dni` (`dni`)
 );
@@ -43,7 +43,7 @@ CREATE TABLE `clientes` (
   `ciudad` varchar(100) DEFAULT NULL,
   `direccion` varchar(100) DEFAULT NULL,
   `feCreate` datetime DEFAULT current_timestamp(),
-  `feUpdate` date DEFAULT current_timestamp(),
+  `feUpdate` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`idcliente`),
   UNIQUE KEY `dni` (`dni`)
 );
@@ -87,3 +87,14 @@ CREATE TABLE `citas` (
   KEY `idcliente` (`idcliente`),
   CONSTRAINT `citas_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
 );
+INSERT INTO `personal` VALUES
+(1,'ADMINISTRADOR','ADMINISTRADOR',72535244,'998777712','MASCULINO','jersson.z032@gmail.com',NULL,'2024-12-05',NULL,'2024-12-05');
+
+INSERT INTO `login` VALUES
+(1,1,'admin','$2y$10$Yt3wiTd14EdTf4dGepP49.pWnboRhcwcO9YJN0wNX0ncCT.kALZXO',1,2)
+
+
+
+// COMPOSER INSTALL
+// NPM INSTALL
+// database root-clinic
