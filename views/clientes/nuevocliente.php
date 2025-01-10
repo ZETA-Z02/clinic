@@ -29,13 +29,17 @@
             <label for="concepto">Concepto</label>
             <input type="text" id="concepto" name="concepto" placeholder="Primer Pago" required>
         </div>
-        <div class="cell large-6 nuevocliente__item">
+        <div class="cell large-12 nuevocliente__item">
             <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="nombre" required readonly>
+            <input type="text" id="nombrecompleto" name="" required readonly>
         </div>
         <div class="cell large-6 nuevocliente__item">
-            <label for="apellido">Apellido</label>
-            <input type="text" id="apellido" name="apellido" required readonly>
+            <!-- <label for="nombre">Nombre</label> -->
+            <input type="hidden" id="nombre" name="nombre" required readonly>
+        </div>
+        <div class="cell large-6 nuevocliente__item">
+            <!-- <label for="apellido">Apellido</label> -->
+            <input type="hidden" id="apellido" name="apellido" required readonly>
         </div>
     </div>
     <div class="grid-x nuevocliente__box nuevocliente--buttons">

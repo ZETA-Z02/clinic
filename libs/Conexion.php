@@ -27,6 +27,7 @@ class Conexion
     //echo $sql;
     if (!$this->conn->query($sql)) {
       echo "Error. " . mysqli_error($this->conn);
+      // throw new Exception(mysqli_error($this->conn));
       exit();
     }
     return true;

@@ -24,21 +24,10 @@ $(document).ready(function () {
       meridiem: true,
       hour12: true,
     },
-    // eventContent: function (info) {
-    //   // Crear elementos para la estructura visual
-    //   let dot = document.createElement("span");
-    //   dot.classList.add("fc-dot");
-    //   dot.style.backgroundColor = info.event.backgroundColor;
-    //   let title = document.createElement("span");
-    //   title.textContent = info.event.title;
-    //   let time = document.createElement("span");
-    //   time.textContent = info.timeText; // Hora del evento
-    //   // Contenedor principal
-    //   let container = document.createElement("div");
-    //   container.classList.add("fc-event-custom");
-    //   container.append(dot, title, time);
-    //   return { domNodes: [container] }; // Retorna el nodo DOM personalizado
-    // },
+    dayMaxEventRows: true,
+    moreLinkContent: masNumInfoCita,
+    moreLinkClick: masInfoCitas,
+    
   });
   calendar.render();
   SeleccionFecha(calendar);
@@ -50,7 +39,11 @@ $(document).ready(function () {
   tags();
   eliminarCita(calendar);
   cerrarCita(calendar);
+  /*Modal todas las citas */
+  CerrarModal()
+  infoCitaModalMore(calendar);
 });
+
 function SeleccionFecha(calendar) {
   calendar.on("dateClick", function (info) {
     let date = info.dateStr;
@@ -64,22 +57,17 @@ function SeleccionFecha(calendar) {
 }
 function mostrarFormulario() {
   // Mostrar el formulario y ajustar tamaños
-  if (!$("#info-citas").hasClass("large-3")) {
-    $("#calendar-forms").css("display", "block");
-    $("#calendario").addClass("large-9");
-    $("#calendar-forms").addClass("large-3");
-  }
+  //$("#calendar-forms").css("display", "block");
+  abrirModal("calendar-forms");
+  tags()
 }
 function cancelarCita(calendar) {
   $("#btn-cerrar-agenda").on("click", function () {
     $("#calendar-forms").css("display", "none");
-    $("#calendar-forms").removeClass("large-3");
-    $("#calendario").removeClass("large-9");
     $("#calendario-formulario")[0].reset();
     calendar.render();
   });
 }
-
 // SUGERENCIAS DE CLIENTES
 function sugerencias() {
   let clienteInput = $("#cliente");
@@ -134,6 +122,7 @@ function GuardarCita(calendar) {
     insert(data, "agenda", "guardarCita");
     e.target.reset();
     calendar.refetchEvents();
+    tags()
     // Cerrar el formulario
     $("#calendar-forms").css("display", "none");
     $("#calendar-forms").removeClass("large-3");
@@ -198,19 +187,14 @@ function eliminarCita(calendar) {
 function cerrarCita(calendar) {
   $("#btn-cerrar-info-cita").click(function () {
     $("#info-citas").css("display", "none");
-    $("#info-citas").removeClass("large-3");
-    $("#calendario").removeClass("large-9");
     calendar.render();
   });
 }
 function mostrarCita(calendar) {
   // Mostrar el modal
-  if (!$("#calendar-forms").hasClass("large-3")) {
-    $("#info-citas").css("display", "block");
-    $("#calendario").addClass("large-9");
-    $("#info-citas").addClass("large-3");
-    calendar.render();
-  }
+  //$("#info-citas").css("display", "block");
+  abrirModal("info-citas");
+  calendar.render();
 }
 
 function colorInfo(color) {
@@ -226,7 +210,6 @@ function colorInfo(color) {
     $("#cita-flecha-icon,#cita-title").removeClass("rojo green verde");
   }
 }
-
 function convertirHora24a12(hora24) {
   // Separar las horas, minutos y segundos
   let [hora, minutos] = hora24.split(":").map(Number);
@@ -237,4 +220,77 @@ function convertirHora24a12(hora24) {
   // Si la hora es 0 (medianoche), mostrar como 12
   // Devolver el formato final
   return `${hora}:${minutos.toString().padStart(2, "0")} ${periodo}`;
+}
+/* Configuracion de calendario -> mas informacion de la cita*/
+function masNumInfoCita(args) {
+  // Personalizar el contenido del "más" link
+  return `+${args.num}`;
+}
+function masInfoCitas(info) {
+  // Mostrar un modal con todas las citas del día al hacer clic en "más"
+  console.log(info);
+  const eventos = info.allSegs.map((seg) => seg.event); // Todas las citas de ese día
+  let html = '';
+  eventos.forEach(event => {
+    let date = event.start.toLocaleDateString("es-ES", { 
+      month: "long",
+      day: "numeric"
+    });
+    $("#modal-title").html(date)
+    let fecha = event.start.toLocaleDateString("es-ES", { 
+      weekday: "long",
+      year: "numeric", 
+      month: "long",
+      day: "numeric" 
+    });
+    let hora = event.start.toLocaleDateString("es-ES", { 
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true
+    });
+    hora = hora.split(",")[1];
+    html += 
+    `<div class="box--cita" data-id="${event.id}" id="modal-info-cita">
+			 <span class="box--cita--title lead">${fecha}, ${hora}</span>
+			 <p>${event.title}</p>
+		</div>`;
+  });
+  //document.getElementById("modal-content").innerHTML = modalContent;
+  $("#modal-content").html(html);
+  abrirModal("modal");
+  return false;
+}
+function infoCitaModalMore(calendar){
+  $(document).on("click", "#modal-info-cita", function(){
+    let id = $(this).attr("data-id");
+    (async () => {
+      try {
+        const data = await getOne(id, "agenda", "infoCita");
+        //console.log(data);
+        let nombres = data.nombre + " " + data.apellido;
+        $("#cita-title").html(data.titulo);
+        $("#cita-nombre").html(nombres);
+        $("#cita-etiqueta").html(data.etiqueta);
+        $("#cita-fecha-inicio").html(data.fecha_ini);
+        $("#cita-hora-inicio").html(convertirHora24a12(data.hora_ini));
+        $("#cita-fecha-fin").html(data.fecha_fin);
+        $("#cita-hora-fin").html(convertirHora24a12(data.hora_fin));
+        $("#cita-mensaje").html(data.mensaje);
+        $("#btn-eliminar-cita").attr("id-data", data.idcita);
+        colorInfo(data.etiqueta);
+        mostrarCita(calendar);
+      } catch (error) {
+        console.error("ERROR", error);
+      }
+    })();
+  })
+}
+function abrirModal(modalId){
+  $(".modales").hide();
+  $(`#${modalId}`).show();
+}
+function CerrarModal(){
+  $("#btn-cerrar-modal").click(function(){
+    $('#modal').hide();
+  })
 }

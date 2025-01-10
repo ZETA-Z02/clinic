@@ -146,6 +146,7 @@ i {
   background-color: var(--azul-real) !important;
 }
 .nav__list li a {
+  display: inline-block;
   text-decoration: none;
   color: inherit;
   font-weight: inherit;

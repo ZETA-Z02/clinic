@@ -46,7 +46,7 @@
     </div>
 </div>
 <?PHP require 'nuevocliente.php';?>
-<?PHP require 'nuevopago.php';?>
+<!-- <?PHP //require 'nuevopago.php';?> -->
 <!-- scripts -->
 <script src="<?php plugin('paginador/jpaginate');?>"></script>
 <script src="<?php js('clientes') ?>"></script>

@@ -61,6 +61,12 @@
                   <span class="nav-item">Procedimientos</span>
                 </a>
               </li>
+              <li>
+                <a href="<?php getrute('etiquetas')?>">
+                  <i class="fas fa-tag"></i>
+                  <span class="nav-item">Etiquetas</span>
+                </a>
+              </li>
             </ul>
           </div>
           <div class="cell margin-top-3">

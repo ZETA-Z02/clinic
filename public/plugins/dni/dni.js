@@ -17,6 +17,10 @@ function dni() {
             $("#apellido").val(
               data.apellidoPaterno + " " + data.apellidoMaterno
             );
+            // quitar esto si no es necesario o hacer que la funcion devuelva el nombre y no use el input
+            $("#nombrecompleto").val(data.nombres + " " +
+              data.apellidoPaterno + " " + data.apellidoMaterno
+            );
           }
         },
         error: function (xhr, status, error) {

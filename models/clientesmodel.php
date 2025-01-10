@@ -10,7 +10,7 @@ class ClientesModel extends Model{
         return $data;
     }
     public function Get(){
-        $sql = "SELECT * FROM clientes;";
+        $sql = "SELECT * FROM clientes ORDER BY idcliente DESC;";
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
@@ -23,7 +23,7 @@ class ClientesModel extends Model{
             $idcliente = $this->conn->conn->insert_id;
             /* INSERTAR PAGOS HACIENDO CALCULOS */
             $saldo_pendiente = $totalpagar - $primerpago;
-            $igv = number_format($totalpagar - ($totalpagar / 1.18),2);
+            $igv = round($totalpagar - ($totalpagar / 1.18),2);
             $sqlpago = "INSERT INTO pagos (idcliente,idprocedimiento,monto_pagado,saldo_pendiente,igv,total_pagar) VALUES ('$idcliente','$idprocedimiento','$primerpago','$saldo_pendiente','$igv','$totalpagar');";
             $resultpago = $this->conn->ConsultaSin($sqlpago);
             $idpago = $this->conn->conn->insert_id;
@@ -90,7 +90,7 @@ class ClientesModel extends Model{
         try{
             /* INSERTAR PAGOS HACIENDO CALCULOS */
             $saldo_pendiente = $totalpagar - $primerpago;
-            $igv = number_format($totalpagar - ($totalpagar / 1.18),2);
+            $igv = round($totalpagar - ($totalpagar / 1.18),2);
             $sqlpago = "INSERT INTO pagos (idcliente,idprocedimiento,monto_pagado,saldo_pendiente,igv,total_pagar) VALUES ('$idcliente','$idprocedimiento','$primerpago','$saldo_pendiente','$igv','$totalpagar');";
             $resultpago = $this->conn->ConsultaSin($sqlpago);
             $idpago = $this->conn->conn->insert_id;

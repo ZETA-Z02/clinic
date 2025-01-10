@@ -13,10 +13,17 @@ class Clientes extends Controller
 		$this->view->css = 'clientes';
 		$this->view->Render('clientes/index');
 	}
+	public function renderNuevoPago($npam = null){
+		$id = $npam[0];
+		$cliente = $this->model->GetOne($id);
+		$this->view->data = $cliente;
+		$this->view->Render('clientes/nuevopago');
+	}
 	public function pagos()
 	{
 		$this->view->Render('clientes/pagos');
 	}
+
 	function detalles($nparam = null)
 	{
 		$id = $nparam[0];
@@ -71,7 +78,8 @@ class Clientes extends Controller
 			if ($this->model->NuevoCliente($nombre, $apellido, $dni, $telefono, $idprocedimiento, $totalpagar, $concepto, $primerpago)) {
 				echo "ok";
 			} else {
-				throw new Exception("Error al crear el cliente");
+				echo "error";
+				//throw new Exception("Error al crear el cliente");
 			}
 		}
 	}

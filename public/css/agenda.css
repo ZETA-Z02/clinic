@@ -33,7 +33,7 @@ body {
   box-sizing: border-box;
 }
 .fc-header-toolbar {
-  height: 3vh !important;
+  height: 2vh !important;
   /* border: 1px solid red; */
   font-size: 0.7vh;
 }
@@ -54,28 +54,30 @@ body {
   height: 90.5vh;
   /* border: 1px solid blue; */
 }
-/*  PERSONALIZACION DE LAS CITAS*/
-.fc-event-custom {
+.fc-daygrid-day {
+  height: 170px !important;
+}
+.fc-daygrid-event-harness > a > div {
+  font-size: 18px !important;
+}
+/*PERSONALIZAND EL CALENDARIO*/
+/* Agregar un contorno circular al día actual */
+.fc-day-today .fc-daygrid-day-number {
+  /* border: 2px solid #007bff; */
+  border-radius: 50%; /* Hace que el contorno sea circular */
+  padding: 2px 10px; /* Ajusta el espacio dentro del círculo */
+  box-sizing: border-box;
+  background-color: #000; /* Opcional: fondo para resaltar */
+  color: #fff; /* Color del texto */
+  font-weight: bold; /* Destaca el número del día */
+} /* Centrar el texto en el círculo */
+.fc-daygrid-day-top {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Espaciado entre título y hora */
-  padding: 5px; /* Espaciado interno */
-  font-size: 12px;
-  border-radius: 4px; /* Bordes redondeados */
-  background-color: #fff; /* Fondo blanco */
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para efecto */
+  justify-content: center;
 }
-.fc-event-custom .fc-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-right: 5px; /* Espaciado con el título */
-}
-.fc-event-custom span {
-  white-space: nowrap; /* Evita que el texto se rompa */
-}
-.fc-event-custom span:last-child {
-  margin-left: auto; /* Alinea la hora a la derecha */
+.fc-popover {
+  display: none !important;
 }
 /*  PERSONALIZACION DE LAS CITAS END*/
 
@@ -84,12 +86,21 @@ body {
 /* formulario del calendario para guardar cita -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*/
 .calendar-forms {
   display: none;
-  background-color: #f0f0f0;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  max-width: 30rem;
+  background-color: rgb(210, 226, 243);
+  border-radius: 15px;
+  padding: 15px;
   /* border: 1px solid green; */
 }
 .cld__box {
   padding: 1rem;
   border: 0.1px solid var(--gris-pastel);
+  border-radius: 15px;
 }
 .cld--title input {
   margin: 0 0 0 0;
@@ -204,18 +215,58 @@ body {
   background: #f0f0f0;
 }
 
-
 /* MOSTRAR INFO CITA*/
-.info-citas{
+.info-citas {
   background-color: #f9f9f9;
   display: none;
+  border-radius: 15px;
+  position: fixed;
+  max-width: 30rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
 }
-#cita-title{
+#cita-title {
   font-weight: 700;
 }
-.info--date i{
+.info--date i {
   font-size: 3.5rem;
 }
 .green {
   color: green;
+}
+
+/* modal todas las citas */
+.modal-citas {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40rem;
+  padding: 20px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  z-index: 1000;
+}
+.modal-title{
+  text-align: center;
+  border-bottom: 2px solid #ccc;
+}
+.box-citas{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.box--cita{
+  border-left: 5px solid #090;
+  padding: 0 1rem;
+  margin: 7px 0;
+  cursor: pointer;
+}
+.box--cita--title{
+  font-weight: bold;
+  letter-spacing: 1px;
 }
