@@ -19,8 +19,8 @@
         </div>
     </div>
     <div class="grid-x">
-        <div class="cell">
-            <table id="table-personal-data">
+        <div class="cell large-12">
+            <table id="table-personal-data" class="stack">
                 <thead>
                     <tr>
                         <th>Nombre</th>

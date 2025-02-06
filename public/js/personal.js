@@ -28,7 +28,7 @@ function getpersonal(){
     (async () => {
         try{
             const data = await get('personal','get');
-            console.log(data);
+            //console.log(data);
             let html = '';
             data.forEach((element) => {
                 html += `

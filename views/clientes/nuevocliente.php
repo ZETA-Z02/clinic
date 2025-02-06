@@ -10,35 +10,21 @@
             <input type="text" id="dni" name="dni" required>
         </div>
         <div class="cell large-6 nuevocliente__item">
+            <label for="nombre">Nombre y Apellido</label>
+            <input type="text" id="nombrecompleto" name="" required readonly>
+        </div>
+        <div class="cell large-6 nuevocliente__item">
             <label for="telefono">Telefono</label>
             <input type="text" id="telefono" name="telefono" required>
         </div>
         <div class="cell large-6 nuevocliente__item">
-            <label for="totalpagar">Total a Pagar</label>
-            <input type="text" id="totalpagar" name="totalpagar" required>
+            <label for="direccion">Direccion</label>
+            <input type="text" id="direccion" name="direccion" placeholder="Direccion" required>
         </div>
         <div class="cell large-6 nuevocliente__item">
-            <label for="procedimiento">Procedimiento</label>
-            <select name="procedimiento" id="procedimiento"></select>
-        </div>
-        <div class="cell large-6 nuevocliente__item">
-            <label for="primerpago">Primer Pago</label>
-            <input type="text" id="primerpago" name="primerpago" required>
-        </div>
-        <div class="cell large-6 nuevocliente__item">
-            <label for="concepto">Concepto</label>
-            <input type="text" id="concepto" name="concepto" placeholder="Primer Pago" required>
-        </div>
-        <div class="cell large-12 nuevocliente__item">
-            <label for="nombre">Nombre</label>
-            <input type="text" id="nombrecompleto" name="" required readonly>
-        </div>
-        <div class="cell large-6 nuevocliente__item">
-            <!-- <label for="nombre">Nombre</label> -->
             <input type="hidden" id="nombre" name="nombre" required readonly>
         </div>
         <div class="cell large-6 nuevocliente__item">
-            <!-- <label for="apellido">Apellido</label> -->
             <input type="hidden" id="apellido" name="apellido" required readonly>
         </div>
     </div>

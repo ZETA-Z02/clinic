@@ -76,8 +76,9 @@ body {
   align-items: center;
   justify-content: center;
 }
+/*DESAPARECE EL MODAL PARA ARRASTRAR CITAS*/
 .fc-popover {
-  display: none !important;
+  /* display: none !important; */
 }
 /*  PERSONALIZACION DE LAS CITAS END*/
 
@@ -91,7 +92,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  max-width: 30rem;
+  max-width: 40rem;
   background-color: rgb(210, 226, 243);
   border-radius: 15px;
   padding: 15px;
@@ -106,16 +107,26 @@ body {
   margin: 0 0 0 0;
   border: none;
   box-shadow: none !important;
-  background-color: transparent;
+  /* background-color: transparent; */
   color: #000 !important;
 }
 .cld--title input:focus {
   margin: 0 0 0 0;
   border: none;
   box-shadow: none;
-  background-color: transparent;
+  /* background-color: transparent; */
 }
 .cld--title input::placeholder {
+  color: #000;
+}
+.cld--title .cell{
+  position: relative;
+}
+.cld--title .cell span{
+  position: absolute;
+  font-size: 3rem;
+  top: -30%;
+  right: -1.5rem;
   color: #000;
 }
 .cld__box--item {
@@ -269,4 +280,35 @@ body {
 .box--cita--title{
   font-weight: bold;
   letter-spacing: 1px;
+}
+
+/*select 2 */
+/* Ajustar el ancho del Select2 para que no sobrescriba tu diseño */
+.select2-container {
+  width: 100% !important; /* Asegúrate de que respete el contenedor */
+}
+
+/* Alinear el contenido del Select2 */
+.select2-container .select2-selection--single {
+  height: 2.5rem; /* Ajusta el alto al diseño de tus inputs */
+  padding: 0.5rem;
+  border: 1px solid #ccc; /* Opcional: bordes personalizados */
+  border-radius: 0.5rem; /* Opcional: esquinas redondeadas */
+}
+
+/* Opcional: Estilizar el texto de las opciones */
+.select2-container .select2-selection__rendered {
+  font-size: 1rem; /* Ajusta el tamaño del texto */
+  color: #333; /* Color del texto */
+}
+
+/* Opcional: Quitar bordes adicionales en los dropdown */
+.select2-dropdown {
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+}
+
+/* Si necesitas personalizar flechas o iconos */
+.select2-container .select2-selection__arrow {
+  height: 100%; /* Asegúrate de que esté alineado */
 }

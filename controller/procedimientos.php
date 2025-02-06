@@ -16,6 +16,8 @@ class Procedimientos extends Controller
 			$json[] = array(
 				"id"=>$row['idprocedimiento'],
 				"procedimiento"=>$row['procedimiento'],
+				"descripcion"=>$row['descripcion'],
+				"precio"=>$row['precio'],
 				"fecha"=>$row['feCreate']
 			);
 		}
@@ -29,16 +31,17 @@ class Procedimientos extends Controller
 	public function nuevoProcedimiento():void{
 		$id = $_POST['id'];
 		$procedimiento = $_POST['procedimiento'];
+		$precio = $_POST['precio'];
 		$descripcion = $_POST['descripcion'];
-
+		$iniciles = $_POST['iniciales'];
 		if(empty($id)){
-			if($this->model->NuevoProcedimiento($procedimiento,$descripcion)){
+			if($this->model->NuevoProcedimiento($procedimiento,$descripcion,$precio,$iniciles)){
 				echo 1;
 			}else{
 				trigger_error("Error al crear el procedimiento");
 			}
 		}else{
-			if($this->model->EditarProcedimiento($id,$procedimiento,$descripcion)){
+			if($this->model->EditarProcedimiento($id,$procedimiento,$descripcion,$precio,$iniciles)){
 				echo 1;
 			}else{
 				trigger_error("Error al Actualizar el procedimiento");

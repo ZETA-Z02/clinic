@@ -14,31 +14,11 @@ class ClientesModel extends Model{
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
-    public function NuevoCliente($nombre,$apellido,$dni,$telefono,$idprocedimiento,$totalpagar,$concepto,$primerpago){
-        $this->conn->conn->begin_transaction();
-        try{
-            /* INSERTAR CLIENTE */
-            $sqlcliente = "INSERT INTO clientes (nombre,apellido,dni,telefono) VALUES ('$nombre','$apellido','$dni','$telefono');";
-            $resultcliente = $this->conn->ConsultaSin($sqlcliente);
-            $idcliente = $this->conn->conn->insert_id;
-            /* INSERTAR PAGOS HACIENDO CALCULOS */
-            $saldo_pendiente = $totalpagar - $primerpago;
-            $igv = round($totalpagar - ($totalpagar / 1.18),2);
-            $sqlpago = "INSERT INTO pagos (idcliente,idprocedimiento,monto_pagado,saldo_pendiente,igv,total_pagar) VALUES ('$idcliente','$idprocedimiento','$primerpago','$saldo_pendiente','$igv','$totalpagar');";
-            $resultpago = $this->conn->ConsultaSin($sqlpago);
-            $idpago = $this->conn->conn->insert_id;
-            /* INSERTAR PAGO DETALLES */
-            $sqlpagodetalle = "INSERT INTO pago_detalles (idpago,monto,concepto) VALUES('$idpago','$primerpago','$concepto');";
-            $resultpagodetalle = $this->conn->ConsultaSin($sqlpagodetalle);
-
-            $this->conn->conn->commit();
-            $result = $resultcliente && $resultpago && $resultpagodetalle;
-            return $result;
-        }catch(Exception $e){
-            $this->conn->conn->rollback();
-            echo "Error: " . $e->getMessage();
-        }
-        $this->conn->conn->close();
+    public function NuevoCliente($nombre,$apellido,$dni,$telefono,$direccion){
+        /* INSERTAR CLIENTE */
+        $sql = "INSERT INTO clientes (nombre,apellido,dni,telefono,direccion) VALUES ('$nombre','$apellido','$dni','$telefono','$direccion');";
+        $result = $this->conn->ConsultaSin($sql);
+        return $result;
     }
     public function GetProcedimientos():mysqli_result|bool{
         $sql = "SELECT idprocedimiento,procedimiento FROM procedimientos";
@@ -106,13 +86,19 @@ class ClientesModel extends Model{
         }
         $this->conn->conn->close();
     }
-    public function ActualizarCliente($idcliente,$telefono,$email,$sexo,$ciudad,$direccion){
-        $sql = "UPDATE clientes SET telefono = '$telefono', email = '$email', sexo = '$sexo', ciudad = '$ciudad', direccion = '$direccion' WHERE idcliente = '$idcliente';";
+    public function ActualizarCliente($idcliente,$nombre,$apellido,$telefono,$email,$sexo,$ciudad,$direccion){
+        $sql = "UPDATE clientes SET nombre='$nombre',apellido='$apellido', telefono = '$telefono', email = '$email', sexo = '$sexo', ciudad = '$ciudad', direccion = '$direccion' WHERE idcliente = '$idcliente';";
         $result = $this->conn->ConsultaSin($sql);
         return $result;
     }
     public function DataPagos($id){
         $sql = "SELECT p.total_pagar, proce.procedimiento FROM pagos p join procedimientos proce on proce.idprocedimiento = p.idprocedimiento WHERE idcliente = '$id';";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
+    }
+    // CITAS
+    public function onecita($id){
+        $sql = "SELECT c.idcliente,e.idetiqueta,e.color,c.nombre,ci.idcita, ci.idcliente, ci.titulo, ci.idetiqueta, ci.fecha_ini, ci.hora_ini, ci.fecha_fin,ci.hora_fin FROM citas ci JOIN clientes c ON c.idcliente = ci.idcliente JOIN etiquetas e ON ci.idetiqueta=e.idetiqueta WHERE c.idcliente = '$id';";
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }

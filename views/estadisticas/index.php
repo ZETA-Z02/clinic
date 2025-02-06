@@ -1,6 +1,6 @@
 <?php require 'views/navbar.php'; ?>
 <script src="<?php getrute('node_modules/chart.js/dist/chart.umd.js') ?>"></script>
-<div class="grid-container fluid">
+<div class="grid-container full margin-2">
     <!-- CARDS -->
     <div class="grid-x large-up-3 cards">
         <div class="card margin-horizontal-3 shadow">

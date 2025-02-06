@@ -33,7 +33,7 @@
             padding: 5px;
         }
         .title{
-            
+             
         }
         td {
             text-align: center;

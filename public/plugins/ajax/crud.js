@@ -25,7 +25,7 @@ async function get(controller,method='get'){
         return data;
     }catch(error){
         console.log('ERROR GET');
-        throw error;
+        throw new Error("Error en crud Get"+error);
     }
 }
 // FUNCIONA
@@ -48,11 +48,14 @@ async function getOne(id,controller,method='getOne'){
     }
 }
 function delet(id,controller,method='delete'){
+    if(typeof id !== 'object'){
+        var id = {'id':id};
+    }
     if(confirm('Desea eliminar el registro?')){
         $.ajax({
             type: "POST",
             url: `http://${host}/${proyect}/${controller}/${method}`,
-            data: {id},
+            data: id,
             success: function (response) {
                 console.log('success DELETE',response);
                 modalSuccess();

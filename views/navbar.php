@@ -7,7 +7,7 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <!-- Titulo de la pagina -->
   <title>CHIC | Welcome</title>
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="<?php echo constant('URL') ?>icon.png" type="image/x-icon">
   <!-- CHARTJS-GRAFICOS
   <script src="<?php getrute('node_modules/chart.js/dist/chart.umd.js')?>"></script> -->
   <!-- ICONOS -->

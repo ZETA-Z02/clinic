@@ -1,6 +1,7 @@
 # CLINICA: BASE DE DATOS
 
 Esta base de datos gestiona la información de una clínica dental, incluyendo clientes, personal, tratamientos, pagos y citas. Permite un control eficiente de los servicios ofrecidos, los pagos realizados y las citas programadas.
+# Nueva actualizacion de la base de datos para sistema de gestion de Consultorio Dental
 
 ## ENTIDADES
 
@@ -66,8 +67,10 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | --------------- | ----------------- | --------------------------------------- |
 | `idpagodetalle` | **INT(PK)**       | Identificador unico del detalle de pago |
 | `idpago`        | **INT(FK)**       | Relacion con la tabla `pagos`           |
+| `idpersonal`    | **INT(FK)**       | Relacion con la tabla `personal`        |
 | `monto`         | **DECIMAL(10,2)** | Monto que pago                          |
 | `concepto`      | **VARCHAR(100)**  | Concepto del pago realizado             |
+| `pieza`         | **VARCHAR(20)**   | Numero de Pieza(Diente)                 |
 | `fecha`         | **DATE**          | Fecha que se realizo el pago            |
 
 ### PROCEDIMIENTOS
@@ -77,7 +80,18 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `idprocedimiento` | **INT(PK)**      | Identificador unico del procedimiento |
 | `procedimiento`   | **VARCHAR(100)** | Nombre del procedimiento a realizar   |
 | `descripcion`     | **TEXT**         | Descripcion del procedimiento         |
+| `precio`          | **DECIMAL(10,2)**| Precio del procedimiento              |
+| `iniciales`       | **VARCHAR(20)**  | Iniciales del procedimiento           |
 | `feCreate`        | **DATE**         | Fecha de creacion                     |
+
+### ETIQUETAS
+
+| **COLUMNA** | **TIPO**     | **DESCRIPCION**                                                          |
+| ----------- | ------------ | ------------------------------------------------------------------------ |
+| `idetiqueta`| INT(PK)      | Identificador unico de la cita                                           |
+| `idpersonal`| INT(FK)      | Relacion con la tabla `personal`                                         |
+| `nombre`    | VARCHAR(50)  | Nombre de la etiqueta                                                    |
+| `color`     | VARCHAR(50)  | Color que tendra de la  etiqueta                                         |
 
 ### CITAS
 
@@ -85,12 +99,15 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | ----------- | ------------ | ------------------------------------------------------------------------ |
 | `idcita`    | INT(PK)      | Identificador unico de la cita                                           |
 | `idcliente` | INT(FK)      | Relacion con la tabla `clientes`                                         |
+| `idetiqueta`| INT(FK)      | Relacion con la tabla `etiquetas`                                        |
 | `titulo`    | VARCHAR(50)  | Nombre de la cita                                                        |
-| `etiqueta`  | VARCHAR(100) | Pequena nota sobre la cita                                               |
 | `mensaje`   | TEXT         | Algun mensaje en especifico sobre la cita                                |
-| `fecha`     | DATE         | Fecha de la cita                                                         |
-| `hora`      | TIME         | Hora exacta de la cita                                                   |
+| `fecha_ini` | DATE         | Fecha del inicio de la cita                                              |
+| `hora_ini`  | TIME         | Hora del inicio de la cita                                               |
+| `fecha_fin` | DATE         | Fecha de finalizacion de la cita                                         |
+| `hora_fin`  | TIME         | Hora de finalizacion de la cita                                          |
 | `estado`    | TINYINT      | Estado de la cita: 1->atendido,0->En espera,2->reprogramado,3->cancelado |
+
 
 ## RELACIONES
 
@@ -99,6 +116,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 3. PAGOS (1.N PAGOS_DETALLE)
 4. PROCEDIMIENTOS (1:N PAGOS)
 5. CLIENTES (1:N CITAS)
+6. ETIQUETAS (1:N CITAS)
 
 - La entidad PERSONAL tiene una relacion de 1 a 1 con la entidad LOGIN, ya que un personal solo puede tener un login
 

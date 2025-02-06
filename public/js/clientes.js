@@ -21,6 +21,7 @@ $(document).ready(function () {
   // boleta()
   //verificarPago();
   /* MODAL NUEVO PAGO END*/
+
 });
 function getclientes() {
   (async () => {
@@ -31,12 +32,12 @@ function getclientes() {
       data.forEach((element) => {
         html += `                    
                     <tr>
-                        <td><a class="button btn-success" href='http://${host}/${proyect}/clientes/rendernuevopago/${element.id}'>Nuevo Pago</a></td>
+                        <td><a class="button btn-success" href='http://${host}/${proyect}/pagos/render/${element.id}'>Nuevo Pago</a></td>
                         <td>${element.nombre}</td>
                         <td>${element.apellido}</td>
                         <td>${element.dni}</td>
                         <td>${element.telefono}</td>
-                        <td><button class="button btn-primary" id-data='${element.id}'>Citas</button></td>
+                        <td><a class="button btn-primary" id-data='${element.id}' href='http://${host}/${proyect}/clientes/citas/${element.id}'>Citas</a></td>
                         <td><a href='http://${host}/${proyect}/clientes/detalles/${element.id}' class="button btn-info">Detalles</a></td>
                     </tr>
                         `;

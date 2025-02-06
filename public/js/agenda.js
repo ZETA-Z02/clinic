@@ -3,6 +3,7 @@ $(document).ready(function () {
   var calendarEl = document.getElementById("calendar");
   var calendar = new FullCalendar.Calendar(calendarEl, {
     selectable: true,
+    editable: true,
     initialView: "dayGridMonth",
     height: "100%",
     headerToolbar: {
@@ -10,7 +11,6 @@ $(document).ready(function () {
       left: "prev,next today",
       right: "title",
     },
-    // editable: true,
     locale: "es",
     eventSources: [
       {
@@ -40,8 +40,13 @@ $(document).ready(function () {
   eliminarCita(calendar);
   cerrarCita(calendar);
   /*Modal todas las citas */
-  CerrarModal()
+  CerrarModal();
   infoCitaModalMore(calendar);
+  /*formulario de citas, obteniendo datos para los selects */
+  getPersonal();
+  getProcedimientos();
+  //Duplicar cita
+  arrastrarCita(calendar);
 });
 
 function SeleccionFecha(calendar) {
@@ -80,16 +85,12 @@ function sugerencias() {
       // Va buscar a partir de 2 letras
       (async () => {
         try {
-          const data = await getOne(
-            { query: query },
-            "agenda",
-            "searchCustomers"
-          );
+          const data = await getOne({ query: query },"agenda","searchCustomers");
           // console.log(data);
           sugerenciasBox.empty();
           data.forEach((element) => {
             sugerenciasBox.append(
-              `<li data-id="${element.id}">${element.nombre} ${element.apellido}</li>`
+              `<li data-id="${element.id}">${element.nombre}</li>`
             );
           });
           sugerenciasBox.show();
@@ -119,14 +120,16 @@ function GuardarCita(calendar) {
   $("#calendario-formulario").submit(function (e) {
     e.preventDefault();
     let data = $(this).serialize();
+    // Obtener el `data-id` de la opción seleccionada
+    let idetiqueta = $("#personal-procedimiento option:selected").data("id");
+    // Agregar el idetiqueta a los datos serializados
+    data += `&idetiqueta=${idetiqueta}`;
     insert(data, "agenda", "guardarCita");
     e.target.reset();
     calendar.refetchEvents();
     tags()
     // Cerrar el formulario
     $("#calendar-forms").css("display", "none");
-    $("#calendar-forms").removeClass("large-3");
-    $("#calendario").removeClass("large-9");
   });
 }
 
@@ -160,14 +163,13 @@ function infoCita(calendar) {
         let nombres = data.nombre + " " + data.apellido;
         $("#cita-title").html(data.titulo);
         $("#cita-nombre").html(nombres);
-        $("#cita-etiqueta").html(data.etiqueta);
         $("#cita-fecha-inicio").html(data.fecha_ini);
         $("#cita-hora-inicio").html(convertirHora24a12(data.hora_ini));
         $("#cita-fecha-fin").html(data.fecha_fin);
         $("#cita-hora-fin").html(convertirHora24a12(data.hora_fin));
         $("#cita-mensaje").html(data.mensaje);
         $("#btn-eliminar-cita").attr("id-data", data.idcita);
-        colorInfo(data.etiqueta);
+        colorInfo(data.color);
         mostrarCita(calendar);
       } catch (error) {
         console.error("ERROR", error);
@@ -196,19 +198,9 @@ function mostrarCita(calendar) {
   abrirModal("info-citas");
   calendar.render();
 }
-
 function colorInfo(color) {
-  if (color == "verde") {
-    $("#cita-title").addClass("green");
-    $("#cita-flecha-icon").addClass("verde");
-    $("#cita-flecha-icon,#cita-title").removeClass("rojo azul");
-  } else if (color == "rojo") {
-    $("#cita-flecha-icon,#cita-title").addClass("rojo");
-    $("#cita-flecha-icon,#cita-title").removeClass("green azul verde");
-  } else if (color == "azul") {
-    $("#cita-flecha-icon,#cita-title").addClass("azul");
-    $("#cita-flecha-icon,#cita-title").removeClass("rojo green verde");
-  }
+  $("#cita-title").css("color",color);
+  $("#cita-flecha-icon").css("color",color);
 }
 function convertirHora24a12(hora24) {
   // Separar las horas, minutos y segundos
@@ -277,7 +269,7 @@ function infoCitaModalMore(calendar){
         $("#cita-hora-fin").html(convertirHora24a12(data.hora_fin));
         $("#cita-mensaje").html(data.mensaje);
         $("#btn-eliminar-cita").attr("id-data", data.idcita);
-        colorInfo(data.etiqueta);
+        colorInfo(data.color);
         mostrarCita(calendar);
       } catch (error) {
         console.error("ERROR", error);
@@ -293,4 +285,70 @@ function CerrarModal(){
   $("#btn-cerrar-modal").click(function(){
     $('#modal').hide();
   })
+}
+
+function getPersonal(){
+  (async () => {
+    try{
+      const data = await get('agenda','getPersonal');
+      let html = '';
+      data.forEach(element => {
+        html += `<option value="${element.iniciales}" data-id="${element.id}">${element.iniciales}-${element.nombre}</option>`;
+      });
+      $("#personal-procedimiento,#personal-creador").html(html);
+    }catch(error){
+      console.log("ERROR al obtener personal"+error);
+    }
+  })();
+}
+
+function getProcedimientos(){
+  (async () => {
+    try{
+      const data = await get('agenda','getProcedimientos');
+      //console.log(data);
+      let html = '';
+      data.forEach(element => {
+        html += `<option value="${element.iniciales}">${element.iniciales}-${element.procedimiento}</option>`;
+      });
+      $("#procedimientos").html(html);
+    }catch(error){
+      console.log("ERROR al obtener personal"+error);
+    }
+  })();  
+}
+
+async function arrastrarCita(calendar){
+  calendar.on("eventDrop", function (info) {
+    // Confirmar si se desea duplicar
+    if (confirm("¿Deseas duplicar esta cita en la nueva fecha?")) {
+      const originalEvent = info.oldEvent; // Evento original
+      const newStartDate = info.event.start; // Nueva fecha de inicio
+  
+      // Crear un objeto con los datos para duplicar
+      const newEventData = {
+        idcliente: originalEvent.extendedProps.idcliente, // Datos del cliente
+        idetiqueta: originalEvent.extendedProps.idetiqueta, // Procedimiento
+        fecha_inicio: newStartDate.toISOString().split("T")[0], // Nueva fecha
+        fecha_fin: newStartDate.toISOString().split("T")[0], // fecha fin
+        hora_inicio: originalEvent.extendedProps.hora_ini,
+        hora_fin: originalEvent.extendedProps.hora_fin,
+        titulo: originalEvent.title, // Título
+      };
+  
+      // Enviar los datos al servidor para guardar la nueva cita
+        try {
+          console.log(newEventData);
+          insert(newEventData, "agenda", "duplicarCita");
+          calendar.refetchEvents(); // Recargar eventos en el calendario
+          alert("La cita ha sido duplicada exitosamente.");
+        } catch (error) {
+          console.error("Error al duplicar la cita:", error);
+          alert("Hubo un error al duplicar la cita.");
+        }
+    } else {
+      // Si no se confirma, restaurar la posición original del evento
+      info.revert();
+    }
+  });
 }

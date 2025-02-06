@@ -15,3 +15,12 @@ function modalError(){
 function modalSuccess(){
     $("#modal-success").css('display', 'block');
 }
+// ABRIR MODAL-> FUNCTION GLOBAL
+// FALTA DARLE ESTILO AL MODAL PARA QUE SE VEAN
+function abrirModal(modalId){
+    $(".modal").hide();
+    $(`#${modalId}`).show();
+}
+function cerrarModal(modalId){
+    $(`#${modalId}`).hide();
+}

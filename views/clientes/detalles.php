@@ -3,7 +3,7 @@
 <div class="grid-container" id="clientes-detalles">
     <div class="grid-x">
         <div class="cell text-center">
-            <h1>Cliente: <?php echo $this->data['nombre']?></h1>
+            <h1>Cliente: <?php echo $this->data['nombre'].' '.$this->data['apellido'] ?></h1>
         </div>
     </div>
     <form action="<?php getrute('clientes/actualizarCliente');?>" method="POST">
@@ -30,7 +30,7 @@
         </div>
         <div class="cell large-6">
             <label for="genero">Genero</label>
-            <input type="text" name="genero" id="genero" value="<?php echo $this->data['genero']?>">
+            <input type="text" name="sexo" id="genero" value="<?php echo $this->data['genero']?>">
         </div>
         <div class="cell large-6">
             <label for="ciudad">Ciudad</label>
@@ -51,7 +51,7 @@
     </div>
     <div class="grid-x buttons">
         <div class="cell text-center">
-            <input type="text" name="idcliente" id="idcliente" value="<?php echo $this->data['idcliente']?>" hidden style="display:none;">
+            <input type="hidden" name="idcliente" id="idcliente" value="<?php echo $this->data['idcliente']?>">
             <button class="button btn-success" type="submit">Actualizar</button>
         </div>
     </div>

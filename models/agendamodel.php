@@ -4,7 +4,7 @@ class AgendaModel extends Model{
         parent::__construct();
     }
     public function get(){
-        $sql = "SELECT c.nombre,ci.idcita, ci.idcliente, ci.titulo, ci.etiqueta, ci.fecha_ini, ci.hora_ini, ci.fecha_fin,ci.hora_fin FROM citas ci JOIN clientes c ON c.idcliente = ci.idcliente;";
+        $sql = "SELECT c.idcliente,e.idetiqueta,e.color,c.nombre,ci.idcita, ci.idcliente, ci.titulo, ci.idetiqueta, ci.fecha_ini, ci.hora_ini, ci.fecha_fin,ci.hora_fin FROM citas ci JOIN clientes c ON c.idcliente = ci.idcliente JOIN etiquetas e ON ci.idetiqueta=e.idetiqueta;";
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
@@ -13,13 +13,13 @@ class AgendaModel extends Model{
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
-    public function GuardarCita($idcliente,$titulo,$fechaInicio,$horaInicio,$fechaFin,$horaFin,$etiqueta,$mensaje){
-        $sql = "INSERT INTO citas (idcliente,titulo,etiqueta,mensaje,fecha_ini,hora_ini,fecha_fin,hora_fin) VALUES('$idcliente','$titulo','$etiqueta','$mensaje','$fechaInicio','$horaInicio','$fechaFin','$horaFin');";
+    public function GuardarCita($idcliente,$idetiqueta,$titulo,$fechaInicio,$horaInicio,$fechaFin,$horaFin,$mensaje){
+        $sql = "INSERT INTO citas (idcliente,idetiqueta,titulo,mensaje,fecha_ini,hora_ini,fecha_fin,hora_fin) VALUES('$idcliente','$idetiqueta','$titulo','$mensaje','$fechaInicio','$horaInicio','$fechaFin','$horaFin');";
         $result = $this->conn->ConsultaSin($sql);
         return $result;
     }
     public function InfoCita($id){
-        $sql = "SELECT c.idcliente, c.nombre, c.apellido,c.telefono, ci.idcita, ci.titulo,ci.titulo,ci.etiqueta,ci.mensaje,ci.fecha_ini,ci.hora_ini,ci.fecha_fin,ci.hora_fin from citas ci JOIN clientes c ON ci.idcliente=c.idcliente where idcita='$id';";
+        $sql = "SELECT e.color,c.idcliente, c.nombre, c.apellido,c.telefono, ci.idcita, ci.titulo,ci.titulo,ci.idetiqueta,ci.mensaje,ci.fecha_ini,ci.hora_ini,ci.fecha_fin,ci.hora_fin from citas ci JOIN clientes c ON ci.idcliente=c.idcliente JOIN etiquetas e ON ci.idetiqueta=e.idetiqueta WHERE idcita='$id';";
         $data = $this->conn->ConsultaArray($sql);
         return $data;
     }
@@ -27,5 +27,20 @@ class AgendaModel extends Model{
         $sql = "DELETE FROM citas WHERE idcita = '$id';";
         $result = $this->conn->ConsultaSin($sql);
         return $result;
+    }
+    public function GetPersonal(){
+        $sql = "SELECT e.nombre,e.idetiqueta,p.nombre,p.apellido FROM personal p JOIN login l ON p.idpersonal=l.idpersonal JOIN etiquetas e ON e.idpersonal = p.idpersonal WHERE l.estado=1;";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
+    }
+    public function GetProcedimientos(){
+        $sql = "SELECT procedimiento,iniciales FROM procedimientos;";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
+    }
+    public function GetClientes(){
+        $sql = "SELECT idcliente, nombre, apellido FROM clientes;";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
     }
 }

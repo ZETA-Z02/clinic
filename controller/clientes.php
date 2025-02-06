@@ -3,7 +3,6 @@ require 'vendor/autoload.php';
 use Dompdf\Dompdf;
 class Clientes extends Controller
 {
-
 	function __construct()
 	{
 		parent::__construct();
@@ -13,11 +12,47 @@ class Clientes extends Controller
 		$this->view->css = 'clientes';
 		$this->view->Render('clientes/index');
 	}
+	// CITAS DE UN SOLO CLIENTE
+	public function citas($nparam = null){
+		$id = $nparam[0];
+		$cliente = $this->model->GetOne($id);
+		$this->view->data = $cliente;
+		$this->view->css = 'clientes';
+		$this->view->Render('clientes/citas');
+	}
+	public function onecita($nparam = null){
+		$id = $nparam[0];
+		$data = $this->model->onecita($id);
+		while($row = mysqli_fetch_array($data)){
+            $json[] = array(
+				'id'=> $row['idcita'],
+				'title' => $row['titulo'],
+                'start' => $row['fecha_ini'].'T'.$row['hora_ini'],
+                'end'   => $row['fecha_fin'].'T'.$row['hora_fin'],
+                'borderColor' => $row['color'],
+                'backgroundColor' => $row['color'],
+                'textColor' => '#ffffff',
+				'idcliente' => $row['idcliente'],
+				'idetiqueta' => $row['idetiqueta'],
+				'fecha_ini'	=> $row['fecha_ini'],
+				'hora_ini'	=> $row['hora_ini'],
+				'fecha_fin'	=> $row['fecha_fin'],
+				'hora_fin'	=> $row['hora_fin'],
+            );
+        }
+        echo json_encode($json);
+	}
+	// CITAS DE UN SOLO CLIENTE END
 	public function renderNuevoPago($npam = null){
 		$id = $npam[0];
 		$cliente = $this->model->GetOne($id);
+		$this->view->css = 'clientes';
 		$this->view->data = $cliente;
 		$this->view->Render('clientes/nuevopago');
+	}
+	public function newPago(){
+		$this->view->css = 'clientes';
+		$this->view->Render('clientes/newpago');
 	}
 	public function pagos()
 	{
@@ -55,32 +90,18 @@ class Clientes extends Controller
 	{
 		$dni = $_POST['dni'];
 		$telefono = $_POST['telefono'];
-		$idprocedimiento = $_POST['procedimiento'];
-		$concepto = $_POST['concepto'];
-		$totalpagar = intval($_POST['totalpagar']);
-		$primerpago = intval($_POST['primerpago']);
 		$nombre = $_POST['nombre'];
 		$apellido = $_POST['apellido'];
-		if ($totalpagar < $primerpago) {
-			throw new Exception("El total a pagar debe ser mayor al primer pago");
-		}
+		$direccion = $_POST['direccion'];
 		// SE VERIFICA SI YA EXISTE EL CLIENTE-> SI ES ASI SE OBTIENE SU ID
 		$data = $this->model->VerificarCliente($dni);
 		if (!empty($data)) {
-			$idcliente = $data['idcliente'];
-			if ($this->model->NuevoPagoCliente($idcliente, $idprocedimiento, $totalpagar, $concepto, $primerpago)) {
-				echo "ok";
-			} else {
-				throw new Exception("Error al crear el pago con cliente ya registrado");
-			}
+			throw new Exception("Ya Existe este cliente en la base de datos");
+		}
+		if ($this->model->NuevoCliente($nombre,$apellido,$dni,$telefono,$direccion)) {
+			echo "ok";
 		} else {
-			// SI NO SE OBTIENE TODOS LOS DATOS Y CREA EL NUEVO CLIENTE MAS
-			if ($this->model->NuevoCliente($nombre, $apellido, $dni, $telefono, $idprocedimiento, $totalpagar, $concepto, $primerpago)) {
-				echo "ok";
-			} else {
-				echo "error";
-				//throw new Exception("Error al crear el cliente");
-			}
+			throw new Exception("Error al crear un nuevo cliente");
 		}
 	}
 	public function getProcedimientos(): void
@@ -153,18 +174,26 @@ class Clientes extends Controller
 	public function actualizarCliente()
 	{
 		$idcliente = $_POST['idcliente'];
+		$nombre = $_POST['nombre'];
+		$apellido = $_POST['apellido'];
 		$telefono = $_POST['telefono'];
 		$email = $_POST['email'];
 		$sexo = $_POST['sexo'];
 		$ciudad = $_POST['ciudad'];
 		$direccion = $_POST['direccion'];
-		if ($this->model->ActualizarCliente($idcliente, $telefono, $email, $sexo, $ciudad, $direccion)) {
-			//echo "ok";
+		if ($this->model->ActualizarCliente($idcliente, $nombre, $apellido, $telefono, $email, $sexo, $ciudad, $direccion)) {
+			// echo "ok";
 		} else {
 			throw new Exception("Error al actualizar el cliente");
 		}
-		$this->detalles($idcliente);
+		$this->detalles(array($idcliente,0));
 	}
+	public function borrarCliente():void{
+		$idcliente = $_POST['idcliente'];
+		$this->model->BorrarCliente($idcliente);
+		$this->render();
+	}
+
 	public function boletaPagos($nparam = null)
 	{
 		$id = $nparam[0];

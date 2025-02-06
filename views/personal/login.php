@@ -6,8 +6,8 @@
     <hr>
     <form action="<?php getrute('personal/actualizarLogin');?>" method="POST" id="form-detallespersonal" enctype="multipart/form-data">
     <div class="grid-x grid-margin-x">
-        <div class="cell large-12 callout text-center">
-            <input type="text" name="idpersonal" id="idpersonal" value="<?php echo $this->data['idpersonal'];?>">
+        <div class="cell large-12">
+            <input type="hidden" name="idpersonal" id="idpersonal" value="<?php echo $this->data['idpersonal'];?>">
         </div>
         <div class="cell large-6">
             <label for="username">Nombre de usuario</label>

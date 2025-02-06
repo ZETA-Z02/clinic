@@ -10,7 +10,7 @@
             <img src="" alt="fotopersonal">
             <label for="foto">Foto</label>
             <input type="file" name="foto" id="foto">
-            <input type="text" name="idpersonal" id="idpersonal" value="<?php echo $this->data['idpersonal'];?>">
+            <input type="hidden" name="idpersonal" id="idpersonal" value="<?php echo $this->data['idpersonal'];?>">
         </div>
         <div class="cell large-6">
             <label for="nombre">Nombre</label>

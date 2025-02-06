@@ -1,0 +1,26 @@
+/* .grid-container{
+
+} */
+.pagos--titulos{
+    cursor: pointer;
+}
+table{
+    margin: 0;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+input{
+    border-radius: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    color: black;
+}
+select{
+    border-radius: none !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    color: black;
+}
+input:disabled{
+    border: none;
+}

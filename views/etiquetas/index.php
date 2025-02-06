@@ -1,4 +1,6 @@
 <?php require 'views/sidebar.php';?>
+<link rel="stylesheet" href="<?php getrute('public/plugins/paginador/jpaginate.css') ?>">
+<link rel="stylesheet" href="<?php css('etiquetas') ?>">
 <div class="grid-container full">
     <div class="grid-x">
         <div class="cell text-center">
@@ -6,41 +8,50 @@
             <hr>
         </div>
     </div>
+    <div class="cell text-center">
+        <button class="button btn-success" id="btn-nuevaetiqueta">Nueva Etiqueta</button>
+    </div>
     <div class="grid-x grid-margin-x">
-        <div class="cell large-6">
-            <table>
+        <div class="cell" id="table-etiquetas">
+            <table class="stack text-center">
+                <tr>
                 <thead>
-                    <tr>
-                        <th>Procedimiento</th>
-                        <th>Fecha Creacion</th>
+                        <th>Etiqueta</th>
+                        <th>Personal</th>
+                        <th>Nombre</th>
                         <th colspan="2">Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="tbody-procedimientos">
+                <tbody id="tbody-etiquetas">
                     <tr>
-                        <td>Cirugia</td>
-                        <td>02-11-2003</td>
+                        <td>Fernando Lopez</td>
+                        <td>Verde</td>
+                        <td>FL</td>
                         <td>edit</td>
                         <td>delete</td>
                     </tr>
                 </tbody>
             </table>
+            <div id="paginador-etiquetas"></div>
         </div>
-        <div class="cell large-6 callout">
-            <form id="form-procedimiento" method="POST">
+        <div class="cell callout" id="formulario-etiquetas">
+            <form id="form-etiquetas" method="POST">
             <div class="grid-x">
                 <div class="cell">
                     <h3>Nueva Etiqueta</h3>
                 </div>
                 <div class="cell">
-                    <input type="text" name="id" id="id" hidden style="display:none;">
-                    <label for="procedimiento">Nombre del Procedimiento</label>
-                    <input type="text" name="procedimiento" id="procedimiento">
-                    <label for="descripcion">Descripcion del procedimiento</label>
-                    <textarea name="descripcion" id="descripcion"></textarea>
-                </div>    
-                <div class="cell text-center">
+                    <input type="hidden" name="id" id="id">
+                    <label for="personal">Personal asignado a la etiqueta</label>
+                    <select name="idpersonal" id="select-personal"></select>
+                    <label for="color">Color de la etiqueta</label>
+                    <input type="color" name="color" id="color">
+                    <label for="nombre">Nombre de la etiqueta</label>
+                    <input type="text" name="nombre" id="nombre" readonly>
+                </div>
+                <div class="cell grid-x align-spaced">
                     <button class="button" type="submit" id="btn-guardar">Guardar</button>
+                    <button class="button btn-cancel" type="button" id="btn-cancelar">Cancelar</button>
                 </div>
             </div>
             </form>   
@@ -48,4 +59,5 @@
     </div>
 </div>
 <script src="<?php js('etiquetas');?>"></script>
+<script src="<?php plugin('paginador/jpaginate');?>"></script>
 <?php require 'views/footer.php';?>
