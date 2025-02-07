@@ -7,13 +7,26 @@
   }
 /* CARDS DE ENLACES*/
 .card {
-  border-radius: 20px;
+  border-radius: 15px;
   box-shadow: 0 0 20px #0008;
   height: 40vh;
+
+
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    color: #333;
+}
+.card-title {
+  font-weight: bold !important;
 }
 .card:hover{
-    box-shadow: 0 0 20px #0008;
-    scale: 1.2;
+    /* box-shadow: 0 0 20px #0008; */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    /* scale: 1.2; */
+    transform: translateY(-10px);
 }
 .card p{
     font-size: 2rem;
@@ -22,6 +35,8 @@
 }
 .card i{
     font-size: 25vh;
+    margin-bottom: 1rem;
+    color: var(--azul-claro);
 }
 .cards__enlaces .card .card-divider {
   margin: 0;

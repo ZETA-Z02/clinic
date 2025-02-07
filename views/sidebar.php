@@ -42,7 +42,7 @@
     <div class="off-canvas position-left reveal-for-large sidebar-z" id="offCanvas" data-off-canvas>
       <div class="grid-container nav-z">
         <div class="grid-x align-center margin-top-1">
-          <img class="shadow" src="<?php image('katariwhite.png') ?>" alt="katari" width="60%">
+          <img class="shadow" src="<?php image('chic.jpg') ?>" alt="katari" width="70%">
         </div>
         <hr>
         <div class="grid-x">
