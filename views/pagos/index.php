@@ -178,20 +178,20 @@
                         <th>Doctor</th>
                     </tr>
                 </thead>
-                <tbody id="tbody-ortodoncia">
+                <tbody id="tbody-otros">
 
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td id="mostrar-fecha"></td>
+                        <td id="mostrar-fecha-otros"></td>
                         <td>
-                            <select name="procedimiento" id="procedimiento-ortodoncia" class="procedimiento">
+                            <select name="procedimiento" id="procedimiento-otros" class="procedimiento">
                                 <option value="ortodoncia">Ortodoncia</option>
                             </select>
                         </td>
-                        <td><input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-otros" value="3500"></td>
+                        <td><input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-otros"></td>
                         <td><input type="text" placeholder="Importe" name="importe" id="importe-otros"></td>
-                        <td id="mostrar-deuda-ortodoncia">-</td>
+                        <td id="mostrar-deuda-otros">-</td>
                         <td>
                             <select name="pieza" id="pieza-otros" class="pieza-otros">
                                 <option value="1.1">1.1</option>

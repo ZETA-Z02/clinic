@@ -46,7 +46,7 @@ class Personal extends Controller
 			echo "ok";
 		}else{
 			//echo "Error al crear el personal";
-			throw new Exception("Error al crear el personal");
+			//throw new Exception("Error al crear el personal");
 		}
 	}
 	public function actualizarPersonal(){

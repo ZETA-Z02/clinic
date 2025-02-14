@@ -4,12 +4,15 @@ class PagosModel extends Model{
         parent::__construct();
     }
     // PROCEDIMIENTOS
-    public function GetProcedimientos($orto=null){
+    public function GetProcedimientos($type=null){
         $sql = "SELECT idprocedimiento, procedimiento, precio FROM procedimientos";
-        if($orto == 'ortodoncia'){
-            $sql .= " WHERE procedimiento = 'ortodoncia';";   
-        }else{
-            $sql .= " WHERE procedimiento != 'ortodoncia';";   
+        if($type == 'ortodoncia'){
+            $sql .= " WHERE procedimiento = 'ortodoncia';";
+        }else if($type == 'otros'){
+            $sql .= " WHERE idprocedimiento > 24;";
+        }
+        else{
+            $sql .= " WHERE procedimiento != 'ortodoncia';";
         }
         $data = $this->conn->ConsultaCon($sql);
         return $data;
@@ -117,13 +120,23 @@ class PagosModel extends Model{
         }
         $this->conn->conn->close();
     }
-    public function GetPresupuestoOrtodoncia($id=22){
+    public function GetPresupuestoOrtodoncia($id){
         $sql = "SELECT p.idpago,pro.procedimiento,p.monto_pagado,p.saldo_pendiente,p.total_pagar,pd.idpagodetalle,pd.monto,pd.concepto,pd.pieza,pd.fecha, pd.idpersonal,e.nombre AS etiqueta
                 FROM pagos p 
                 JOIN pago_detalles pd ON p.idpago = pd.idpago 
                 JOIN procedimientos pro ON p.idprocedimiento = pro.idprocedimiento 
                 JOIN etiquetas e ON e.idpersonal = pd.idpersonal
                 WHERE p.idcliente = '$id' AND pro.procedimiento = 'ortodoncia' ORDER BY p.idpago ASC, pd.fecha ASC;";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
+    }
+    public function GetPresupuestoOtros($id){
+        $sql = "SELECT p.idpago,pro.procedimiento,p.monto_pagado,p.saldo_pendiente,p.total_pagar,pd.idpagodetalle,pd.monto,pd.concepto,pd.pieza,pd.fecha, pd.idpersonal,e.nombre AS etiqueta
+                FROM pagos p 
+                JOIN pago_detalles pd ON p.idpago = pd.idpago 
+                JOIN procedimientos pro ON p.idprocedimiento = pro.idprocedimiento 
+                JOIN etiquetas e ON e.idpersonal = pd.idpersonal
+                WHERE p.idcliente = '$id' AND pro.idprocedimiento > 24 ORDER BY p.idpago ASC, pd.fecha ASC;";
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }

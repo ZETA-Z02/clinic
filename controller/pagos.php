@@ -203,6 +203,40 @@ class Pagos extends Controller
         }
         echo json_encode($json);
     }
+
+    // PRESUPUESTO OTROS
+    public function getPresupuestoOtros(){
+        $id = $_POST['id'];
+        $data = $this->model->GetPresupuestoOtros($id);
+        while ($row = mysqli_fetch_assoc($data)) {
+            $json[] = array(
+                'idpago' => $row['idpago'],
+                'idpagodetalle' => $row['idpagodetalle'],
+                'procedimiento' => $row['procedimiento'],
+                'monto_pagado' => $row['monto_pagado'],
+                'saldo_pendiente' => $row['saldo_pendiente'],
+                'total_pagar' => $row['total_pagar'],
+                'monto' => $row['monto'],
+                'concepto' => $row['concepto'],
+                'pieza' => $row['pieza'],
+                'etiqueta' => $row['etiqueta'],
+                'fecha' => date("Y-m-d", strtotime($row['fecha'])),
+            );
+        }
+        echo json_encode($json);
+    }
+    public function getProcedimientoOtros(){
+        $data = $this->model->GetProcedimientos('otros');
+        while ($row = mysqli_fetch_assoc($data)) {
+            $json[] = array(
+                'idprocedimiento' => $row['idprocedimiento'],
+                'procedimiento' => $row['procedimiento'],
+                'precio' => $row['precio'],
+            );
+        }
+        echo json_encode($json);
+    }
+
 }
 
 ?>
