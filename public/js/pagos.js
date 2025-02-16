@@ -450,28 +450,29 @@ async function ObtenerPresupuestoOrtodoncia() {
     let monto = 0;
     let deuda = 0;
     let total = 0;
+    let html = "";
     data.forEach((element) => {
       deuda = parseFloat(element.saldo_pendiente);
       total = parseFloat(element.total_pagar);
-      tbody.append(`
-              <tr data-idpago="${element.idpago}" data-idpagodetalle="${element.idpagodetalle}" data-total="${total}" data-deuda="${deuda}" data-monto="${element.monto_pagado}" data-importeactual="${element.monto}">
-                    <td>${element.fecha}</td>
-                    <td>${element.procedimiento}</td>
-                    <td>${total - monto}</td>
-                    <td><input type="text" class="general-input-monto" id="input-importe-data" value="${
-                      element.monto
-                    }" disabled></td>
-                    <td>${total - monto - element.monto}</td>
-                    <td class="row-pieza">${element.pieza}</td>
-                    <td class="row-etiqueta">${element.etiqueta}</td>
-                    <td class="row-trash" style="display:none;"><button class="btn-delete-row" data-idpagodetalle="${element.idpagodetalle}"><i class="fa-solid fa-trash"></i></button></td>
-                </tr>
-            `);
+      html += `
+            <tr data-idpago="${element.idpago}" data-idpagodetalle="${element.idpagodetalle}" data-total="${total}" data-deuda="${deuda}" data-monto="${element.monto_pagado}" data-importeactual="${element.monto}">
+                  <td>${element.fecha}</td>
+                  <td>${element.procedimiento}</td>
+                  <td>${total - monto}</td>
+                  <td><input type="text" class="general-input-monto" id="input-importe-data" value="${
+                    element.monto
+                  }" disabled></td>
+                  <td>${total - monto - element.monto}</td>
+                  <td class="row-pieza">${element.pieza}</td>
+                  <td class="row-etiqueta">${element.etiqueta}</td>
+                  <td class="row-trash" style="display:none;"><button class="btn-delete-row" data-idpagodetalle="${element.idpagodetalle}"><i class="fa-solid fa-trash"></i></button></td>
+              </tr>
+            `;
       monto += parseFloat(element.monto);
       //console.log(deuda,monto,total);
       if (deuda > 0 && monto + deuda === total) {
         //console.log("entro al if de ortodoncia");
-        tbody.append(`<tr class="fila-pago" data-idpago="${element.idpago}" data-total="${total}" data-monto="${element.monto_pagado}" data-deuda="${deuda}">
+        html += `<tr class="fila-pago" data-idpago="${element.idpago}" data-total="${total}" data-monto="${element.monto_pagado}" data-deuda="${deuda}">
                         <td>${fechaActual}</td>
                         <td>${element.procedimiento}</td>
                         <td>${total - monto}</td>
@@ -480,40 +481,7 @@ async function ObtenerPresupuestoOrtodoncia() {
                         </td>
                         <td id='deuda-tabla-ortodoncia'>-</td>
                         <td>
-                            <select name="pieza" id="pieza-tabla-ortodoncia">
-                                <option value="1.1">1.1</option>
-                                <option value="1.2">1.2</option>
-                                <option value="1.3">1.3</option>
-                                <option value="1.4">1.4</option>
-                                <option value="1.5">1.5</option>
-                                <option value="1.6">1.6</option>
-                                <option value="1.7">1.7</option>
-                                <option value="1.8">1.8</option>
-                                <option value="2.1">2.1</option>
-                                <option value="2.2">2.2</option>
-                                <option value="2.3">2.3</option>
-                                <option value="2.4">2.4</option>
-                                <option value="2.5">2.5</option>
-                                <option value="2.6">2.6</option>
-                                <option value="2.7">2.7</option>
-                                <option value="2.8">2.8</option>
-                                <option value="3.1">3.1</option>
-                                <option value="3.2">3.2</option>
-                                <option value="3.3">3.3</option>
-                                <option value="3.4">3.4</option>
-                                <option value="3.5">3.5</option>
-                                <option value="3.6">3.6</option>
-                                <option value="3.7">3.7</option>
-                                <option value="3.8">3.8</option>
-                                <option value="4.1">4.1</option>
-                                <option value="4.2">4.2</option>
-                                <option value="4.3">4.3</option>
-                                <option value="4.4">4.4</option>
-                                <option value="4.5">4.5</option>
-                                <option value="4.6">4.6</option>
-                                <option value="4.7">4.7</option>
-                                <option value="4.8">4.8</option>
-                            </select>
+                            ${generarSelectPiezas()}
                         </td>
                         <td><select name="doctor" id="doctor-ortodoncia" class="doctor"></select></td>
                     </tr>
@@ -526,27 +494,28 @@ async function ObtenerPresupuestoOrtodoncia() {
                         <td>-</td>
                         <td>-</td>
                     </tr>
-                `);
+                `;
         monto = 0;
         deuda = 0;
         total = 0;
       }
       if(deuda==0 && monto===total && total>0){
         //console.log(monto,total)
-        tbody.append(`<tr>
-          <td>-</td>
-          <td>${element.procedimiento}</td>
-          <td>Cancelado</td>
-          <td>Cancelado</td>
-          <td>Cancelado</td>
-          <td>-</td>
-          <td>-</td>
-        </tr>`);  
+        html += `<tr>
+                  <td>-</td>
+                  <td>${element.procedimiento}</td>
+                  <td>Cancelado</td>
+                  <td>Cancelado</td>
+                  <td>Cancelado</td>
+                  <td>-</td>
+                  <td>-</td>
+                </tr>`;
         monto = 0;
         deuda = 0;
         total = 0;
       }
     });
+    tbody.html(html);
   } catch (error) {
     console.log(error);
   }
@@ -671,10 +640,11 @@ async function ObtenerPresupuestoOtros() {
     let monto = 0;
     let deuda = 0;
     let total = 0;
+    let html = "";
     data.forEach((element) => {
       deuda = parseFloat(element.saldo_pendiente);
       total = parseFloat(element.total_pagar);
-      tbody.append(`
+      html += `
               <tr data-idpago="${element.idpago}" data-idpagodetalle="${element.idpagodetalle}" data-total="${total}" data-deuda="${deuda}" data-monto="${element.monto_pagado}" data-importeactual="${element.monto}">
                     <td>${element.fecha}</td>
                     <td>${element.procedimiento}</td>
@@ -687,12 +657,12 @@ async function ObtenerPresupuestoOtros() {
                     <td class="row-etiqueta">${element.etiqueta}</td>
                     <td class="row-trash" style="display:none;"><button class="btn-delete-row" data-idpagodetalle="${element.idpagodetalle}"><i class="fa-solid fa-trash"></i></button></td>
                 </tr>
-            `);
+            `;
       monto += parseFloat(element.monto);
       //console.log(deuda,monto,total);
       if (deuda > 0 && monto + deuda === total) {
         //console.log("entro al if de ortodoncia");
-        tbody.append(`<tr class="fila-pago" data-idpago="${element.idpago}" data-total="${total}" data-monto="${element.monto_pagado}" data-deuda="${deuda}">
+        html += `<tr class="fila-pago" data-idpago="${element.idpago}" data-total="${total}" data-monto="${element.monto_pagado}" data-deuda="${deuda}">
                         <td>${fechaActual}</td>
                         <td>${element.procedimiento}</td>
                         <td>${total - monto}</td>
@@ -701,40 +671,7 @@ async function ObtenerPresupuestoOtros() {
                         </td>
                         <td id='deuda-tabla-ortodoncia'>-</td>
                         <td>
-                            <select name="pieza" id="pieza-tabla-otros">
-                                <option value="1.1">1.1</option>
-                                <option value="1.2">1.2</option>
-                                <option value="1.3">1.3</option>
-                                <option value="1.4">1.4</option>
-                                <option value="1.5">1.5</option>
-                                <option value="1.6">1.6</option>
-                                <option value="1.7">1.7</option>
-                                <option value="1.8">1.8</option>
-                                <option value="2.1">2.1</option>
-                                <option value="2.2">2.2</option>
-                                <option value="2.3">2.3</option>
-                                <option value="2.4">2.4</option>
-                                <option value="2.5">2.5</option>
-                                <option value="2.6">2.6</option>
-                                <option value="2.7">2.7</option>
-                                <option value="2.8">2.8</option>
-                                <option value="3.1">3.1</option>
-                                <option value="3.2">3.2</option>
-                                <option value="3.3">3.3</option>
-                                <option value="3.4">3.4</option>
-                                <option value="3.5">3.5</option>
-                                <option value="3.6">3.6</option>
-                                <option value="3.7">3.7</option>
-                                <option value="3.8">3.8</option>
-                                <option value="4.1">4.1</option>
-                                <option value="4.2">4.2</option>
-                                <option value="4.3">4.3</option>
-                                <option value="4.4">4.4</option>
-                                <option value="4.5">4.5</option>
-                                <option value="4.6">4.6</option>
-                                <option value="4.7">4.7</option>
-                                <option value="4.8">4.8</option>
-                            </select>
+                            ${generarSelectPiezas()}
                         </td>
                         <td><select name="doctor" id="doctor-otros" class="doctor"></select></td>
                     </tr>
@@ -747,14 +684,14 @@ async function ObtenerPresupuestoOtros() {
                         <td>-</td>
                         <td>-</td>
                     </tr>
-                `);
+                `;
         monto = 0;
         deuda = 0;
         total = 0;
       }
       if(deuda==0 && monto===total && total>0){
         //console.log(monto,total)
-        tbody.append(`<tr>
+        html += `<tr>
           <td>-</td>
           <td>${element.procedimiento}</td>
           <td>Cancelado</td>
@@ -762,12 +699,13 @@ async function ObtenerPresupuestoOtros() {
           <td>Cancelado</td>
           <td>-</td>
           <td>-</td>
-        </tr>`);  
+        </tr>`;
         monto = 0;
         deuda = 0;
         total = 0;
       }
     });
+    tbody.html(html);
   } catch (error) {
     console.log(error);
   }

@@ -9,7 +9,7 @@ class PagosModel extends Model{
         if($type == 'ortodoncia'){
             $sql .= " WHERE procedimiento = 'ortodoncia';";
         }else if($type == 'otros'){
-            $sql .= " WHERE idprocedimiento > 24;";
+            $sql .= " WHERE idprocedimiento > 28;";
         }
         else{
             $sql .= " WHERE procedimiento != 'ortodoncia';";
@@ -53,6 +53,9 @@ class PagosModel extends Model{
         try{
             /* INSERTAR PAGOS HACIENDO CALCULOS */
             //$precioProcedimiento = $this->GetOneProcedimiento($idprocedimiento);
+            if($total < $monto){
+                throw new Exception("Error: El monto supera al total");
+            }
             $precioProcedimiento = $total;
             $saldo_pendiente = $precioProcedimiento - $monto;
             $igv = round($precioProcedimiento - ($precioProcedimiento / 1.18),2);

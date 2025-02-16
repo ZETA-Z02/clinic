@@ -186,7 +186,7 @@
                         <td id="mostrar-fecha-otros"></td>
                         <td>
                             <select name="procedimiento" id="procedimiento-otros" class="procedimiento">
-                                <option value="ortodoncia">Ortodoncia</option>
+                                <!-- <option value="ortodoncia">Ortodoncia</option> -->
                             </select>
                         </td>
                         <td><input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-otros"></td>

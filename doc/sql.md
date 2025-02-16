@@ -110,8 +110,9 @@ INSERT INTO `login` VALUES
 
 INSERT INTO `procedimientos` VALUES
 (1,'Consulta Dental','',50.00,'CONS','2024-12-01 21:01:40'),
-(2,'Ortodoncia','',400.00,'ORTO','2024-12-01 21:40:58'),
+(2,'Ortodoncia','',3500.00,'ORTO','2024-12-01 21:40:58'),
 (3,'Sellantes','',50.00,'SELLA','2024-12-01 21:46:42'),
+(4,'Restauracion de niños','',80.00,'rest ninos','2024-12-01 21:46:42');
 (5,'Restauracion Simple RFS','',120.00,'RFS','2025-02-05 11:40:28'),
 (6,'Restauracion compueta RFC','',180.00,'RFC','2025-02-05 11:39:50'),
 (7,'Restauracion Angular RFA','',180.00,'RFA','2025-01-19 19:31:36'),
