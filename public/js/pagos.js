@@ -30,74 +30,44 @@ async function ObtenerPresupuestoGeneral() {
     //console.log(data);
     const tbody = $("#tabla-procedimientos");
     tbody.empty();
+
     let fechaActual = new Date().toISOString().slice(0, 10);
     let monto = 0;
     let deuda = 0;
     let total = 0;
+    let html = "";
     data.forEach((element) => {
       deuda = parseFloat(element.saldo_pendiente);
       total = parseFloat(element.total_pagar);
-      tbody.append(`
-        <tr data-idpago="${element.idpago}" data-idpagodetalle="${element.idpagodetalle}" data-total="${total}" data-deuda="${deuda}" data-monto="${element.monto_pagado}" data-importeactual="${element.monto}">
-                    <td>${element.fecha}</td>
-                    <td>${element.procedimiento}</td>
-                    <td>${total - monto}</td>
-                    <td><input type="text" class="general-input-monto" id="input-importe-data" value="${
-                      element.monto
-                    }" disabled></td>
-                    <td>${total - monto - element.monto}</td>
-                    <td class="row-pieza">${element.pieza}</td>
-                    <td class="row-etiqueta">${element.etiqueta}</td>
-                    <td class="row-trash" style="display:none;"><button class="btn-delete-row" data-idpagodetalle="${element.idpagodetalle}"><i class="fa-solid fa-trash"></i></button></td>
-                </tr>
-            `);
+      let restante = total - monto - parseFloat(element.monto);
+      html += `
+            <tr data-idpago="${element.idpago}" data-idpagodetalle="${element.idpagodetalle}" data-total="${total}" data-deuda="${deuda}" data-monto="${element.monto_pagado}" data-importeactual="${element.monto}">
+                <td>${element.fecha}</td>
+                <td>${element.procedimiento}</td>
+                <td>${total - monto}</td>
+                <td><input type="text" class="general-input-monto" id="input-importe-data" value="${element.monto}" disabled></td>
+                <td>${restante}</td>
+                <td class="row-pieza">${element.pieza}</td>
+                <td class="row-etiqueta">${element.etiqueta}</td>
+                <td class="row-trash" style="display:none;">
+                  <button class="btn-delete-row" data-idpagodetalle="${element.idpagodetalle}">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+            </tr>
+            `
       monto += parseFloat(element.monto);
       //console.log(deuda,monto,total);
       if (deuda > 0 && monto + deuda === total) {
         //console.log("entro");
-        tbody.append(`
+        html += `
           <tr class="fila-pago" data-idpago="${element.idpago}" data-total="${total}" data-monto="${element.monto_pagado}" data-deuda="${deuda}">
                         <td>${fechaActual}</td>
                         <td>${element.procedimiento}</td>
                         <td>${total - monto}</td>
                         <td><input type="text" class="input-importe" placeholder="Nuevo importe" id='importe-tabla'></td>
                         <td id='deuda-tabla'>-</td>
-                        <td>
-                            <select name="pieza" id="pieza-tabla-general">
-                                <option value="1.1">1.1</option>
-                                <option value="1.2">1.2</option>
-                                <option value="1.3">1.3</option>
-                                <option value="1.4">1.4</option>
-                                <option value="1.5">1.5</option>
-                                <option value="1.6">1.6</option>
-                                <option value="1.7">1.7</option>
-                                <option value="1.8">1.8</option>
-                                <option value="2.1">2.1</option>
-                                <option value="2.2">2.2</option>
-                                <option value="2.3">2.3</option>
-                                <option value="2.4">2.4</option>
-                                <option value="2.5">2.5</option>
-                                <option value="2.6">2.6</option>
-                                <option value="2.7">2.7</option>
-                                <option value="2.8">2.8</option>
-                                <option value="3.1">3.1</option>
-                                <option value="3.2">3.2</option>
-                                <option value="3.3">3.3</option>
-                                <option value="3.4">3.4</option>
-                                <option value="3.5">3.5</option>
-                                <option value="3.6">3.6</option>
-                                <option value="3.7">3.7</option>
-                                <option value="3.8">3.8</option>
-                                <option value="4.1">4.1</option>
-                                <option value="4.2">4.2</option>
-                                <option value="4.3">4.3</option>
-                                <option value="4.4">4.4</option>
-                                <option value="4.5">4.5</option>
-                                <option value="4.6">4.6</option>
-                                <option value="4.7">4.7</option>
-                                <option value="4.8">4.8</option>
-                            </select>
-                        </td>
+                        <td>${generarSelectPiezas()}</td>
                         <td><select name="doctor" id="doctor" class='doctor'></select></td>
                     </tr>
                     <tr>
@@ -109,14 +79,14 @@ async function ObtenerPresupuestoGeneral() {
                         <td>-</td>
                         <td>-</td>
                     </tr>
-                `);
+                `;
         monto = 0;
         deuda = 0;
         total = 0;
       }
       if(deuda==0 && monto===total && total>0){
         //console.log(monto,total)
-        tbody.append(`<tr>
+        html += `<tr>
           <td>-</td>
           <td>${element.procedimiento}</td>
           <td>Cancelado</td>
@@ -124,16 +94,29 @@ async function ObtenerPresupuestoGeneral() {
           <td>Cancelado</td>
           <td>-</td>
           <td>-</td>
-        </tr>`);  
+        </tr>`;
         monto = 0;
         deuda = 0;
         total = 0;
       }
     });
+    tbody.append(html);
   } catch (error) {
     console.log(error);
   }
 }
+
+// // Función para generar el select de piezas dinámicamente
+function generarSelectPiezas() {
+  let opciones = "";
+  for (let i = 1; i <= 4; i++) {
+    for (let j = 1; j <= 8; j++) {
+      opciones += `<option value="${i}.${j}">${i}.${j}</option>`;
+    }
+  }
+  return `<select name="pieza" id="pieza-tabla-general">${opciones}</select>`;
+}
+
 function btnTablas() {
   $(".modal").hide();
   $(".activate").click(function () {
@@ -349,7 +332,8 @@ async function actualizarFilaData() {
             //   pieza.val("");
             ObtenerPresupuestoGeneral();
             ObtenerPresupuestoOrtodoncia();
-            //   getDoctores();
+            ObtenerPresupuestoOtros();
+            getDoctores();
 				}
 			}, 2000); // Espera de 1 segundo
 		}
@@ -437,6 +421,7 @@ async function eliminarPago(){
     delet(data, 'pagos', 'deletePagoGeneral');
     ObtenerPresupuestoGeneral();
     ObtenerPresupuestoOrtodoncia();
+    ObtenerPresupuestoOtros();
   })
 }
 
@@ -450,7 +435,6 @@ $(document).ready(function (){
   // POST
   NuevaOrtodoncia();
   continuarPagoOrtodoncia(); 
-
 
   // buttons
 

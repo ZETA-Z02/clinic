@@ -23,12 +23,12 @@
                     </tr>
                 </thead>
                 <tbody id="tbody-etiquetas">
-                    <tr>
-                        <td>Fernando Lopez</td>
+                    <tr><td>Registre una nueva etiqueta para comenzar...</td>
+                        <!-- <td>Fernando Lopez</td>
                         <td>Verde</td>
                         <td>FL</td>
                         <td>edit</td>
-                        <td>delete</td>
+                        <td>delete</td> -->
                     </tr>
                 </tbody>
             </table>

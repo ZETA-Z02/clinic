@@ -19,7 +19,7 @@
         </div>
         <div class="cell large-6 nuevocliente__item">
             <label for="direccion">Direccion</label>
-            <input type="text" id="direccion" name="direccion" placeholder="Direccion" required>
+            <input type="text" id="direccion" name="direccion" placeholder="Direccion">
         </div>
         <div class="cell large-6 nuevocliente__item">
             <input type="hidden" id="nombre" name="nombre" required readonly>

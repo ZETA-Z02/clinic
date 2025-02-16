@@ -75,10 +75,25 @@ class PagosModel extends Model{
     public function NuevoPago($idpago, $idcliente, $idpersonal,$monto,$pieza, $nuevoMontoTotal, $nuevaDeudaTotal){
         $this->conn->conn->begin_transaction();
         try{
+            // Obtener el total a pagar y el monto ya pagado
+            $sqlCheck = "SELECT total_pagar, monto_pagado FROM pagos WHERE idpago = '$idpago' AND idcliente = '$idcliente' FOR UPDATE;";
+            $resultCheck = $this->conn->ConsultaArray($sqlCheck);
+            
+            if (!$resultCheck) {
+                throw new Exception("Error al obtener los datos del pago.");
+            }
+            $total_pagar = $resultCheck['total_pagar'];
+            $monto_pagado = $resultCheck['monto_pagado'];
+             // Verificar si el nuevo pago excede el total a pagar
+            if (($monto_pagado + $monto) > $total_pagar) {
+                throw new Exception("El monto total pagado no puede exceder el total a pagar.");
+            }
             $sqlNuevoPago = "INSERT INTO pago_detalles (idpago,idpersonal,monto,pieza) VALUES('$idpago','$idpersonal','$monto','$pieza');";
             $resultNuevo = $this->conn->ConsultaSin($sqlNuevoPago);
+
             $sqlUpdatePago = "UPDATE pagos SET monto_pagado = '$nuevoMontoTotal', saldo_pendiente = '$nuevaDeudaTotal' WHERE idpago = '$idpago' AND idcliente = '$idcliente';";
             $resultUpdate = $this->conn->ConsultaSin($sqlUpdatePago);
+
             $this->conn->conn->commit();
             $result = $resultNuevo && $resultUpdate;
             return $result;
@@ -136,7 +151,7 @@ class PagosModel extends Model{
                 JOIN pago_detalles pd ON p.idpago = pd.idpago 
                 JOIN procedimientos pro ON p.idprocedimiento = pro.idprocedimiento 
                 JOIN etiquetas e ON e.idpersonal = pd.idpersonal
-                WHERE p.idcliente = '$id' AND pro.idprocedimiento > 24 ORDER BY p.idpago ASC, pd.fecha ASC;";
+                WHERE p.idcliente = '$id' AND pro.idprocedimiento > 28 ORDER BY p.idpago ASC, pd.fecha ASC;";
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
