@@ -31,17 +31,21 @@
                         <th>Doctor</th>
                     </tr>
                 </thead>
-                <tbody id="tabla-procedimientos">
+                <tbody id="tbody-general">
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td id="mostrar-fecha"></td>
+                        <td id="mostrar-fecha" class="mostrar-fecha"></td>
                         <td>
-                            <select name="procedimiento" id="procedimiento" class="procedimiento"></select>
+                            <select name="procedimiento" id="procedimiento-general" class="procedimiento"></select>
                         </td>
-                        <td><input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar"></td>
-                        <td><input type="text" placeholder="Importe" name="importe" id="importe"></td>
-                        <td id="mostrar-deuda">-</td>
+                        <td>
+                            <input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-general" class="monto-a-pagar" value="50">
+                        </td>
+                        <td>
+                            <input type="text" placeholder="Importe" name="importe" id="importe" class="importe">
+                        </td>
+                        <td id="mostrar-deuda-general" class="mostrar-deuda">-</td>
                         <td>
                             <select name="pieza" id="pieza" class="pieza">
                                 <option value="1.1">1.1</option>
@@ -78,7 +82,7 @@
                                 <option value="4.8">4.8</option>
                             </select>
                         </td>
-                        <td><select name="doctor" id="doctores" class="doctor"></select></td>
+                        <td><select name="doctor" id="doctor" class="doctor"></select></td>
                     </tr>
                 </tfoot>
             </table>
@@ -108,17 +112,21 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td id="mostrar-fecha"></td>
+                        <td id="mostrar-fecha" class="mostrar-fecha"></td>
                         <td>
                             <select name="procedimiento" id="procedimiento-ortodoncia" class="procedimiento">
                                 <option value="ortodoncia">Ortodoncia</option>
                             </select>
                         </td>
-                        <td><input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-ortodoncia" value="3500"></td>
-                        <td><input type="text" placeholder="Importe" name="importe" id="importe-ortodoncia"></td>
-                        <td id="mostrar-deuda-ortodoncia">-</td>
                         <td>
-                            <select name="pieza" id="pieza-ortodoncia" class="pieza-ortodoncia">
+                            <input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-ortodoncia" class="monto-a-pagar" value="3500">
+                        </td>
+                        <td>
+                            <input type="text" placeholder="Importe" name="importe" id="importe-ortodoncia" class="importe">
+                        </td>
+                        <td id="mostrar-deuda-ortodoncia" class="mostrar-deuda">-</td>
+                        <td>
+                            <select name="pieza" id="pieza-ortodoncia" class="pieza">
                                 <option value="1.1">1.1</option>
                                 <option value="1.2">1.2</option>
                                 <option value="1.3">1.3</option>
@@ -153,7 +161,9 @@
                                 <option value="4.8">4.8</option>
                             </select>
                         </td>
-                        <td><select name="doctor" id="doctores-ortodoncia" class="doctor"></select></td>
+                        <td>
+                            <select name="doctor" id="doctor" class="doctor"></select>
+                        </td>
                     </tr>
                 </tfoot>
             </table>
@@ -183,17 +193,21 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td id="mostrar-fecha-otros"></td>
+                        <td id="mostrar-fecha-otros" class="mostrar-fecha"></td>
                         <td>
                             <select name="procedimiento" id="procedimiento-otros" class="procedimiento">
                                 <!-- <option value="ortodoncia">Ortodoncia</option> -->
                             </select>
                         </td>
-                        <td><input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-otros"></td>
-                        <td><input type="text" placeholder="Importe" name="importe" id="importe-otros"></td>
-                        <td id="mostrar-deuda-otros">-</td>
                         <td>
-                            <select name="pieza" id="pieza-otros" class="pieza-otros">
+                            <input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-otros" class="monto-a-pagar" value="500">
+                        </td>
+                        <td>
+                            <input type="text" placeholder="Importe" name="importe" id="importe-otros" class="importe">
+                        </td>
+                        <td id="mostrar-deuda-otros" class="mostrar-deuda">-</td>
+                        <td>
+                            <select name="pieza" id="pieza-otros" class="pieza">
                                 <option value="1.1">1.1</option>
                                 <option value="1.2">1.2</option>
                                 <option value="1.3">1.3</option>
@@ -228,7 +242,9 @@
                                 <option value="4.8">4.8</option>
                             </select>
                         </td>
-                        <td><select name="doctor" id="doctores-otros" class="doctor"></select></td>
+                        <td>
+                            <select name="doctor" id="doctor" class="doctor"></select>
+                        </td>
                     </tr>
                 </tfoot>
             </table>

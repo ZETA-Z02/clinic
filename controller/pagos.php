@@ -13,18 +13,6 @@ class Pagos extends Controller
         $this->view->data = $cliente;
         $this->view->Render('pagos/index');
     }
-    public function getProcedimientos()
-    {
-        $data = $this->model->GetProcedimientos();
-        while ($row = mysqli_fetch_assoc($data)) {
-            $json[] = array(
-                'idprocedimiento' => $row['idprocedimiento'],
-                'procedimiento' => $row['procedimiento'],
-                'precio' => $row['precio'],
-            );
-        }
-        echo json_encode($json);
-    }
     public function getDoctores()
     {
         $data = $this->model->GetDoctores();
@@ -38,10 +26,16 @@ class Pagos extends Controller
         }
         echo json_encode($json);
     }
-    public function getPresupuestoGeneral()
-    {
+    public function presupuestos(){
         $id = $_POST['id'];
-        $data = $this->model->GetPresupuestoGeneral($id);
+        $type = $_POST['tipo'];
+        if($type=='general'){
+            $data = $this->model->GetPresupuestoGeneral($id);
+        }else if($type=='ortodoncia'){
+            $data = $this->model->GetPresupuestoOrtodoncia($id);
+        }else if($type=='otros'){
+            $data = $this->model->GetPresupuestoOtros($id);
+        }
         while ($row = mysqli_fetch_assoc($data)) {
             $json[] = array(
                 'idpago' => $row['idpago'],
@@ -58,7 +52,9 @@ class Pagos extends Controller
             );
         }
         echo json_encode($json);
+
     }
+
     public function nuevoProcedimientoPago()
     {
         $idcliente = $_POST['idcliente'];
@@ -66,7 +62,7 @@ class Pagos extends Controller
         $total = $_POST['total_pagar'];
         $monto = $_POST['importe'];
         $pieza = $_POST['pieza'];
-        $idpersonal = $_POST['doctores'];
+        $idpersonal = $_POST['doctor'];
         if ($this->model->NuevoProcedimientoPago($idcliente, $idprocedimiento, $monto, $pieza, $idpersonal,$total)) {
             echo 'ok';
         } else {
@@ -146,7 +142,7 @@ class Pagos extends Controller
             throw new Exception("Error al actualizar el pago");
         }
     }
-    public function deletePagoGeneral(){
+    public function deletePago(){
         $idpago = $_POST['idpago'];
         $idpagodetalle = $_POST['idpagodetalle'];
         $monto = $_POST['monto'];
@@ -172,28 +168,33 @@ class Pagos extends Controller
         }
     }
     // Presupuesto Ortodoncia
-    public function getPresupuestoOrtodoncia(){
-        $id = $_POST['id'];
-        $data = $this->model->GetPresupuestoOrtodoncia($id);
+
+
+    public function getProcedimientosGeneral()
+    {
+        $data = $this->model->GetProcedimientos();
         while ($row = mysqli_fetch_assoc($data)) {
             $json[] = array(
-                'idpago' => $row['idpago'],
-                'idpagodetalle' => $row['idpagodetalle'],
+                'idprocedimiento' => $row['idprocedimiento'],
                 'procedimiento' => $row['procedimiento'],
-                'monto_pagado' => $row['monto_pagado'],
-                'saldo_pendiente' => $row['saldo_pendiente'],
-                'total_pagar' => $row['total_pagar'],
-                'monto' => $row['monto'],
-                'concepto' => $row['concepto'],
-                'pieza' => $row['pieza'],
-                'etiqueta' => $row['etiqueta'],
-                'fecha' => date("Y-m-d", strtotime($row['fecha'])),
+                'precio' => $row['precio'],
             );
         }
         echo json_encode($json);
     }
-    public function getProcedimientoOrtodoncia(){
+    public function getProcedimientosOrtodoncia(){
         $data = $this->model->GetProcedimientos('ortodoncia');
+        while ($row = mysqli_fetch_assoc($data)) {
+            $json[] = array(
+                'idprocedimiento' => $row['idprocedimiento'],
+                'procedimiento' => $row['procedimiento'],
+                'precio' => $row['precio'],
+            );
+        }
+        echo json_encode($json);
+    }
+    public function getProcedimientosOtros(){
+        $data = $this->model->GetProcedimientos('otros');
         while ($row = mysqli_fetch_assoc($data)) {
             $json[] = array(
                 'idprocedimiento' => $row['idprocedimiento'],
@@ -205,37 +206,7 @@ class Pagos extends Controller
     }
 
     // PRESUPUESTO OTROS
-    public function getPresupuestoOtros(){
-        $id = $_POST['id'];
-        $data = $this->model->GetPresupuestoOtros($id);
-        while ($row = mysqli_fetch_assoc($data)) {
-            $json[] = array(
-                'idpago' => $row['idpago'],
-                'idpagodetalle' => $row['idpagodetalle'],
-                'procedimiento' => $row['procedimiento'],
-                'monto_pagado' => $row['monto_pagado'],
-                'saldo_pendiente' => $row['saldo_pendiente'],
-                'total_pagar' => $row['total_pagar'],
-                'monto' => $row['monto'],
-                'concepto' => $row['concepto'],
-                'pieza' => $row['pieza'],
-                'etiqueta' => $row['etiqueta'],
-                'fecha' => date("Y-m-d", strtotime($row['fecha'])),
-            );
-        }
-        echo json_encode($json);
-    }
-    public function getProcedimientoOtros(){
-        $data = $this->model->GetProcedimientos('otros');
-        while ($row = mysqli_fetch_assoc($data)) {
-            $json[] = array(
-                'idprocedimiento' => $row['idprocedimiento'],
-                'procedimiento' => $row['procedimiento'],
-                'precio' => $row['precio'],
-            );
-        }
-        echo json_encode($json);
-    }
+
 
 }
 
