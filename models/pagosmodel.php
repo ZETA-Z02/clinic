@@ -12,7 +12,7 @@ class PagosModel extends Model{
             $sql .= " WHERE idprocedimiento > 28;";
         }
         else{
-            $sql .= " WHERE procedimiento != 'ortodoncia';";
+            $sql .= " WHERE procedimiento != 'ortodoncia' AND idprocedimiento <= '28';";
         }
         $data = $this->conn->ConsultaCon($sql);
         return $data;
@@ -44,7 +44,7 @@ class PagosModel extends Model{
                 JOIN pago_detalles pd ON p.idpago = pd.idpago 
                 JOIN procedimientos pro ON p.idprocedimiento = pro.idprocedimiento 
                 JOIN etiquetas e ON e.idpersonal = pd.idpersonal
-                WHERE p.idcliente = '$id' AND pro.procedimiento != 'ortodoncia' ORDER BY p.idpago ASC, pd.fecha ASC;";
+                WHERE p.idcliente = '$id' AND pro.procedimiento != 'ortodoncia' AND pro.idprocedimiento <= 28 ORDER BY p.idpago ASC, pd.fecha ASC;";
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }

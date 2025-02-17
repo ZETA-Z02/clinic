@@ -114,7 +114,7 @@ function generarSelectPiezas() {
       opciones += `<option value="${i}.${j}">${i}.${j}</option>`;
     }
   }
-  return `<select name="pieza" id="pieza-tabla-general">${opciones}</select>`;
+  return `<select name="pieza" id="pieza-tabla-general" class="pieza-tablas">${opciones}</select>`;
 }
 
 function btnTablas() {
@@ -572,13 +572,13 @@ async function SelectOrtodoncia(){
 async function continuarPagoOrtodoncia() {
   try {
     let timeout;
-    $(document).on("input change","#importe-tabla-ortodoncia, #pieza-tabla-ortodoncia, #doctor-ortodoncia",function () {
+    $(document).on("input change","#importe-tabla-ortodoncia, .pieza-tablas, #doctor-ortodoncia",function () {
         console.log("cambios en inputs ed ortodoncia");
         numberFloat(".input-importe");
         clearTimeout(timeout);
         let trfila = $(this).closest("tr");
         let importe = trfila.find("#importe-tabla-ortodoncia");
-        let pieza = trfila.find("#pieza-tabla-ortodoncia");
+        let pieza = trfila.find(".pieza-tablas");
         let doctor = trfila.find("#doctor-ortodoncia");
         let idpago = trfila.data("idpago");
         let idpagodetalle = trfila.data("idpagodetalle");
@@ -789,13 +789,13 @@ async function SelectOtros(){
 async function continuarPagoOtros() {
   try {
     let timeout;
-    $(document).on("input change","#importe-tabla-otros, #pieza-tabla-otros, #doctor-otros",function () {
+    $(document).on("input change","#importe-tabla-otros, .pieza-tablas, #doctor-otros",function () {
         console.log("cambios en inputs ed ortodoncia");
         numberFloat(".input-importe");
         clearTimeout(timeout);
         let trfila = $(this).closest("tr");
         let importe = trfila.find("#importe-tabla-otros");
-        let pieza = trfila.find("#pieza-tabla-otros");
+        let pieza = trfila.find(".pieza-tablas");
         let doctor = trfila.find("#doctor-otros");
         let idpago = trfila.data("idpago");
         let idpagodetalle = trfila.data("idpagodetalle");
