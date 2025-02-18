@@ -6,6 +6,7 @@ $(document).ready(function(){
     btnTablas();
     calcularDeuda();
     numberFloat(".importe");
+    generarDoctores();
 
     // DELET
     habilitarDelet();
