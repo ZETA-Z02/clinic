@@ -246,7 +246,7 @@ function calcularDeuda() {
         let importe = $(this).val();
         let deuda = montototal - importe;
         // console.log(deuda,montototal,importe);
-        fila.find("td").eq(4).html(deuda.toFixed(2));
+        fila.find("td").eq(5).html(deuda.toFixed(2));
     });
 }
 // HABILITAR ELIMINACION
