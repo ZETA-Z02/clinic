@@ -19,7 +19,7 @@ $(document).ready(function(){
 
     //EDIT
     activarEdit();
-    actualizarFilaData()
+    actualizarFilaData();
 });
 function generarTablas(){
     Presupuestos('general');
@@ -49,6 +49,7 @@ async function Presupuestos(type) {
     let html = ""; //Codigo HTML
     // Recorremos los datos que llegaron
     data.forEach((element) => {
+      //console.log(element);
         // variables que se asignan de la tabla PAGOS 
       deuda = parseFloat(element.saldo_pendiente); // la deuda es el saldo pendiente
       total = parseFloat(element.total_pagar); // el total es el total a pagar 
@@ -56,13 +57,13 @@ async function Presupuestos(type) {
       html += `
         <tr data-idpago="${element.idpago}" data-idpagodetalle="${element.idpagodetalle}" data-total="${total}" data-deuda="${deuda}" data-monto="${element.monto_pagado}" data-importeactual="${element.monto}">
                   <td>${element.fecha}</td>
+                  <td class="row-pieza">${element.pieza}</td>
                   <td>${element.procedimiento}</td>
                   <td>${total - monto}</td>
                   <td>
                     <input type="text" class="general-input-monto" id="input-importe-data" value="${element.monto}" disabled>
                   </td>
                   <td>${restante}</td>
-                  <td class="row-pieza">${element.pieza}</td>
                   <td class="row-etiqueta">${element.etiqueta}</td>
                   <td class="row-trash" style="display:none;">
                     <button class="btn-delete-row" data-idpagodetalle="${element.idpagodetalle}">
@@ -72,19 +73,19 @@ async function Presupuestos(type) {
               </tr>
               `;
       monto += parseFloat(element.monto); // Suma el monto a la variable monto
-      //console.log(deuda,monto,total);
+      //console.log('antes de ingresar al primer if: ',deuda,monto,total);
       // SI LA DEUDA ES MAYOR A CERO Y EL MONTO MAS LA DEUDA ES IGUAL AL TOTAL 
       // SE AGREGA UNA FILA PARA UN NUEVO PAGO DEL MISMO PROCEDIMIENTO Y DE UN MISMO PAGO
       if (deuda > 0 && monto + deuda === total) {
         html += `<tr class="fila-pago" data-idpago="${element.idpago}" data-total="${total}" data-monto="${element.monto_pagado}" data-deuda="${deuda}">
                           <td>${fechaActual}</td>
+                          <td>${generarSelectPiezas()}</td>
                           <td>${element.procedimiento}</td>
                           <td><input type="text" value="${total - monto}" disabled></td>
                           <td>
                             <input type="text" class="importe-tabla" placeholder="Nuevo importe" id='importe-tabla'>
                           </td>
                           <td id='deuda-tabla'>-</td>
-                          <td>${generarSelectPiezas()}</td>
                           <td><select name="doctor" id="doctor" class="doctor-tablas">${generarDoctores()}</select></td>
                       </tr>
                       <tr>
@@ -106,13 +107,13 @@ async function Presupuestos(type) {
       if (deuda == 0 && monto === total && total > 0) {
         //console.log(monto,total)
         html += `<tr>
-            <td>-</td>
-            <td>${element.procedimiento}</td>
-            <td>Cancelado</td>
-            <td>Cancelado</td>
-            <td>Cancelado</td>
-            <td>-</td>
-            <td>-</td>
+            <td class="cancelado">-</td>
+            <td class="cancelado">-</td>
+            <td class="cancelado">${element.procedimiento}</td>
+            <td class="cancelado">Cancelado</td>
+            <td class="cancelado">Cancelado</td>
+            <td class="cancelado">Cancelado</td>
+            <td class="cancelado">-</td>
           </tr>`;
         monto = 0;
         deuda = 0;
@@ -219,7 +220,7 @@ async function continuarPago() {
               deuda: `${deuda}`,
               monto: monto,
             };
-            console.log(data);
+            //console.log(data);
             // Validar si los campos están llenos
             if (Object.values(data).every((value) => value.trim() !== "")) {
               insert(data, "pagos", "nuevoPago");

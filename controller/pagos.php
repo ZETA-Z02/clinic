@@ -27,6 +27,7 @@ class Pagos extends Controller
         echo json_encode($json);
     }
     public function presupuestos(){
+        $this->disabledCache();
         $id = $_POST['id'];
         $type = $_POST['tipo'];
         if($type=='general'){
@@ -71,19 +72,18 @@ class Pagos extends Controller
     }
     public function nuevoPago()
     {
+        $this->disabledCache();
         $idpago = $_POST['idpago'];
         $idcliente = $_POST['idcliente'];
         $idpersonal = $_POST['doctor'];
         $pieza = $_POST['pieza'];
         $monto = $_POST['importe'];
-        $pagomonto = $_POST['monto'];
+        //$pagomonto = $_POST['monto'];
         $pagodeuda = $_POST['deuda'];
-        $nuevoMontoTotal = $pagomonto + $monto;
-        $nuevaDeudaTotal = $pagodeuda - $monto;
         if ($monto > $pagodeuda) {
             throw new Exception("El monto pagado es mayor al pago acumulado");
         }
-        if ($this->model->NuevoPago($idpago, $idcliente, $idpersonal, $monto, $pieza, $nuevoMontoTotal, $nuevaDeudaTotal)) {
+        if ($this->model->NuevoPago($idpago, $idcliente, $idpersonal, $monto, $pieza)) {
             echo "ok";
         } else {
             throw new Exception("Error al crear el pago");

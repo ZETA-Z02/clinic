@@ -48,6 +48,27 @@ class PagosModel extends Model{
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
+    public function GetPresupuestoOrtodoncia($id){
+        $sql = "SELECT p.idpago,pro.procedimiento,p.monto_pagado,p.saldo_pendiente,p.total_pagar,pd.idpagodetalle,pd.monto,pd.concepto,pd.pieza,pd.fecha, pd.idpersonal,e.nombre AS etiqueta
+                FROM pagos p 
+                JOIN pago_detalles pd ON p.idpago = pd.idpago 
+                JOIN procedimientos pro ON p.idprocedimiento = pro.idprocedimiento 
+                JOIN etiquetas e ON e.idpersonal = pd.idpersonal
+                WHERE p.idcliente = '$id' AND pro.procedimiento = 'ortodoncia' ORDER BY p.idpago ASC, pd.fecha ASC;";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
+    }
+    public function GetPresupuestoOtros($id){
+        $sql = "SELECT p.idpago,pro.procedimiento,p.monto_pagado,p.saldo_pendiente,p.total_pagar,pd.idpagodetalle,pd.monto,pd.concepto,pd.pieza,pd.fecha, pd.idpersonal,e.nombre AS etiqueta
+                FROM pagos p 
+                JOIN pago_detalles pd ON p.idpago = pd.idpago 
+                JOIN procedimientos pro ON p.idprocedimiento = pro.idprocedimiento 
+                JOIN etiquetas e ON e.idpersonal = pd.idpersonal
+                WHERE p.idcliente = '$id' AND pro.idprocedimiento > 28 ORDER BY p.idpago ASC, pd.fecha ASC;";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
+    }
+    // 
     public function NuevoProcedimientoPago($idcliente, $idprocedimiento, $monto, $pieza, $idpersonal,$total){
         $this->conn->conn->begin_transaction();
         try{
@@ -75,7 +96,7 @@ class PagosModel extends Model{
         $this->conn->conn->close();
     }
     // Nuevo PAgo de un procedimiento ya creado
-    public function NuevoPago($idpago, $idcliente, $idpersonal,$monto,$pieza, $nuevoMontoTotal, $nuevaDeudaTotal){
+    public function NuevoPago($idpago, $idcliente, $idpersonal,$monto,$pieza){
         $this->conn->conn->begin_transaction();
         try{
             // Obtener el total a pagar y el monto ya pagado
@@ -94,7 +115,10 @@ class PagosModel extends Model{
             $sqlNuevoPago = "INSERT INTO pago_detalles (idpago,idpersonal,monto,pieza) VALUES('$idpago','$idpersonal','$monto','$pieza');";
             $resultNuevo = $this->conn->ConsultaSin($sqlNuevoPago);
 
-            $sqlUpdatePago = "UPDATE pagos SET monto_pagado = '$nuevoMontoTotal', saldo_pendiente = '$nuevaDeudaTotal' WHERE idpago = '$idpago' AND idcliente = '$idcliente';";
+            $sqlUpdatePago = "UPDATE pagos 
+                            SET monto_pagado = (SELECT SUM(monto) FROM pago_detalles WHERE idpago = '$idpago'), 
+                            saldo_pendiente = $total_pagar - (SELECT SUM(monto) FROM pago_detalles WHERE idpago = '$idpago')
+                            WHERE idpago = '$idpago' AND idcliente = '$idcliente';";
             $resultUpdate = $this->conn->ConsultaSin($sqlUpdatePago);
 
             $this->conn->conn->commit();
@@ -138,25 +162,6 @@ class PagosModel extends Model{
         }
         $this->conn->conn->close();
     }
-    public function GetPresupuestoOrtodoncia($id){
-        $sql = "SELECT p.idpago,pro.procedimiento,p.monto_pagado,p.saldo_pendiente,p.total_pagar,pd.idpagodetalle,pd.monto,pd.concepto,pd.pieza,pd.fecha, pd.idpersonal,e.nombre AS etiqueta
-                FROM pagos p 
-                JOIN pago_detalles pd ON p.idpago = pd.idpago 
-                JOIN procedimientos pro ON p.idprocedimiento = pro.idprocedimiento 
-                JOIN etiquetas e ON e.idpersonal = pd.idpersonal
-                WHERE p.idcliente = '$id' AND pro.procedimiento = 'ortodoncia' ORDER BY p.idpago ASC, pd.fecha ASC;";
-        $data = $this->conn->ConsultaCon($sql);
-        return $data;
-    }
-    public function GetPresupuestoOtros($id){
-        $sql = "SELECT p.idpago,pro.procedimiento,p.monto_pagado,p.saldo_pendiente,p.total_pagar,pd.idpagodetalle,pd.monto,pd.concepto,pd.pieza,pd.fecha, pd.idpersonal,e.nombre AS etiqueta
-                FROM pagos p 
-                JOIN pago_detalles pd ON p.idpago = pd.idpago 
-                JOIN procedimientos pro ON p.idprocedimiento = pro.idprocedimiento 
-                JOIN etiquetas e ON e.idpersonal = pd.idpersonal
-                WHERE p.idcliente = '$id' AND pro.idprocedimiento > 28 ORDER BY p.idpago ASC, pd.fecha ASC;";
-        $data = $this->conn->ConsultaCon($sql);
-        return $data;
-    }
+
 }
 ?>

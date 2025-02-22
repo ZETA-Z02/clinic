@@ -7,11 +7,11 @@
     <div class="grid-x grid-margin-x nuevopersonal__box nuevopersonal--inputs" id="nuevopersonal">
         <div class="cell large-6 nuevopersonal__item">
             <label for="dni">DNI</label>
-            <input type="text" id="dni" name="dni" required>
+            <input type="text" id="dni" name="dni" maxlength="8" required>
         </div>
         <div class="cell large-6 nuevopersonal__item">
             <label for="telefono">Telefono</label>
-            <input type="text" id="telefono" name="telefono" required>
+            <input type="text" id="telefono" name="telefono" maxlength="9" required>
         </div>
         <div class="cell large-6 nuevopersonal__item">
             <label for="nombre">Nombre</label>

@@ -18,6 +18,11 @@ class Controller
       $this->model = new $modelName();
     }
   }
+  protected function disabledCache(){
+    header("Cache-Control: no-store, no-cache, must-revalidate");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+  }
 
   // Los parametros son
   //FILE=> el archivo subido

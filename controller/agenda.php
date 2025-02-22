@@ -13,6 +13,7 @@ class Agenda extends Controller
 		$this->view->Render('agenda/index');
 	}
 	public function get():void{
+		$this->disabledCache();
 		$data = $this->model->Get();
         while($row = mysqli_fetch_array($data)){
             $json[] = array(
@@ -46,6 +47,7 @@ class Agenda extends Controller
 		echo json_encode($json);
 	}
 	public function guardarCita(){
+		$this->disabledCache();
 		$idcliente = $_POST['idcliente'];
 		$clientePost = $_POST['cliente'];
 		$personalProcedimiento = $_POST['personal-procedimiento'];

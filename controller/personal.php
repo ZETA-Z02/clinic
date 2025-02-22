@@ -22,6 +22,7 @@ class Personal extends Controller
 		$this->view->Render('personal/login');
 	}
 	public function get(){
+		$this->disabledCache();
 		$data = $this->model->Get();
 		while($row = mysqli_fetch_assoc($data)){
 			$json[] = array(
@@ -35,6 +36,7 @@ class Personal extends Controller
 		echo json_encode($json);
 	}
 	public function nuevoPersonal(){
+		$this->disabledCache();
 		$dni = $_POST['dni'];
 		$telefono = $_POST['telefono'];
 		$nombre = $_POST['nombre'];

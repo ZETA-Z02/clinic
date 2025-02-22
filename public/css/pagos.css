@@ -24,3 +24,8 @@ select{
 input:disabled{
     border: none;
 }
+
+.cancelado {
+    color: var(--azul);
+    font-weight: bold;
+}

@@ -52,8 +52,9 @@ $(document).ready(function () {
 function SeleccionFecha(calendar) {
   calendar.on("dateClick", function (info) {
     let date = info.dateStr;
-    // console.log(date);
+    console.log(date);
     $("#fecha-inicio,#fecha-fin").val(date);
+
     mostrarFormulario();
     // let fecha = date.toISOString().split("T")[0];
     // const events = calendar.getEvents();
@@ -126,6 +127,7 @@ function GuardarCita(calendar) {
     data += `&idetiqueta=${idetiqueta}`;
     insert(data, "agenda", "guardarCita");
     e.target.reset();
+    $("#cliente_id").val('');
     calendar.refetchEvents();
     tags()
     // Cerrar el formulario
@@ -178,14 +180,13 @@ function infoCita(calendar) {
   });
 }
 function eliminarCita(calendar) {
-  $("#info-cita").on("click", "#btn-eliminar-cita", function () {
+  $("#info-citas").on("click", "#btn-eliminar-cita", function () {
     let id = $(this).attr("id-data");
     console.log(id);
     delet(id, "agenda", "delete");
     calendar.refetchEvents();
   });
 }
-
 function cerrarCita(calendar) {
   $("#btn-cerrar-info-cita").click(function () {
     $("#info-citas").css("display", "none");
@@ -351,4 +352,19 @@ async function arrastrarCita(calendar){
       info.revert();
     }
   });
+}
+// ajusta la hora segun el tiempo seleccionado
+async function ajustarHora(date){
+  try{
+    const data = await getOne(date,'agenda','ajustarHora');
+    console.log(data);
+    $("#hora-inicio").html(data.hora_ini);
+    $("#hora-fin").html(data.hora_fin);
+  }catch(e){
+    console.log("Error al obtener las horas"+e)
+  }
+}
+//muestra las horas disponibles del dia seleccionado
+function mostrarHoras(){
+
 }
