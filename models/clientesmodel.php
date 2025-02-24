@@ -102,4 +102,9 @@ class ClientesModel extends Model{
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
+    public function CitasCliente($id){
+        $sql = "SELECT fecha_ini, titulo, mensaje, hora_ini FROM citas WHERE idcliente = '$id' ORDER BY fecha_ini DESC;";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
+    }
 }

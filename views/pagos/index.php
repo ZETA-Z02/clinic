@@ -87,8 +87,10 @@
                 </tfoot>
             </table>
         </div>
-        <div class="cell botones-tabla-general margin-1">
+        <hr>
+        <div class="cell grid-x align-spaced botones-tabla-general margin-1">
             <button class="button btn-edit btn-editar" id="btn-editar">Editar</button>
+            <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda')?>">Ir a Agenda</a>
             <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i class="fa fa-trash"></i></button>
         </div>
     </div>
@@ -168,8 +170,10 @@
                 </tfoot>
             </table>
          </div>
-         <div class="cell">
+         <hr>
+         <div class="cell grid-x align-spaced margin-1">
             <button class="button btn-edit btn-editar" id="btn-editar-ortodoncia">Editar</button>
+            <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda')?>">Ir a Agenda</a>
             <button class="button btn-danger btn-eliminar" id="btn-eliminar-ortodoncia">Eliminar <i class="fa fa-trash"></i></button>
          </div>
     </div>
@@ -250,8 +254,10 @@
                 </tfoot>
             </table>
          </div>
-         <div class="cell">
+         <hr>
+         <div class="cell grid-x align-spaced margin-1">
             <button class="button btn-edit btn-editar" id="btn-editar-ortodoncia">Editar</button>
+            <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda')?>">Ir a Agenda</a>
             <button class="button btn-danger btn-eliminar" id="btn-eliminar-ortodoncia">Eliminar <i class="fa fa-trash"></i></button>
          </div>
     </div>

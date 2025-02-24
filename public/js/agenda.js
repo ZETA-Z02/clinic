@@ -47,14 +47,17 @@ $(document).ready(function () {
   getProcedimientos();
   //Duplicar cita
   arrastrarCita(calendar);
+
+  // AJUSTAR HORA
+  ajustarHora();
 });
 
 function SeleccionFecha(calendar) {
   calendar.on("dateClick", function (info) {
     let date = info.dateStr;
-    console.log(date);
+    //console.log(date);
     $("#fecha-inicio,#fecha-fin").val(date);
-
+    cargarHorasDisponibles(date);
     mostrarFormulario();
     // let fecha = date.toISOString().split("T")[0];
     // const events = calendar.getEvents();
@@ -219,8 +222,8 @@ function masNumInfoCita(args) {
   // Personalizar el contenido del "más" link
   return `+${args.num}`;
 }
+// Mostrar un modal con todas las citas del día al hacer clic en "más"
 function masInfoCitas(info) {
-  // Mostrar un modal con todas las citas del día al hacer clic en "más"
   console.log(info);
   const eventos = info.allSegs.map((seg) => seg.event); // Todas las citas de ese día
   let html = '';
@@ -353,18 +356,46 @@ async function arrastrarCita(calendar){
     }
   });
 }
+
 // ajusta la hora segun el tiempo seleccionado
-async function ajustarHora(date){
-  try{
-    const data = await getOne(date,'agenda','ajustarHora');
-    console.log(data);
-    $("#hora-inicio").html(data.hora_ini);
-    $("#hora-fin").html(data.hora_fin);
-  }catch(e){
-    console.log("Error al obtener las horas"+e)
-  }
+function ajustarHora(){
+  $("#calendario-formulario").on('change', '#hora-inicio,#duracion', function () {
+    let hora = $("#hora-inicio").val();
+    let duracion = $("#duracion").val();
+    let [horas,minutos] = hora.split(":").map(Number);
+    if(duracion == '30M'){
+      duracion = 0.5;
+    }else if(duracion == '1H'){
+      duracion = 1;
+    }else if(duracion == '1H30M'){
+      duracion = 1.5;
+    }else if(duracion == '2H'){
+      duracion = 2;
+    }
+    let minutosTotales = horas * 60 + minutos + duracion * 60;
+    let nuevaHora = Math.floor(minutosTotales / 60);
+    let nuevosMinutos = minutosTotales % 60;
+    let horafin = `${nuevaHora.toString().padStart(2, "0")}:${nuevosMinutos.toString().padStart(2, "0")}`;
+    console.log(hora,duracion,horafin);
+    $("#hora-fin").val(horafin);
+  });
 }
 //muestra las horas disponibles del dia seleccionado
-function mostrarHoras(){
-
+async function cargarHorasDisponibles(date) {
+  try{
+    let data = await getOne({fecha:date},'agenda','getHoras');
+    let select = document.getElementById("hora-inicio");
+    //let select = $("#hora-inicio");
+    select.innerHTML = ""; // Limpiar opciones previas
+    //console.log(data);
+    data.forEach(hora => {
+        //console.log(data);
+        let option = document.createElement("option");
+        option.value = hora;
+        option.textContent = hora;
+        select.appendChild(option);
+    });
+  }catch(e){
+    console.log("No llegan las horas correctamente: "+e);
+  }
 }

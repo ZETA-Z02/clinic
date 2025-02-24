@@ -193,7 +193,22 @@ class Clientes extends Controller
 		$this->model->BorrarCliente($idcliente);
 		$this->render();
 	}
+	public function citasCliente(){
+		$id = $_POST['id'];
+		$data = $this->model->CitasCliente($id);
+		while($row = mysqli_fetch_array($data)){
+			$json[] = array(
+				// "fecha" => date("Y-m-d", strtotime($row['fecha'])),
+				"fecha" => $row['fecha_ini'],
+				"hora" => $row['hora_ini'],
+				"titulo" => $row['titulo'],
+				"mensaje" => $row['mensaje'],
+			);
+		}
+		echo json_encode($json);
+	}
 
+	// BOLETA FUNCTION 
 	public function boletaPagos($nparam = null)
 	{
 		$id = $nparam[0];

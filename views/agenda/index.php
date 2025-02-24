@@ -77,7 +77,8 @@
             </div>
             <div class="cld__box--item">
               <label class="text-info">Fin: </label>
-              <select name="hora-fin" id="hora-fin">
+              <input type="text" name="hora-fin" id="hora-fin" readonly>
+              <!-- <select name="hora-fin" id="hora-fin">
                 <option value="07:00">07:00 AM</option>
                 <option value="07:30">07:30 AM</option>
                 <option value="08:00">08:00 AM</option>
@@ -105,7 +106,7 @@
                 <option value="19:00">07:00 PM</option>
                 <option value="19:30">07:30 PM</option>
                 <option value="20:00">08:00 PM</option>
-              </select>
+              </select> -->
               <input type="date" class="input-date" name="fecha-fin" id="fecha-inicio" required>
             </div>
           </div>

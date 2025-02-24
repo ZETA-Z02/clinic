@@ -138,4 +138,31 @@ class Agenda extends Controller
 		}
 		echo json_encode($json);
 	}
+	public function getHoras(){
+		$this->disabledCache();
+        $day = $_POST['fecha'];
+        $data = $this->model->GetHoras($day);
+		$horasOcupadas = [];
+		while($row = mysqli_fetch_array($data)){
+			$horaInicio = strtotime($row['hora_ini']);
+			$horaFin = strtotime($row['hora_fin']);
+			// Guarda el rango ocupado en un array
+            for ($hora = $horaInicio; $hora < $horaFin; $hora += 1800) { // Cada 30 min (1800s)
+                $horasOcupadas[] = date('H:i', $hora);
+            }
+		}
+		 // Generar todas las horas posibles (de 07:00 a 18:00)
+		 $horasDisponibles = [];
+		 $horaInicioDia = strtotime("07:00");
+		 $horaFinDia = strtotime("20:00");
+ 
+		 for ($hora = $horaInicioDia; $hora < $horaFinDia; $hora += 1800) { // Intervalos de 30 min
+			 $horaStr = date('H:i', $hora);
+			 if (!in_array($horaStr, $horasOcupadas)) {
+				 $horasDisponibles[] = $horaStr;
+			 }
+		 }
+ 
+		 echo json_encode($horasDisponibles);
+	}
 }

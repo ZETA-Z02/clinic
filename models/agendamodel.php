@@ -43,4 +43,10 @@ class AgendaModel extends Model{
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
+    // HORAS DISPONIBLES
+    public function GetHoras($day){
+        $sql = "SELECT hora_ini,hora_fin FROM citas WHERE fecha_ini = '$day';";
+		$data = $this->conn->ConsultaCon($sql);
+		return $data;
+    }
 }
