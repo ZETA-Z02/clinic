@@ -1,5 +1,7 @@
 var host = 'localhost';
 var proyect = 'clinic';
+var protocol = 'http';
+var url = `${protocol}://${host}/${proyect}`;
 
 $(document).ready(function(){
    modal();

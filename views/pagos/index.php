@@ -91,6 +91,7 @@
         <div class="cell grid-x align-spaced botones-tabla-general margin-1">
             <button class="button btn-edit btn-editar" id="btn-editar">Editar</button>
             <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda')?>">Ir a Agenda</a>
+            <a id="irodontograma" class="irodontograma button btn-warning" href="<?php getrute('odontograma')?>">Ir a Odontograma</a>
             <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i class="fa fa-trash"></i></button>
         </div>
     </div>

@@ -14,7 +14,7 @@ $(document).ready(function () {
     locale: "es",
     eventSources: [
       {
-        url: `http://${host}/${proyect}/agenda/get`,
+        url: `${url}/agenda/get`,
         method: "POST",
       },
     ],
@@ -132,6 +132,7 @@ function GuardarCita(calendar) {
     e.target.reset();
     $("#cliente_id").val('');
     calendar.refetchEvents();
+    calendar.render();
     tags()
     // Cerrar el formulario
     $("#calendar-forms").css("display", "none");

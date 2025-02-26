@@ -1,7 +1,7 @@
 function insert(data,controller,method='create'){
     $.ajax({
         type: "POST",
-        url: `http://${host}/${proyect}/${controller}/${method}`,
+        url: `${url}/${controller}/${method}`,
         data: data,
         success: function (response) {
             console.log('success POST',response);
@@ -18,7 +18,7 @@ async function get(controller,method='get'){
     try{
         const data = await $.ajax({
             type: `POST`,
-            url: `http://${host}/${proyect}/${controller}/${method}`,
+            url: `${url}/${controller}/${method}`,
             dataType: "json"
         });
         //console.log('Success GET');
@@ -36,7 +36,7 @@ async function getOne(id,controller,method='getOne'){
     try{
         const data = await $.ajax({
             type: `POST`,
-            url: `http://${host}/${proyect}/${controller}/${method}`,
+            url: `${url}/${controller}/${method}`,
             data: id,
             dataType: "json"
         });
@@ -54,7 +54,7 @@ function delet(id,controller,method='delete'){
     if(confirm('Desea eliminar el registro?')){
         $.ajax({
             type: "POST",
-            url: `http://${host}/${proyect}/${controller}/${method}`,
+            url: `${url}/${controller}/${method}`,
             data: id,
             success: function (response) {
                 console.log('success DELETE',response);

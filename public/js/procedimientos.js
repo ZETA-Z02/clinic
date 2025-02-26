@@ -5,33 +5,30 @@ $(document).ready(function(){
    editarProcedimiento();
    eliminarProcedimiento();
 });
-function getProcedimientos(){
-    $.ajax({
-        type: "GET",
-        url: `http://${host}/${proyect}/procedimientos/get`,
-        dataType: "json",
-        success: function (response) {
-            //console.log(response);
-            let html = '';
-            response.forEach((element) => {
-                html += `
-                    <tr>
-                        <td>${element.procedimiento}</td>
-                        <td>${element.descripcion}</td>
-                        <td>${element.precio}</td>
-                        <td>${element.fecha}</td>
-                        <td><button class="button btn-info" id="btn-editar" id-data="${element.id}"><i class="fa-solid fa-pen-to-square"></i></button></td>
-                        <td><button class="button btn-danger" id="btn-eliminar" id-data="${element.id}"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `;
-            });
-            $('#tbody-procedimientos').html(html);
-            initPaginador(5,'tbody-procedimientos','paginador-procedimientos');
-        },error: function (error){
-            console.log('ERROR',error);
-        }
-    });
+async function getProcedimientos(){
+    try{
+        const data = await get('procedimientos','get');
+        let html = '';
+        data.forEach((element) => {
+            html += `
+                <tr>
+                    <td>${element.procedimiento}</td>
+                    <td>${element.descripcion}</td>
+                    <td>${element.precio}</td>
+                    <td>${element.fecha}</td>
+                    <td><button class="button btn-info" id="btn-editar" id-data="${element.id}"><i class="fa-solid fa-pen-to-square"></i></button></td>
+                    <td><button class="button btn-danger" id="btn-eliminar" id-data="${element.id}"><i class="fa-solid fa-trash"></i></button></td>
+                </tr>
+            `;
+        });
+        $('#tbody-procedimientos').html(html);
+        initPaginador(5,'tbody-procedimientos','paginador-procedimientos');
+    }catch(e){
+        console.log("ERROR en obtener procedimientos",e);
+    }
 }
+
+
 function nuevoProcedimiento(){
     $("#form-procedimiento").submit(function(e){
         e.preventDefault();
@@ -47,22 +44,20 @@ function nuevoProcedimiento(){
     });
 }
 function editarProcedimiento(){
-    $(document).on("click","#btn-editar",function(){
+    $(document).on("click","#btn-editar",async function(){
         let id = $(this).attr('id-data');
         //console.log(id);
-        (async () => {
-            try{
-                const data = await getOne(id,'procedimientos','getOne');
-                //console.log(data);
-                $("#procedimiento").val(data.procedimiento);
-                $("#descripcion").val(data.descripcion);
-                $("#precio").val(data.precio);
-                $("#iniciales").val(data.iniciales);
-                $("#id").val(data.idprocedimiento);
-            } catch (error){
-                console.error("ERROR",error);
-            }
-        })();
+        try{
+            const data = await getOne(id,'procedimientos','getOne');
+            //console.log(data);
+            $("#procedimiento").val(data.procedimiento);
+            $("#descripcion").val(data.descripcion);
+            $("#precio").val(data.precio);
+            $("#iniciales").val(data.iniciales);
+            $("#id").val(data.idprocedimiento);
+        } catch (error){
+            console.error("ERROR",error);
+        }
     });
 }
 function eliminarProcedimiento(){
