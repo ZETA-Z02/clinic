@@ -37,8 +37,8 @@ function getpersonal(){
                         <td>${element.apellido}</td>
                         <td>${element.dni}</td>
                         <td>${element.telefono}</td>
-                        <td><a href="http://${host}/${proyect}/personal/detalles/${element.id}" class="button btn-info">Detalles</a></td>
-                        <td><a href="http://${host}/${proyect}/personal/login/${element.id}" class="button btn-success">Login</a></td>
+                        <td><a href="${url}/personal/detalles/${element.id}" class="button btn-info">Detalles</a></td>
+                        <td><a href="${url}/personal/login/${element.id}" class="button btn-success">Login</a></td>
                     </tr>
                 `;
             });

@@ -10,7 +10,7 @@ $(document).ready(function () {
 
   $("#btn-nuevopago-volver").attr(
     "href",
-    `http://${host}/${proyect}/clientes/`
+    `${url}/clientes/`
   );
 });
 
@@ -138,7 +138,7 @@ function boleta() {
   $("#btn-boleta-todo").click(function () {
     let id = $("#id-nuevopago-cliente").val();
     console.log(id);
-    window.open(`http://${host}/${proyect}/clientes/boletaPagos/${id}`);
+    window.open(`${url}/clientes/boletaPagos/${id}`);
   });
 }
 

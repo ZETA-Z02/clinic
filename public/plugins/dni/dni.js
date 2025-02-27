@@ -8,7 +8,7 @@ function dni() {
     if (dni.length === 8) {
       timeout = setTimeout(() => {
         $.ajax({
-          url: `http://${host}/${proyect}/services/dni`,
+          url: `${url}/services/dni`,
           type: "POST",
           data: { dni: dni },
           dataType: "json", // Indicar que la respuesta es JSON
