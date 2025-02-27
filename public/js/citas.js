@@ -40,7 +40,7 @@ async function getCitasCliente(){
     let html = '';
     data.forEach(element => {
       if(element.mensaje == ''){
-        mensaje = `<p style="color: green`">Sin Observaciones</p>`;
+        mensaje = `<p style='color: green;'>Sin Observaciones</p>`;
       }
       html += `
           <tr>
