@@ -40,19 +40,31 @@
             <form id="form-procedimiento" method="POST">
             <div class="grid-x">
                 <div class="cell text-center">
-                    <h3>Nuevo Procedimiento</h3>
+                    <h3 id="titule">Nuevo Procedimiento</h3>
                     <hr>
                 </div>
-                <div class="cell">
+                <div class="cell large-12 grid-x grid-margin-x padding-3">
                     <input type="hidden" name="id" id="id">
-                    <label for="procedimiento">Nombre del Procedimiento</label>
-                    <input type="text" name="procedimiento" id="procedimiento">
-                    <label for="precio">Precio del Procedimiento</label>
-                    <input type="text" name="precio" id="precio">
-                    <label for="iniciales">Iniciales del Procedimiento</label>
-                    <input type="text" name="iniciales" id="iniciales">
-                    <label for="descripcion">Descripcion del procedimiento</label>
-                    <textarea name="descripcion" id="descripcion"></textarea>
+                    <div class="cell large-6">    
+                        <label for="procedimiento">Nombre del Procedimiento</label>
+                        <input type="text" name="procedimiento" id="procedimiento">
+                    </div>
+                    <div class="cell large-6">
+                        <label for="precio">Precio del Procedimiento</label>
+                        <input type="text" name="precio" id="precio">
+                    </div>
+                    <div class="cell large-6">
+                        <label for="iniciales">Iniciales del Procedimiento</label>
+                        <input type="text" name="iniciales" id="iniciales">
+                    </div>
+                    <div class="cell large-6">
+                        <label for="descripcion">Descripcion del procedimiento</label>
+                        <textarea name="descripcion" id="descripcion"></textarea>
+                    </div>
+                    <div class="cell large-6">
+                        <label for="color">Color del Procedimiento</label>
+                        <input type="color" name="color" id="color" class="color">
+                    </div>
                 </div>    
                 <div class="cell grid-x align-spaced">
                     <button class="button btn-cancel" type="button" id="btn-cancelar">Cancelar</button>

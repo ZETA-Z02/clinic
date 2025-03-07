@@ -101,6 +101,24 @@ CREATE TABLE `citas` (
   KEY `idcliente` (`idcliente`),
   CONSTRAINT `citas_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
 );
+CREATE TABLE `odontograma` (
+  `idodontograma` int(11) NOT NULL AUTO_INCREMENT,
+  `idcliente` int(11) NOT NULL,
+  `idprocedimiento` int(11) NOT NULL,
+  `pieza` tinyint(4) NOT NULL,
+  `imagen` VARCHAR(400) NOT NULL,
+  `observaciones` text DEFAULT NULL,
+  `estado` tinyint(4) NOT NULL,
+  `condicion` tinyint(4) DEFAULT NULL,
+  `feCreate` date DEFAULT current_timestamp(),
+  `feActualizacion` date DEFAULT NULL,
+  PRIMARY KEY (`idodontograma`),
+  KEY `odontograma_ibfk_1` (`idcliente`),
+  KEY `odontograma_ibfk_2` (`idprocedimiento`),
+  CONSTRAINT `odontograma_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
+  CONSTRAINT `odontograma_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
+);
+
 
 INSERT INTO `personal` VALUES
 (1,'ADMINISTRADOR','ADMINISTRADOR',72535244,'998777712','MASCULINO','jersson.z032@gmail.com',NULL,'2024-12-05',NULL,'2024-12-05');

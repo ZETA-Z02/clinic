@@ -46,6 +46,7 @@ function nuevoProcedimiento(){
 function editarProcedimiento(){
     $(document).on("click","#btn-editar",async function(){
         let id = $(this).attr('id-data');
+        $("#titule").html('Editar Procedimiento');
         //console.log(id);
         try{
             const data = await getOne(id,'procedimientos','getOne');
@@ -54,6 +55,7 @@ function editarProcedimiento(){
             $("#descripcion").val(data.descripcion);
             $("#precio").val(data.precio);
             $("#iniciales").val(data.iniciales);
+            $("#color").val(data.color);
             $("#id").val(data.idprocedimiento);
         } catch (error){
             console.error("ERROR",error);
@@ -69,7 +71,17 @@ function eliminarProcedimiento(){
 }
 function modalnuevoprocedimiento(){
     $("#formulario-procedimiento").hide();
-    $(document).on("click","#btn-editar,#btn-nuevoprocedimiento",function(){
+    $("#titule").html('Nuevo Procedimiento');
+    $(document).on("click","#btn-nuevoprocedimiento",function(){
+        $("#procedimiento").val('');
+        $("#descripcion").val('');
+        $("#precio").val('');
+        $("#iniciales").val('');
+        $("#color").val('');
+        $("#formulario-procedimiento").show();
+        $("#tabla-procedimientos").hide();
+    })
+    $(document).on("click","#btn-editar",function(){
         $("#formulario-procedimiento").show();
         $("#tabla-procedimientos").hide();
     });

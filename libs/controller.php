@@ -9,7 +9,7 @@ class Controller
     $this->view = new View();
   }
 
-  function loadModel($model)
+  public function loadModel($model)
   {
     $url = 'models/' . $model . "model.php";
     if (file_exists($url)) {
@@ -71,15 +71,14 @@ class Controller
   protected function Foto($file, $nombre, $identificador)
   {
       $temporal = $file['tmp_name'];
-      $rutaCarpeta = "dumps/img/" . $nombre . $identificador;
+      $rutaCarpeta = "dumps/piezas/" . $nombre . $identificador;
       $fileExistente = file_exists($rutaCarpeta);
       //TAMAÑO Y TIPOS DE ARCHIVOS
       $tamanoMaximo = 4 * 1024 * 1024;
       $archivosPermitidos = ['jpg','jpeg','png','xls','xlsx','ods','doc','docx', 'odt', 'pdf'];
       $extensionArchivo = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
       $resultadoExtension = in_array($extensionArchivo, $archivosPermitidos);
-
-      if ($fileExistente) {
+      if ($fileExistente && !empty($file) && $file['error'] == 0 && $resultadoExtension && $tamanoMaximo >= $file['size']) {
           $rutaFile = $rutaCarpeta . "/" . $file['name'];
           $fileSubido = move_uploaded_file($temporal, $rutaFile);
           if ($fileSubido) {
@@ -90,11 +89,10 @@ class Controller
           }
       } else {
           if (!empty($file) && $file['error'] == 0 && $resultadoExtension && $tamanoMaximo >= $file['size']) {
-              $result = mkdir($nombre . $identificador, 0777);
-              $resultRename = rename($nombre . $identificador, "dumps/img/". $nombre.$identificador);
+              $result = mkdir($rutaCarpeta, 0777);
               $rutaFile = $rutaCarpeta . "/" . $file['name'];
               $fileSubido = move_uploaded_file($temporal, $rutaFile);
-              if ($result && $resultRename && $fileSubido) {
+              if ($result && $fileSubido) {
                   $rutaCompleto = constant('URL') . $rutaFile;
                   //Devuelve la ruta completa para la base de datos
                   return $rutaCompleto;

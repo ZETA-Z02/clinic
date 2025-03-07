@@ -40,14 +40,20 @@
                 <div class="cell">
                     <h3>Nueva Etiqueta</h3>
                 </div>
-                <div class="cell">
+                <div class="cell grid-x grid-margin-x">
                     <input type="hidden" name="id" id="id">
-                    <label for="personal">Personal asignado a la etiqueta</label>
-                    <select name="idpersonal" id="select-personal"></select>
-                    <label for="color">Color de la etiqueta</label>
-                    <input type="color" name="color" id="color">
-                    <label for="nombre">Nombre de la etiqueta</label>
-                    <input type="text" name="nombre" id="nombre" readonly>
+                    <div class="cell large-6">
+                        <label for="personal">Personal asignado a la etiqueta</label>
+                        <select name="idpersonal" id="select-personal"></select>
+                    </div>
+                    <div class="cell large-6">
+                        <label for="color">Color de la etiqueta</label>
+                        <input type="color" name="color" id="color">
+                    </div>
+                    <div class="cell large-6">
+                        <label for="nombre">Nombre de la etiqueta</label>
+                        <input type="text" name="nombre" id="nombre" readonly>
+                    </div>
                 </div>
                 <div class="cell grid-x align-spaced">
                     <button class="button" type="submit" id="btn-guardar">Guardar</button>

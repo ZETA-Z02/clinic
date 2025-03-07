@@ -13,6 +13,23 @@ function insert(data,controller,method='create'){
         }
     });
 }
+function insertWithFiles(data,controller,method='create'){
+    $.ajax({
+        type: "POST",
+        url: `${url}/${controller}/${method}`,
+        data: data,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            console.log('success POST',response);
+            modalSuccess();
+        },error: function (error){
+            //console.log('error POST',error);
+            modalError();
+            throw new Error("Asi no se puede bro! :c");
+        }
+    });
+}
 // SE USA UNA FUNCION ASYNC-> ASINCRONA PARA QUE LA FUNCION DEVUELVA LOS DATOS, ASI PODER TRATAR CON ESOS DATOS EN OTRA FUNCION Y NO DIRECTAMENTE EN EL AJAX
 async function get(controller,method='get'){
     try{

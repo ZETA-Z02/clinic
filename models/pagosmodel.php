@@ -33,7 +33,7 @@ class PagosModel extends Model{
         return $data;
     }
     public function GetOne($id){
-        $sql = "SELECT * FROM clientes WHERE idcliente = '$id';";
+        $sql = "SELECT idcliente,nombre,apellido FROM clientes WHERE idcliente = '$id';";
         $data = $this->conn->ConsultaArray($sql);
         return $data;
     }

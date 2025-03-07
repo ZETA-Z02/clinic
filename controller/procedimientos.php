@@ -34,14 +34,15 @@ class Procedimientos extends Controller
 		$precio = $_POST['precio'];
 		$descripcion = $_POST['descripcion'];
 		$iniciles = $_POST['iniciales'];
+		$color = $_POST['color'];
 		if(empty($id)){
-			if($this->model->NuevoProcedimiento($procedimiento,$descripcion,$precio,$iniciles)){
+			if($this->model->NuevoProcedimiento($procedimiento,$descripcion,$precio,$iniciles,$color)){
 				echo 1;
 			}else{
 				trigger_error("Error al crear el procedimiento");
 			}
 		}else{
-			if($this->model->EditarProcedimiento($id,$procedimiento,$descripcion,$precio,$iniciles)){
+			if($this->model->EditarProcedimiento($id,$procedimiento,$descripcion,$precio,$iniciles,$color)){
 				echo 1;
 			}else{
 				trigger_error("Error al Actualizar el procedimiento");

@@ -3,46 +3,47 @@
 <div class="grid-container fluid">
     <div class="grid-x">
         <div class="cell text-center">
-            <h1>Odontograma</h1>
+            <h2>Odontograma de: <?php echo @$this->data['nombre'].' '.@$this->data['apellido']?></h2>
+            <input type="hidden" id="idcliente" class="idcliente" value="<?php echo @$this->data['idcliente']; ?>">
         </div>
         <div class="cell grid-x">
             <div class="cell large-6 grid-x">
                 <div class="cell grid-x text-center">
                     <div class="cell large-2">
-                        <button class="button btn-info">1.3</button>
+                        <button class="button btn-info btn-pieza" data-pieza="13">1.3</button>
                     </div>
                     <div class="cell large-2">
-                        <button class="button btn-info">1.2</button>
+                        <button class="button btn-info btn-pieza" data-pieza="12">1.2</button>
                     </div>
                     <div class="cell large-2">
-                        <button class="button btn-info">1.1</button>
+                        <button class="button btn-info btn-pieza" data-pieza="11">1.1</button>
                     </div>
                     <div class="cell large-2">
-                        <button class="button btn-info">2.1</button>
+                        <button class="button btn-info btn-pieza" data-pieza="21">2.1</button>
                     </div>
                     <div class="cell large-2">
-                        <button class="button btn-info">2.2</button>
+                        <button class="button btn-info btn-pieza" data-pieza="22">2.2</button>
                     </div>
                     <div class="cell large-2">
-                        <button class="button btn-info">2.3</button>
+                        <button class="button btn-info btn-pieza" data-pieza="23">2.3</button>
                     </div>
                 </div>
                 <div class="cell grid-x">
                     <div class="cell large-2 text-center">
                         <div class="cell">
-                            <button class="button btn-info">1.4</button>
+                            <button class="button btn-info btn-pieza" data-pieza="14">1.4</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-info">1.5</button>
+                            <button class="button btn-info btn-pieza" data-pieza="15">1.5</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-info">1.6</button>
+                            <button class="button btn-info btn-pieza" data-pieza="16">1.6</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-info">1.7</button>
+                            <button class="button btn-info btn-pieza" data-pieza="17">1.7</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-info">1.8</button>
+                            <button class="button btn-info btn-pieza" data-pieza="18">1.8</button>
                         </div>
                     </div>
                     <div class="cell large-8">
@@ -50,19 +51,19 @@
                     </div>
                     <div class="cell large-2 text-center">
                         <div class="cell">
-                            <button class="button btn-info">2.4</button>
+                            <button class="button btn-info btn-pieza" data-pieza="24">2.4</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-info">2.5</button>
+                            <button class="button btn-info btn-pieza" data-pieza="25">2.5</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-info">2.6</button>
+                            <button class="button btn-info btn-pieza" data-pieza="26">2.6</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-info">2.7</button>
+                            <button class="button btn-info btn-pieza" data-pieza="27">2.7</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-info">2.8</button>
+                            <button class="button btn-info btn-pieza" data-pieza="28">2.8</button>
                         </div>
                     </div>
                 </div>
@@ -71,19 +72,19 @@
                 <div class="cell grid-x">
                     <div class="cell large-2 text-center">
                         <div class="cell">
-                            <button class="button btn-primary">4.8</button>
+                            <button class="button btn-primary btn-pieza" data-pieza="48">4.8</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-primary">4.7</button>
+                            <button class="button btn-primary btn-pieza" data-pieza="47">4.7</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-primary">4.6</button>
+                            <button class="button btn-primary btn-pieza" data-pieza="46">4.6</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-primary">4.5</button>
+                            <button class="button btn-primary btn-pieza" data-pieza="45">4.5</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-primary">4.4</button>
+                            <button class="button btn-primary btn-pieza" data-pieza="44">4.4</button>
                         </div>
                     </div>
                     <div class="cell large-8">
@@ -91,90 +92,87 @@
                     </div>
                     <div class="cell large-2 text-center">
                         <div class="cell">
-                            <button class="button btn-primary">3.8</button>
+                            <button class="button btn-primary btn-pieza" data-pieza="38">3.8</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-primary">3.7</button>
+                            <button class="button btn-primary btn-pieza" data-pieza="37">3.7</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-primary">3.6</button>
+                            <button class="button btn-primary btn-pieza" data-pieza="36">3.6</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-primary">3.5</button>
+                            <button class="button btn-primary btn-pieza" data-pieza="35">3.5</button>
                         </div>
                         <div class="cell">
-                            <button class="button btn-primary">3.4</button>
+                            <button class="button btn-primary btn-pieza" data-pieza="34">3.4</button>
                         </div>
                     </div>
                 </div>
                 <div class="cell grid-x text-center margin-top-1">
                     <div class="cell large-2">
-                        <button class="button btn-primary">4.3</button>
+                        <button class="button btn-primary btn-pieza" data-pieza="43">4.3</button>
                     </div>
                     <div class="cell large-2">
-                        <button class="button btn-primary">4.2</button>
+                        <button class="button btn-primary btn-pieza" data-pieza="42">4.2</button>
                     </div>
                     <div class="cell large-2">
-                        <button class="button btn-primary">4.1</button>
+                        <button class="button btn-primary btn-pieza" data-pieza="41">4.1</button>
                     </div>
                     <div class="cell large-2">
-                        <button class="button btn-primary">3.1</button>
+                        <button class="button btn-primary btn-pieza" data-pieza="31">3.1</button>
                     </div>
                     <div class="cell large-2">
-                        <button class="button btn-primary">3.2</button>
+                        <button class="button btn-primary btn-pieza" data-pieza="32">3.2</button>
                     </div>
                     <div class="cell large-2">
-                        <button class="button btn-primary">3.3</button>
+                        <button class="button btn-primary btn-pieza" data-pieza="33">3.3</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div class="grid-x margin-top-2 info-diente-seleccionado" id="info-diente">
-        <div class="cell large-1 text-center">
-            <button class="button btn" id="diente-seleccionado">1.1</button>
-        </div>
-        <div class="cell large-2">
-            <div class="procedimiento">
-                <strong class="lead" id="procedimiento">Ortodoncia</strong>
+        <div class="cell large-2 text-center">
+            <div class="cell">
+                <span class="lead">Diente: </span><strong class="diente-seleccionado" id="diente-seleccionado">0.0</strong>
+                <input type="hidden" name="diente" id="diente-input">
+            </div>
+            <div class="cell margin-top-1">
+                <select name="procedimientos-select" id="procedimientos-select" class="procedimientos-select"></select>
             </div>
         </div>
         <div class="cell grid-x large-3">
             <div class="cell box-img" id="box-img">
-                <img src="<?php image('diente.png')?>" alt="Sin imagen subida">
+                <img id="imagen-pieza" src="" alt="Sin imagen subida">
             </div>
             <div class="cell file-upload">
                 <label for="file" class="file-label">📂 Subir Imagen</label>
-                <input type="file" id="file" accept="image/*">
+                <input type="file" name="file" id="file" accept="image/*">
                 <div class="file-name" id="file-name">Ningun Archivo Seleccionado</div>
             </div>
         </div>
-        <div class="cell large-6 grid-x">
-            <div class="cell large-6">
+        <div class="cell large-7 grid-x grid-margin-x">
+            <div class="cell large-8">
                 <h4>Observaciones: </h4>
-                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatibus temporibus sapiente labore doloremque fugiat voluptatem pariatur reiciendis, tempora natus possimus quos repellat corporis, et vel nostrum, quasi amet inventore quod?</p>
+                <textarea name="observaciones" id="observaciones" class="observaciones"></textarea>
             </div>
-            <div class="cell large-6">
+            <div class="cell large-4">
                 <div class="cell">
-                    <select name="" id="">
-                        <option value="">ZOE</option>
-                        <option value="">DICAL+IONOMERO</option>
-                        <option value="">DIR</option>
+                    <select name="estado" id="estado">
+                        <option value="1">ZOE</option>
+                        <option value="2">DICAL+IONOMERO</option>
+                        <option value="3">DIR</option>
                     </select>
                 </div>
                 <div class="cell">
-                    <select name="" id="">
-                        <option value="">Proceso</option>
-                        <option value="">Intermedio</option>
-                        <option value="">Finalizado</option>
+                    <select name="condicion" id="condicion">
+                        <option value="1">Sano</option>
+                        <option value="2">Cariado</option>
+                        <option value="3">Ausente</option>
                     </select>
                 </div>
-                <div class="cell">
-                    <select name="" id="">
-                        <option value="">Sano</option>
-                        <option value="">Cariado</option>
-                        <option value="">Ausente</option>
-                    </select>
+                <div class="cell text-center">
+                    <button class="button btn-success" id="guardar">Guardar Todo</button>
                 </div>
             </div>
         </div>
