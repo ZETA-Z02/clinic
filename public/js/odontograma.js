@@ -15,6 +15,7 @@ document.getElementById("file").addEventListener("change", function() {
 });
 // SUBIR IMAGEN END 
 $(document).ready(function(){
+    $("#info-diente").hide();
     InfoPieza();
     getProcedimientos();
     ColorPieza();
@@ -22,6 +23,7 @@ $(document).ready(function(){
 
 function InfoPieza(){
     $(".btn-pieza").on("click",async function(){
+        $("#info-diente").show();
         ColorPieza();
         let pieza = $(this).data("pieza");
         let diente = $(this).text();

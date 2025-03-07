@@ -111,7 +111,7 @@ CREATE TABLE `odontograma` (
   `observaciones` text DEFAULT NULL,
   `estado` tinyint(4) NOT NULL,
   `condicion` tinyint(4) DEFAULT NULL,
-  `feCreate` date DEFAULT current_timestamp(),
+  `feCreate` datetime DEFAULT current_timestamp(),
   `feActualizacion` date DEFAULT NULL,
   PRIMARY KEY (`idodontograma`),
   KEY `odontograma_ibfk_1` (`idcliente`),
