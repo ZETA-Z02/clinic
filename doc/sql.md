@@ -32,6 +32,7 @@ CREATE TABLE `procedimientos` (
   `precio` decimal(10,2) DEFAULT NULL,
   `iniciales` varchar(10) DEFAULT NULL,
   `feCreate` datetime DEFAULT current_timestamp(),
+  `color` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`idprocedimiento`)
 );
 CREATE TABLE `etiquetas` (
@@ -118,7 +119,7 @@ CREATE TABLE `odontograma` (
   CONSTRAINT `odontograma_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
   CONSTRAINT `odontograma_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
 );
-
+ALTER TABLE procedimientos ADD COLUMN color VARCHAR(50) DEFAULT NULL;
 
 INSERT INTO `personal` VALUES
 (1,'ADMINISTRADOR','ADMINISTRADOR',72535244,'998777712','MASCULINO','jersson.z032@gmail.com',NULL,'2024-12-05',NULL,'2024-12-05');

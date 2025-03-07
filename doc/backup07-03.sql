@@ -84,6 +84,17 @@ CREATE TABLE `etiquetas` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `etiquetas`
+--
+
+LOCK TABLES `etiquetas` WRITE;
+/*!40000 ALTER TABLE `etiquetas` DISABLE KEYS */;
+INSERT INTO `etiquetas` VALUES
+(1,2,'JJ','#c01c28');
+/*!40000 ALTER TABLE `etiquetas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `login`
 --
 
@@ -129,6 +140,7 @@ CREATE TABLE `odontograma` (
   `idcliente` int(11) NOT NULL,
   `idprocedimiento` int(11) NOT NULL,
   `pieza` tinyint(4) NOT NULL,
+  `imagen` varchar(400) NOT NULL,
   `observaciones` text DEFAULT NULL,
   `estado` tinyint(4) NOT NULL,
   `condicion` tinyint(4) DEFAULT NULL,
@@ -139,17 +151,8 @@ CREATE TABLE `odontograma` (
   KEY `odontograma_ibfk_2` (`idprocedimiento`),
   CONSTRAINT `odontograma_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
   CONSTRAINT `odontograma_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `odontograma`
---
-
-LOCK TABLES `odontograma` WRITE;
-/*!40000 ALTER TABLE `odontograma` DISABLE KEYS */;
-/*!40000 ALTER TABLE `odontograma` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `pago_detalles`
@@ -169,7 +172,7 @@ CREATE TABLE `pago_detalles` (
   PRIMARY KEY (`idpagodetalle`),
   KEY `idpago` (`idpago`),
   CONSTRAINT `pago_detalles_ibfk_1` FOREIGN KEY (`idpago`) REFERENCES `pagos` (`idpago`)
-) ENGINE=InnoDB AUTO_INCREMENT=231 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=232 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,6 +200,9 @@ CREATE TABLE `pagos` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `pagos`
+--
+
 -- Table structure for table `personal`
 --
 
@@ -247,6 +253,7 @@ CREATE TABLE `procedimientos` (
   `precio` decimal(10,2) DEFAULT NULL,
   `iniciales` varchar(10) DEFAULT NULL,
   `feCreate` datetime DEFAULT current_timestamp(),
+  `color` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`idprocedimiento`)
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -258,35 +265,35 @@ CREATE TABLE `procedimientos` (
 LOCK TABLES `procedimientos` WRITE;
 /*!40000 ALTER TABLE `procedimientos` DISABLE KEYS */;
 INSERT INTO `procedimientos` VALUES
-(1,'Consulta Dental','',50.00,'CONS','2024-12-01 21:01:40'),
-(2,'Ortodoncia','',3500.00,'ORTO','2024-12-01 21:40:58'),
-(3,'Sellantes','',50.00,'SELLA','2024-12-01 21:46:42'),
-(4,'Restauracion de niños','',80.00,'rest','2024-12-01 21:46:42'),
-(5,'Restauracion Simple RFS','',120.00,'RFS','2025-02-05 11:40:28'),
-(6,'Restauracion compueta RFC','',180.00,'RFC','2025-02-05 11:39:50'),
-(7,'Restauracion Angular RFA','',180.00,'RFA','2025-01-19 19:31:36'),
-(8,'Endodoncia Posteriores','',300.00,'ENDO','2025-02-05 11:42:07'),
-(9,'Endodoncia Anteriores','',180.00,'ENAT','2025-02-05 11:43:16'),
-(10,'Poste de Seguridad','',200.00,'POST','2025-02-05 11:43:33'),
-(11,'Corona Porcelanato','',500.00,'CORO','2025-02-05 11:44:22'),
-(12,'Corona Ivocron','',300.00,NULL,'2025-02-05 11:44:49'),
-(13,'Provisional PPR','',400.00,'PPR','2025-02-05 11:45:20'),
-(14,'Provisional Coronas','',80.00,NULL,'2025-02-05 11:45:48'),
-(15,'Profilaxis + Fluorizacion','',300.00,NULL,'2025-02-05 11:46:11'),
-(16,'Blanqueamiento Dental','',300.00,NULL,'2025-02-05 11:46:26'),
-(17,'Exodoncia','',60.00,NULL,'2025-02-05 11:47:01'),
-(18,'Tercer Molar','',300.00,NULL,'2025-02-05 11:47:21'),
-(19,'Cirugia Gingivoplastia. ENCIA POR DIENTE','',100.00,NULL,'2025-02-05 11:47:21'),
-(20,'Cirugia Gingivoplastia. OSEA POR DIENTE','',350.00,NULL,'2025-02-05 11:47:21'),
-(21,'Cirugia Gingivoplastia. OSEA + ENCIA','',1500.00,NULL,'2025-02-05 11:47:21'),
-(22,'Protesis Parcial Removible','',1000.00,NULL,'2025-02-05 11:50:23'),
-(23,'Protesis Total Removible','',1000.00,NULL,'2025-02-05 11:50:46'),
-(24,'Endodoncia + Poste de SEG. + Resina POSTERIORES','',550.00,NULL,'2025-02-05 11:50:46'),
-(25,'Endodoncia + Poste de SEG. + Resina ANTERIORES','',350.00,NULL,'2025-02-05 11:50:46'),
-(26,'Endodoncia + Poste de SEG. + Corona POSTERIORES','',930.00,NULL,'2025-02-05 11:50:46'),
-(27,'Endodoncia + Poste de SEG. + Corona ANTERIORES','',830.00,NULL,'2025-02-05 11:50:46'),
-(28,'RX','',20.00,NULL,'2025-02-05 11:51:04'),
-(29,'otro','',500.00,'otro','2025-02-16 13:24:32');
+(1,'Consulta Dental','',50.00,'CONS','2024-12-01 21:01:40','#c01c28'),
+(2,'Ortodoncia','',3500.00,'ORTO','2024-12-01 21:40:58','#1a5fb4'),
+(3,'Sellantes','',50.00,'SELLA','2024-12-01 21:46:42','#26a269'),
+(4,'Restauracion de niños','',80.00,'rest','2024-12-01 21:46:42','#000000'),
+(5,'Restauracion Simple RFS','',120.00,'RFS','2025-02-05 11:40:28','#613583'),
+(6,'Restauracion compueta RFC','',180.00,'RFC','2025-02-05 11:39:50',NULL),
+(7,'Restauracion Angular RFA','',180.00,'RFA','2025-01-19 19:31:36',NULL),
+(8,'Endodoncia Posteriores','',300.00,'ENDO','2025-02-05 11:42:07',NULL),
+(9,'Endodoncia Anteriores','',180.00,'ENAT','2025-02-05 11:43:16',NULL),
+(10,'Poste de Seguridad','',200.00,'POST','2025-02-05 11:43:33',NULL),
+(11,'Corona Porcelanato','',500.00,'CORO','2025-02-05 11:44:22',NULL),
+(12,'Corona Ivocron','',300.00,NULL,'2025-02-05 11:44:49',NULL),
+(13,'Provisional PPR','',400.00,'PPR','2025-02-05 11:45:20',NULL),
+(14,'Provisional Coronas','',80.00,NULL,'2025-02-05 11:45:48',NULL),
+(15,'Profilaxis + Fluorizacion','',300.00,NULL,'2025-02-05 11:46:11',NULL),
+(16,'Blanqueamiento Dental','',300.00,NULL,'2025-02-05 11:46:26',NULL),
+(17,'Exodoncia','',60.00,NULL,'2025-02-05 11:47:01',NULL),
+(18,'Tercer Molar','',300.00,NULL,'2025-02-05 11:47:21',NULL),
+(19,'Cirugia Gingivoplastia. ENCIA POR DIENTE','',100.00,NULL,'2025-02-05 11:47:21',NULL),
+(20,'Cirugia Gingivoplastia. OSEA POR DIENTE','',350.00,NULL,'2025-02-05 11:47:21',NULL),
+(21,'Cirugia Gingivoplastia. OSEA + ENCIA','',1500.00,NULL,'2025-02-05 11:47:21',NULL),
+(22,'Protesis Parcial Removible','',1000.00,NULL,'2025-02-05 11:50:23',NULL),
+(23,'Protesis Total Removible','',1000.00,NULL,'2025-02-05 11:50:46',NULL),
+(24,'Endodoncia + Poste de SEG. + Resina POSTERIORES','',550.00,NULL,'2025-02-05 11:50:46',NULL),
+(25,'Endodoncia + Poste de SEG. + Resina ANTERIORES','',350.00,NULL,'2025-02-05 11:50:46',NULL),
+(26,'Endodoncia + Poste de SEG. + Corona POSTERIORES','',930.00,NULL,'2025-02-05 11:50:46',NULL),
+(27,'Endodoncia + Poste de SEG. + Corona ANTERIORES','',830.00,NULL,'2025-02-05 11:50:46',NULL),
+(28,'RX','',20.00,NULL,'2025-02-05 11:51:04',NULL),
+(29,'otro','',500.00,'otro','2025-02-16 13:24:32',NULL);
 /*!40000 ALTER TABLE `procedimientos` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -299,4 +306,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-03-05 16:48:22
+-- Dump completed on 2025-03-07  7:52:08

@@ -84,6 +84,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `precio`          | **DECIMAL(10,2)** | Precio del procedimiento              |
 | `iniciales`       | **VARCHAR(20)**   | Iniciales del procedimiento           |
 | `feCreate`        | **DATE**          | Fecha de creacion                     |
+| `color`           | **VARCHAR(50)**   | Color que tendra de la etiqueta       |
 
 ### ETIQUETAS
 
