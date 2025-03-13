@@ -37,6 +37,7 @@ function btnTablas() {
 }
 async function Presupuestos(type) {
   try {
+    let total_mostrar=0, pagado_mostrar=0, deuda_mostrar=0;
     // Obteniendo el id del cliente
     let idcliente = $("#idcliente").val();
     const data = await getOne({id:idcliente,tipo:type}, "pagos", "presupuestos");//SOlicitud al servidor
@@ -102,7 +103,11 @@ async function Presupuestos(type) {
         monto = 0;
         deuda = 0;
         total = 0;
+        // TOTALES PARA MOSTRAR-> TOTAL DE TODA LA TABLA
+        total_mostrar += parseFloat(element.total_pagar);
+        deuda_mostrar += parseFloat(element.saldo_pendiente);
       }
+      pagado_mostrar += parseFloat(element.monto);
       // SI NO TIENE DEUDA Y EL MONTO PAGADO ES IGUAL AL TOTAL SE AGREGA FILA DE CANCELADO
       if (deuda == 0 && monto === total && total > 0) {
         //console.log(monto,total)
@@ -120,6 +125,10 @@ async function Presupuestos(type) {
         total = 0;
       }
     });
+    console.log(total_mostrar,deuda_mostrar,pagado_mostrar);
+    $(`#${type}-total`).html(total_mostrar);
+    $(`#${type}-deuda`).html(deuda_mostrar);
+    $(`#${type}-pagado`).html(pagado_mostrar);
     tbody.append(html);
   } catch (error) {
     console.log(error+"AL OBTENER DATOS EN LA TABLAS PAGOS");

@@ -63,7 +63,9 @@ class Clientes extends Controller
 	{
 		$id = $nparam[0];
 		$data = $this->model->GetOne($id);
+		$response = $this->model->Condicion($id);
 		$this->view->data = $data;
+		$this->view->response = $response;
 		$this->view->css = 'clientes';
 		$this->view->Render('clientes/detalles');
 	}
@@ -181,12 +183,21 @@ class Clientes extends Controller
 		$sexo = $_POST['sexo'];
 		$ciudad = $_POST['ciudad'];
 		$direccion = $_POST['direccion'];
-		if ($this->model->ActualizarCliente($idcliente, $nombre, $apellido, $telefono, $email, $sexo, $ciudad, $direccion)) {
-			// echo "ok";
+		// CONDICION DEL CLIENTE
+		$antecedente = $_POST['antecedente'];
+		$medicado = $_POST['medicamento'];
+		$anestesia = $_POST['anestesia'];
+		$alergiamedicamento = $_POST['alergiamedicamento'];
+		$hemorragias = $_POST['hemorragias'];
+		$enfermedad = $_POST['enfermedad'];
+		$observaciones = $_POST['observaciones'];
+
+		if ($this->model->ActualizarCliente($idcliente,$nombre,$apellido,$telefono,$email,$sexo,$ciudad,$direccion,$antecedente, $medicado, $anestesia, $alergiamedicamento, $hemorragias, $enfermedad, $observaciones)) {
+			//echo "ok";
 		} else {
 			throw new Exception("Error al actualizar el cliente");
 		}
-		$this->detalles(array($idcliente,0));
+		//$this->detalles(array($idcliente,0));
 	}
 	public function borrarCliente():void{
 		$idcliente = $_POST['idcliente'];

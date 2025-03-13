@@ -282,7 +282,7 @@ label{
   max-width: 30rem;
   border-radius: 15px;
   background-color: var(--background) !important;
-  z-index: 1000;
+  z-index: 10000;
   transform: translate(-50%, -50%);
   display: none;
   /* display: block; */

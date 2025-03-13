@@ -4,12 +4,12 @@ function insert(data,controller,method='create'){
         url: `${url}/${controller}/${method}`,
         data: data,
         success: function (response) {
-            console.log('success POST',response);
+            console.log('success POST '+response);
             modalSuccess();
         },error: function (error){
             //console.log('error POST',error);
             modalError();
-            throw new Error("Asi no se puede bro! :c");
+            throw new Error("Asi no se puede bro! :c "+error);
         }
     });
 }

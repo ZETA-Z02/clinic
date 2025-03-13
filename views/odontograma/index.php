@@ -46,8 +46,8 @@
                             <button class="button btn-info btn-pieza" data-pieza="18">1.8</button>
                         </div>
                     </div>
-                    <div class="cell large-8">
-                        <img src="<?php image('paladar.png')?>" alt="">
+                    <div class="cell large-8 img-odontograma superior">
+                        <img src="<?php image('superior1.png')?>" alt="">
                     </div>
                     <div class="cell large-2 text-center">
                         <div class="cell">
@@ -87,8 +87,8 @@
                             <button class="button btn-primary btn-pieza" data-pieza="44">4.4</button>
                         </div>
                     </div>
-                    <div class="cell large-8">
-                        <img src="<?php image('lengua.png')?>" alt="">
+                    <div class="cell large-8 img-odontograma inferior">
+                        <img src="<?php image('inferior1.png')?>" alt="">
                     </div>
                     <div class="cell large-2 text-center">
                         <div class="cell">

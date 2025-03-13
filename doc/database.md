@@ -49,6 +49,22 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `feCreate`  | **DATETIME**     | Fecha de creacion del registro      |
 | `feUpdate`  | **DATE**         | Fecha de actualizacion del registro |
 
+### clientes_condicion
+
+| **COLUMNA**              | **TIPO**         | **DESCRIPCION**                                  |
+| ------------------------ | ---------------- | ------------------------------------------------ |
+| `idcondicion`            | **INT(PK)**      | Identificador unico de la odontograma            |
+| `idcliente`              | **INT(FK)**      | Relacion con la tabla `clientes`                 |
+| `antecedente_enfermedad` | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe |
+| `medicado`               | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe |
+| `complicacion_anestesia` | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe |
+| `alergia_medicamento`    | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe |
+| `hemorragias`            | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe |
+| `enfermedad`             | **VARCHAR(100)** | Enfermedad que sufre el paciente(cliente)        |
+| `observaciones`          | **TEXT**         | Observacion sobre el cliente y su condicion      |
+| `feCreate`               | **DATE**         | Fecha de creacion                                |
+| `feActualizacion`        | **DATE**         | Fecha de Actualizacion                           |
+
 ### PAGOS
 
 | **COLUMNA**       | **TIPO**          | **DESCRIPCION**                        |
@@ -124,6 +140,9 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `condicion`       | **TINYINT**      | Condicion del diente, 1=>sano,2=>careado,3=>Ausente,4=>Restaurado |
 | `feCreate`        | **DATE**         | Fecha de creacion                                                 |
 | `feActualizacion` | **DATE**         | Fecha de Actualizacion                                            |
+
+### PRESUPUESTO
+
 
 ## RELACIONES
 

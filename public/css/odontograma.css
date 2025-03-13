@@ -1,6 +1,13 @@
 .nav{
     margin-bottom: 0 !important;
 }
+.img-odontograma img{
+    padding: 0 8%;
+}
+.superior{
+    /* border: 1px solid red; */
+    padding: 0 7%;
+}
 h4{
     color: var(--azul);
     font-weight: 900;

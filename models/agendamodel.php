@@ -49,4 +49,9 @@ class AgendaModel extends Model{
 		$data = $this->conn->ConsultaCon($sql);
 		return $data;
     }
+    public function EditarCita($idcita,$titulo,$horaInicio,$horaFin){
+        $sql = "UPDATE citas SET titulo = '$titulo', hora_ini = '$horaInicio', hora_fin = '$horaFin' WHERE idcita = '$idcita';";
+        $result = $this->conn->ConsultaSin($sql);
+        return $result;
+    }
 }

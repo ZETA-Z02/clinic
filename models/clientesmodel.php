@@ -9,16 +9,34 @@ class ClientesModel extends Model{
         $data = $this->conn->ConsultaArray($sql);
         return $data;
     }
+    // Condicion de un solo cliente para detalles
+    public function Condicion($id){
+        $sql = "SELECT antecedente_enfermedad, medicado,complicacion_anestesia,alergia_medicamento,hemorragias,enfermedad,observaciones FROM clientes_condicion WHERE idcliente = '$id';";
+        $data = $this->conn->ConsultaArray($sql);
+        return $data;
+    }
+
     public function Get(){
         $sql = "SELECT * FROM clientes ORDER BY idcliente DESC;";
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
     public function NuevoCliente($nombre,$apellido,$dni,$telefono,$direccion){
-        /* INSERTAR CLIENTE */
-        $sql = "INSERT INTO clientes (nombre,apellido,dni,telefono,direccion) VALUES ('$nombre','$apellido','$dni','$telefono','$direccion');";
-        $result = $this->conn->ConsultaSin($sql);
-        return $result;
+        $this->conn->conn->begin_transaction();
+        try{
+            /* INSERTAR CLIENTE */
+            $sql = "INSERT INTO clientes (nombre,apellido,dni,telefono,direccion) VALUES ('$nombre','$apellido','$dni','$telefono','$direccion');";
+            $result = $this->conn->ConsultaSin($sql);
+            $idcliente = $this->conn->conn->insert_id;
+            $condicion = "INSERT INTO clientes_condicion (idcliente) VALUES('$idcliente');";
+            $result = $this->conn->ConsultaSin($condicion);
+            $this->conn->conn->commit();
+            return true;
+        }catch(Exception $e){
+            $this->conn->conn->rollback();
+            echo "Error: " . $e->getMessage();
+        }
+        $this->conn->conn->close();
     }
     public function GetProcedimientos():mysqli_result|bool{
         $sql = "SELECT idprocedimiento,procedimiento FROM procedimientos";
@@ -86,10 +104,22 @@ class ClientesModel extends Model{
         }
         $this->conn->conn->close();
     }
-    public function ActualizarCliente($idcliente,$nombre,$apellido,$telefono,$email,$sexo,$ciudad,$direccion){
-        $sql = "UPDATE clientes SET nombre='$nombre',apellido='$apellido', telefono = '$telefono', email = '$email', sexo = '$sexo', ciudad = '$ciudad', direccion = '$direccion' WHERE idcliente = '$idcliente';";
-        $result = $this->conn->ConsultaSin($sql);
-        return $result;
+    public function ActualizarCliente($idcliente,$nombre,$apellido,$telefono,$email,$sexo,$ciudad,$direccion,$antecedente, $medicado, $anestesia, $alergiamedicamento, $hemorragias, $enfermedad, $observaciones){
+        $this->conn->conn->begin_transaction();
+        try{
+            $fechaActualizacion = date('Y-m-d H:i:s');
+            $fecha = date('Y-m-d');
+            $sql = "UPDATE clientes SET nombre='$nombre', apellido='$apellido', telefono = '$telefono', email = '$email', sexo = '$sexo', ciudad = '$ciudad', direccion = '$direccion', feUpdate='$fechaActualizacion' WHERE idcliente = '$idcliente';";
+            $result = $this->conn->ConsultaSin($sql);
+            $sqlcondicion = "UPDATE clientes_condicion SET antecedente_enfermedad='$antecedente', medicado='$medicado',complicacion_anestesia='$anestesia',alergia_medicamento='$alergiamedicamento',hemorragias='$hemorragias',enfermedad='$enfermedad',observaciones='$observaciones', feActualizacion='$fecha' WHERE idcliente = '$idcliente';";
+            $result1 = $this->conn->ConsultaSin($sqlcondicion);
+            $this->conn->conn->commit();
+            return true;
+        }catch(Exception $e){
+            $this->conn->conn->rollback();
+            echo "Error: " . $e->getMessage();
+        }
+        $this->conn->conn->close();
     }
     public function DataPagos($id){
         $sql = "SELECT p.total_pagar, proce.procedimiento FROM pagos p join procedimientos proce on proce.idprocedimiento = p.idprocedimiento WHERE idcliente = '$id';";

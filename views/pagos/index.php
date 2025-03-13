@@ -1,20 +1,42 @@
 <?php require('views/navbar.php'); ?>
 <link rel="stylesheet" href="<?php css('pagos'); ?>">
 <div class="grid-container fluid">
-    <div class="grid-x align-center">
-        <h2>Cliente: <?php echo @$this->data['nombre'] . ' ' . @$this->data['apellido']; ?></h2>
-        <input type="hidden" id="idcliente" class="idcliente" value="<?php echo @$this->data['idcliente']; ?>">
+    <div class="grid-x grid-margin-x align-center">
+        <div class="cell large-6">
+            <h2><?php echo @$this->data['nombre'] . ' ' . @$this->data['apellido']; ?></h2>
+            <input type="hidden" id="idcliente" class="idcliente" value="<?php echo @$this->data['idcliente']; ?>">
+        </div>
+        <div class="cell large-6 grid-x align-right">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Deuda</th>
+                        <th>Pagado</th>
+                        <th>Total</th>
+                        <th>Saldo</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center">
+                    <tr>
+                        <td>s/. 20.00</td>
+                        <td>s/. 20.00</td>
+                        <td>s/. 20.00</td>
+                        <td>s/. 10.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <hr>
     <div class="grid-x grid-margin-x">
         <button class="cell large-4 callout shadow pagos--titulos activate" id="btn-general" data-id="general">
+            <h3>Presupuesto Detallado</h3>
+        </button>
+        <button class="cell large-4 callout shadow pagos--titulos activate" id="btn-otros" data-id="otros">
             <h3>Presupuesto General</h3>
         </button>
         <button class="cell large-4 callout shadow pagos--titulos activate" id="btn-ortodoncia" data-id="ortodoncia">
             <h3>Presupuesto Ortodoncia</h3>
-        </button>
-        <button class="cell large-4 callout shadow pagos--titulos activate" id="btn-otros" data-id="otros">
-            <h3>Presupuesto Otros</h3>
         </button>
     </div>
     <div class="grid-x modal" id="tabla-general">
@@ -87,6 +109,21 @@
                 </tfoot>
             </table>
         </div>
+        <div class="cell">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Total: </td>
+                        <td id="general-total">s/. 200.00</td>
+                        <td>Pagado: </td>
+                        <td id="general-pagado">s/. 300.00</td>
+                        <td>Deuda: </td>
+                        <td id="general-deuda">s/. 400.00</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+         </div>
         <hr>
         <div class="cell grid-x align-spaced botones-tabla-general margin-1">
             <button class="button btn-edit btn-editar" id="btn-editar">Editar</button>
@@ -169,6 +206,21 @@
                         </td>
                     </tr>
                 </tfoot>
+            </table>
+         </div>
+         <div class="cell">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Total: </td>
+                        <td id="ortodoncia-total">s/. 200.00</td>
+                        <td>Pagado: </td>
+                        <td id="ortodoncia-pagado">s/. 300.00</td>
+                        <td>Deuda: </td>
+                        <td id="ortodoncia-deuda">s/. 400.00</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
             </table>
          </div>
          <hr>
@@ -254,6 +306,21 @@
                         </td>
                     </tr>
                 </tfoot>
+            </table>
+         </div>
+         <div class="cell">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Total: </td>
+                        <td id="otros-total">s/. 200.00</td>
+                        <td>Pagado: </td>
+                        <td id="otros-pagado">s/. 300.00</td>
+                        <td>Deuda: </td>
+                        <td id="otros-deuda">s/. 400.00</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
             </table>
          </div>
          <hr>

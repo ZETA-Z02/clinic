@@ -119,6 +119,61 @@ CREATE TABLE `odontograma` (
   CONSTRAINT `odontograma_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
   CONSTRAINT `odontograma_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
 );
+
+CREATE TABLE `clientes_condicion`(
+  `idcondicion` int(11) NOT NULL AUTO_INCREMENT,
+  `idcliente` int(11) NOT NULL,
+  `antecedente_enfermedad` tinyint(4) DEFAULT NULL,
+  `medicado` tinyint(4) DEFAULT NULL,
+  `complicacion_anestesia` tinyint(4) DEFAULT NULL,
+  `alergia_medicamento` tinyint(4) DEFAULT NULL, 
+  `hemorragias` tinyint(4) DEFAULT NULL,
+  `enfermedad` varchar(100) DEFAULT NULL,
+  `observaciones` text default null,
+  `feCreate` datetime DEFAULT current_timestamp(),
+  `feActualizacion` date DEFAULT NULL,
+  PRIMARY KEY (`idcondicion`),
+  KEY `clientes_condicion_ibfk_1` (`idcliente`),
+  CONSTRAINT `clientes_condicion_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
+);
+# Tabla por modificar aun no confirmada
+CREATE TABLE `presupuestos`(
+  `idpresupuesto` int(11) NOT NULL AUTO_INCREMENT,
+  `idcliente` int(11) DEFAULT NULL,
+  `total_pagar` decimal(10,2) DEFAULT NULL,
+  `monto_pagado` decimal(10,2) DEFAULT NULL,
+  `deuda_pendiente` decimal(10,2) DEFAULT NULL,
+  `saldo_disponible` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`idpresupuesto`),
+  KEY `idcliente` (`idcliente`),
+  CONSTRAINT `presupuesto_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
+);
+
+INSERT INTO presupuesto (idcliente,total_pagar,monto_pagado,deuda_pendiente) VALUES(1,(SELECT sum(monto) from pago_detalles pd join pagos p on p.idpago=pd.idpago where idcliente = 5),(select sum(total_pagar) from pagos where idcliente=5),((select sum(total_pagar) from pagos where idcliente=5)-(SELECT sum(monto) from pago_detalles pd join pagos p on p.idpago=pd.idpago where idcliente = 5)));
+
+#!/bin/bash
+
+for id in {1..10}; do
+    echo "INSERT INTO presupuesto (idcliente, total_pagar, monto_pagado, deuda_pendiente) VALUES ($id, 
+        (SELECT sum(monto) FROM pago_detalles pd 
+         JOIN pagos p ON p.idpago = pd.idpago 
+         WHERE idcliente = $id),
+        (SELECT sum(total_pagar) FROM pagos WHERE idcliente = $id),
+        ((SELECT sum(total_pagar) FROM pagos WHERE idcliente = $id) - 
+         (SELECT sum(monto) FROM pago_detalles pd 
+          JOIN pagos p ON p.idpago = pd.idpago 
+          WHERE idcliente = $id))
+    );"
+done
+para la condicion de cada cliente ----><- ->
+#!/bin/bash 
+for id in {1..10}; do 
+  echo INSERT INTO clientes_condicion (idcliente) VALUES($id);
+done
+
+# --------
+
+
 ALTER TABLE procedimientos ADD COLUMN color VARCHAR(50) DEFAULT NULL;
 
 INSERT INTO `personal` VALUES

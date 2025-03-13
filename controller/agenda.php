@@ -164,4 +164,15 @@ class Agenda extends Controller
  
 		 echo json_encode($horasDisponibles);
 	}
+	public function editarCita(){
+		$idcita = $_POST['idcita'];
+		$titulo = $_POST['titulo'];
+		$horaInicio = $_POST['horaini'];
+		$horaFin = $_POST['horafin'];
+		if($this->model->EditarCita($idcita,$titulo,$horaInicio,$horaFin)){
+			
+		}else{
+			throw new Exception("Error al editar la cita");
+		}
+	}
 }

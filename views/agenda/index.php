@@ -139,6 +139,8 @@
         <div class="cell cld__box info__box info--title text-center">
           <h3 id="cita-title">Información de la cita</h3>
           <h5 id="cita-nombre">Nombre del Cliente</h5>
+          <input type="text" id="info-titleupdate" class="info-title">
+          <input type="hidden" id="info-idcita">
         </div>
         <div class="cell cld__box info__box info--date">
           <div class="grid-x">
@@ -148,6 +150,9 @@
               </div>
               <div class="info__date--hora" id="cita-hora-inicio">
                 9:00 AM
+              </div>
+              <div class="info-hora">
+                <select name="hora-update" id="hora-update"></select>
               </div>
             </div>
             <div class="cell large-4 text-center">
@@ -160,6 +165,37 @@
               <div class="info__date--hora" id="cita-hora-fin">
                 9:00 AM
               </div>
+              <div class="info-hora">
+                <select name="" id="info-hora-fin">
+                  <option value="07:00">07:00 AM</option>
+                  <option value="07:30">07:30 AM</option>
+                  <option value="08:00">08:00 AM</option>
+                  <option value="08:30">08:30 AM</option>
+                  <option value="09:00">09:00 AM</option>
+                  <option value="09:30">09:30 AM</option>
+                  <option value="10:00">10:00 AM</option>
+                  <option value="10:30">10:30 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="11:30">11:30 AM</option>
+                  <option value="12:00">12:00 PM</option>
+                  <option value="12:30">12:30 PM</option>
+                  <option value="13:00">01:00 PM</option>
+                  <option value="13:30">01:30 PM</option>
+                  <option value="14:00">02:00 PM</option>
+                  <option value="14:30">02:30 PM</option>
+                  <option value="15:00">03:00 PM</option>
+                  <option value="15:30">03:30 PM</option>
+                  <option value="16:00">04:00 PM</option>
+                  <option value="16:30">04:30 PM</option>
+                  <option value="17:00">05:00 PM</option>
+                  <option value="17:30">05:30 PM</option>
+                  <option value="18:00">06:00 PM</option>
+                  <option value="18:30">06:30 PM</option>
+                  <option value="19:00">07:00 PM</option>
+                  <option value="19:30">07:30 PM</option>
+                  <option value="20:00">08:00 PM</option>
+                </select>
+              </div>
             </div>
           </div>
         </div>
@@ -168,7 +204,9 @@
         </div>
         <div class="cell cld__box grid-x align-spaced">
           <button class="button btn-danger" id="btn-cerrar-info-cita">Cerrar</button>
-          <button class="button btn-danger" id="btn-eliminar-cita">Eliminar Cita</button>
+          <button class="button btn-danger" id="btn-eliminar-cita">Eliminar</button>
+          <button class="button btn-warning" id="btn-editar-cita">Editar</button>
+          <button class="button btn-success" id="btn-enviaredit-cita">Guardar</button>
         </div>
       </div>
     </div>

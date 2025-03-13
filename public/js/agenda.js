@@ -50,6 +50,10 @@ $(document).ready(function () {
 
   // AJUSTAR HORA
   ajustarHora();
+
+  // EDITAR CITA
+  buttonsEdit();
+  editarCita(calendar);
 });
 
 function SeleccionFecha(calendar) {
@@ -161,6 +165,10 @@ function infoCita(calendar) {
   calendar.on("eventClick", function (info) {
     let cita = info.event;
     let id = cita.id;
+    let fecha = cita.extendedProps.fecha_ini;
+    let hora_ini = cita.extendedProps.hora_ini;
+    let hora_fin = cita.extendedProps.hora_fin;
+    console.log(hora_ini);
     //console.log(id);
     (async () => {
       try {
@@ -175,14 +183,44 @@ function infoCita(calendar) {
         $("#cita-hora-fin").html(convertirHora24a12(data.hora_fin));
         $("#cita-mensaje").html(data.mensaje);
         $("#btn-eliminar-cita").attr("id-data", data.idcita);
+        $("#info-idcita").val(data.idcita);
         colorInfo(data.color);
+        $("#info-titleupdate").val(data.titulo);
         mostrarCita(calendar);
+        cargarHorasDisponibles(fecha);
       } catch (error) {
         console.error("ERROR", error);
       }
     })();
   });
 }
+// EDITAR CITA
+function buttonsEdit(){
+  $(".info-hora,.info-title,#btn-enviaredit-cita").hide();
+  $("#btn-editar-cita").on('click',function(){
+    $(".info-hora,.info-title,#btn-enviaredit-cita").show();
+    $("#btn-editar-cita").hide();
+  })
+}
+function editarCita(calendar){
+  //$("#btn-enviaredit-cita").on('click',function(){
+    $("#btn-enviaredit-cita").click(function(){
+    let idcita = $("#info-idcita").val();
+    let titulo = $("#info-titleupdate").val();
+    let horaini = $("#hora-update").val();
+    let horafin = $("#info-hora-fin").val();    
+    const data = {
+      idcita: idcita,
+      titulo: titulo,
+      horaini: horaini,
+      horafin: horafin
+    }
+    insert(data,'agenda','editarCita');
+    calendar.render();
+    calendar.refetchEvents();
+  });
+}
+
 function eliminarCita(calendar) {
   $("#info-citas").on("click", "#btn-eliminar-cita", function () {
     let id = $(this).attr("id-data");
@@ -386,6 +424,7 @@ async function cargarHorasDisponibles(date) {
   try{
     let data = await getOne({fecha:date},'agenda','getHoras');
     let select = document.getElementById("hora-inicio");
+    let selectupdate = document.getElementById("hora-update");
     //let select = $("#hora-inicio");
     select.innerHTML = ""; // Limpiar opciones previas
     //console.log(data);
@@ -394,7 +433,11 @@ async function cargarHorasDisponibles(date) {
         let option = document.createElement("option");
         option.value = hora;
         option.textContent = hora;
+        let option2 = document.createElement("option");
+        option2.value = hora;
+        option2.textContent = hora;
         select.appendChild(option);
+        selectupdate.appendChild(option2);
     });
   }catch(e){
     console.log("No llegan las horas correctamente: "+e);

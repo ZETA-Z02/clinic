@@ -43,8 +43,8 @@
         </div>
         <div class="nav__box nav--menu">
             <ul class="nav__list">
-                <li class="nav__item <?php echo @$this->css == 'agenda' ? 'nav--selected' : '';?>"><a href="<?php getrute('agenda')?>">Agenda</a></li>
                 <li class="nav__item <?php echo @$this->css == 'clientes' ? 'nav--selected' : '';?>"><a href="<?php getrute('clientes')?>" >Clientes</a></li>
+                <li class="nav__item <?php echo @$this->css == 'agenda' ? 'nav--selected' : '';?>"><a href="<?php getrute('agenda')?>">Agenda</a></li>
                 <li class="nav__item <?php echo @$this->css == 'estadisticas' ? 'nav--selected' : '';?>"><a href="<?php getrute('estadisticas')?>">Graficos</a></li>
             </ul>
         </div>
