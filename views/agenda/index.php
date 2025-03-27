@@ -72,6 +72,9 @@
                 <option value="19:00">07:00 PM</option>
                 <option value="19:30">07:30 PM</option>
                 <option value="20:00">08:00 PM</option>
+                <option value="20:30">08:30 PM</option>
+                <option value="21:00">09:00 PM</option>
+                <option value="21:30">09:30 PM</option>
               </select>
               <input type="date" class="input-date" name="fecha-inicio" id="fecha-inicio" required>
             </div>

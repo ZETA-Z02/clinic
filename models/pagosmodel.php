@@ -10,8 +10,9 @@ class PagosModel extends Model{
             $sql .= " WHERE procedimiento = 'ortodoncia';";
         }else if($type == 'otros'){
             $sql .= " WHERE idprocedimiento > 28;";
-        }
-        else{
+        }else if($type == 'presupuesto'){
+            $sql .= " WHERE procedimiento != 'ortodoncia';";
+        }else{
             $sql .= " WHERE procedimiento != 'ortodoncia' AND idprocedimiento <= '28';";
         }
         $data = $this->conn->ConsultaCon($sql);
@@ -162,6 +163,111 @@ class PagosModel extends Model{
         }
         $this->conn->conn->close();
     }
+    // Presupuesto Total */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/**/*/*/*/*/*/*/*/*/*/*/*/* */
+    public function GetPresupuestoTotal($idcliente){
+        $sql = "SELECT ptd.idpresupuestodetalle,ptd.pieza,ptd.importe,p.idcliente,p.idpresupuesto,p.total_pagar,p.monto_pagado,p.deuda_pendiente,pro.procedimiento,pro.idprocedimiento FROM presupuestos p JOIN presupuesto_detalles ptd ON p.idpresupuesto=ptd.idpresupuesto JOIN procedimientos pro ON pro.idprocedimiento=p.idprocedimiento WHERE p.idcliente='$idcliente';";
+        $data = $this->conn->ConsultaCon($sql); 
+        return $data;
+    }
+    public function NuevoPresupuestoTotal($idcliente, $idprocedimiento, $monto, $pieza, $total){
+        $this->conn->conn->begin_transaction();
+        try{
+            /* INSERTAR PAGOS HACIENDO CALCULOS */
+            if($total < $monto){
+                throw new Exception("Error: El monto supera al total");
+            }
+            $deuda_pendiente = $total - $monto;
+            $igv = round($total - ($total / 1.18),2);
+            $sqlpresupuesto = "INSERT INTO presupuestos (idcliente,idprocedimiento,monto_pagado,deuda_pendiente,total_pagar) VALUES ('$idcliente','$idprocedimiento','$monto','$deuda_pendiente','$total');";
+            $resultpresupuesto = $this->conn->ConsultaSin($sqlpresupuesto);
+            $idpresupuesto = $this->conn->conn->insert_id;
+            /* INSERTAR PAGO DETALLES */
+            $sqlpresupuestodetalle = "INSERT INTO presupuesto_detalles (idpresupuesto, pieza,importe) VALUES('$idpresupuesto','$pieza','$monto');";
+            $resultpresupuestodetalle = $this->conn->ConsultaSin($sqlpresupuestodetalle);
+            $this->conn->conn->commit();
+            $result = $resultpresupuesto && $resultpresupuestodetalle;
+            return $result;
+        }catch(Exception $e){
+            $this->conn->conn->rollback();
+            echo "Error: " . $e->getMessage();
+        }
+        $this->conn->conn->close();
+    }
+    public function NuevoPagoPresupuestoTotal($idpresupuesto, $idcliente, $importe, $pieza){
+        $this->conn->conn->begin_transaction();
+        try{
+            // Obtener el total a pagar y el monto ya pagado
+            $sqlCheck = "SELECT total_pagar, monto_pagado,deuda_pendiente FROM presupuestos WHERE idpresupuesto = '$idpresupuesto' AND idcliente = '$idcliente' FOR UPDATE;";
+            $resultCheck = $this->conn->ConsultaArray($sqlCheck);
+            
+            if (!$resultCheck) {
+                throw new Exception("Error al obtener los datos del pago.");
+            }
+            $total_pagar = $resultCheck['total_pagar'];
+            $monto_pagado = $resultCheck['monto_pagado'];
+            $deuda = $resultCheck['deuda_pendiente']; 
+             // Verificar si el nuevo pago excede el total a pagar
+            if (($monto_pagado + $importe) > $total_pagar) {
+                throw new Exception("El monto total pagado no puede exceder el total a pagar.");
+            }
+            //$deuda_pendiente = $resultCheck['deuda_pendiente'] - $importe;
+            $monto = $deuda - $importe;
+            $sqlNuevoPago = "INSERT INTO presupuesto_detalles (idpresupuesto,pieza,importe) VALUES('$idpresupuesto','$pieza','$importe');";
+            $resultNuevo = $this->conn->ConsultaSin($sqlNuevoPago);
 
+            $sqlUpdatePago = "UPDATE presupuestos 
+                            SET monto_pagado = (SELECT SUM(importe) FROM presupuesto_detalles WHERE idpresupuesto = '$idpresupuesto'), 
+                            deuda_pendiente = $total_pagar - (SELECT SUM(importe) FROM presupuesto_detalles WHERE idpresupuesto = '$idpresupuesto')
+                            WHERE idpresupuesto = '$idpresupuesto' AND idcliente = '$idcliente';";
+            $resultUpdate = $this->conn->ConsultaSin($sqlUpdatePago);
+
+            $this->conn->conn->commit();
+            $result = $resultNuevo && $resultUpdate;
+            return $result;
+        }catch(Exception $e){
+            $this->conn->conn->rollback();
+            echo "Error: " . $e->getMessage();
+        }
+        $this->conn->conn->close();
+    }
+    public function UpdatePresupuestoTotal($idpresupuesto,$idpresupuestodetalle,$importeNuevo,$piezaNuevo){
+        $this->conn->conn->begin_transaction();
+        try{
+            $sqlCheckDetalles = "SELECT pieza, importe FROM presupuesto_detalles WHERE idpresupuestodetalle = '$idpresupuestodetalle' AND idpresupuesto='$idpresupuesto' FOR UPDATE;";
+            $resultcheckdetalles = $this->conn->ConsultaArray($sqlCheckDetalles);
+            if(!$resultcheckdetalles){
+                throw new Exception("Error al obtener los datos del presupuesto para actualizar");
+            }
+            // Obtener el total a pagar y el monto ya pagado
+            $sqlCheckPresupuesto = "SELECT total_pagar, monto_pagado, deuda_pendiente FROM presupuestos WHERE idpresupuesto = '$idpresupuesto' FOR UPDATE;";
+            $resultCheckPresupuesto = $this->conn->ConsultaArray($sqlCheckPresupuesto);
+            
+            if (!$resultCheckPresupuesto) {
+                throw new Exception("Error al obtener los datos del pago.");
+            }
+            $total_pagar = $resultCheckPresupuesto['total_pagar'];
+            $monto_pagado = $resultCheckPresupuesto['monto_pagado'];
+            $verify = $monto_pagado - $resultcheckdetalles['importe'];
+             // Verificar si el nuevo pago excede el total a pagar
+            if (($verify + $importeNuevo) > $total_pagar) {
+                throw new Exception("El monto total pagado no puede exceder el total a pagar.");
+            }
+            $sqlpresupuestodetalle = "UPDATE presupuesto_detalles SET pieza='$piezaNuevo', importe='$importeNuevo' WHERE idpresupuestodetalle = '$idpresupuestodetalle' AND idpresupuesto = '$idpresupuesto';";
+            $resultdetalle = $this->conn->ConsultaSin($sqlpresupuestodetalle);
+
+            $sqlpresupuesto = "UPDATE presupuestos 
+                            SET monto_pagado = (SELECT SUM(importe) FROM presupuesto_detalles WHERE idpresupuesto = '$idpresupuesto'), 
+                            deuda_pendiente = $total_pagar - (SELECT SUM(importe) FROM presupuesto_detalles WHERE idpresupuesto = '$idpresupuesto')
+                            WHERE idpresupuesto = '$idpresupuesto';";
+            $resultpresupuesto = $this->conn->ConsultaSin($sqlpresupuesto);
+
+            $this->conn->conn->commit();
+            $result = $resultpresupuesto && $resultdetalle;
+            return $result;
+        }catch(Exception $e){
+            $this->conn->conn->rollback();
+            echo "Error: " . $e->getMessage();
+        }        
+    }
 }
 ?>

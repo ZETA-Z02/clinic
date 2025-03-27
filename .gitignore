@@ -7,6 +7,6 @@
 .cache/
 .vscode/
 .sass-cache/
-
+dumps/piezas/
 
 .codegpt

@@ -136,39 +136,35 @@ CREATE TABLE `clientes_condicion`(
   KEY `clientes_condicion_ibfk_1` (`idcliente`),
   CONSTRAINT `clientes_condicion_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
 );
-# Tabla por modificar aun no confirmada
+
 CREATE TABLE `presupuestos`(
   `idpresupuesto` int(11) NOT NULL AUTO_INCREMENT,
   `idcliente` int(11) DEFAULT NULL,
-  `total_pagar` decimal(10,2) DEFAULT NULL,
+  `idprocedimiento` int(11) NOT NULL,
   `monto_pagado` decimal(10,2) DEFAULT NULL,
   `deuda_pendiente` decimal(10,2) DEFAULT NULL,
-  `saldo_disponible` decimal(10,2) DEFAULT NULL,
+  `total_pagar` decimal(10,2) DEFAULT NULL,
+  `feCreate` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`idpresupuesto`),
   KEY `idcliente` (`idcliente`),
   CONSTRAINT `presupuesto_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
 );
 
-INSERT INTO presupuesto (idcliente,total_pagar,monto_pagado,deuda_pendiente) VALUES(1,(SELECT sum(monto) from pago_detalles pd join pagos p on p.idpago=pd.idpago where idcliente = 5),(select sum(total_pagar) from pagos where idcliente=5),((select sum(total_pagar) from pagos where idcliente=5)-(SELECT sum(monto) from pago_detalles pd join pagos p on p.idpago=pd.idpago where idcliente = 5)));
+CREATE TABLE `presupuesto_detalles` (
+  `idpresupuestodetalle` int(11) NOT NULL AUTO_INCREMENT,
+  `idpresupuesto` int(11) NOT NULL,
+  `pieza` varchar(20) DEFAULT NULL,
+  `importe` decimal(10,2) NOT NULL,
+  `fecha` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`idpresupuestodetalle`),
+  KEY `idpresupuesto` (`idpresupuesto`),
+  CONSTRAINT `presupuesto_detalles_ibfk_1` FOREIGN KEY (`idpresupuesto`) REFERENCES `presupuestos` (`idpresupuesto`)
+);
 
-#!/bin/bash
-
-for id in {1..10}; do
-    echo "INSERT INTO presupuesto (idcliente, total_pagar, monto_pagado, deuda_pendiente) VALUES ($id, 
-        (SELECT sum(monto) FROM pago_detalles pd 
-         JOIN pagos p ON p.idpago = pd.idpago 
-         WHERE idcliente = $id),
-        (SELECT sum(total_pagar) FROM pagos WHERE idcliente = $id),
-        ((SELECT sum(total_pagar) FROM pagos WHERE idcliente = $id) - 
-         (SELECT sum(monto) FROM pago_detalles pd 
-          JOIN pagos p ON p.idpago = pd.idpago 
-          WHERE idcliente = $id))
-    );"
-done
 para la condicion de cada cliente ----><- ->
 #!/bin/bash 
 for id in {1..10}; do 
-  echo INSERT INTO clientes_condicion (idcliente) VALUES($id);
+  echo "INSERT INTO clientes_condicion (idcliente) VALUES($id)";
 done
 
 # --------
@@ -183,34 +179,35 @@ INSERT INTO `login` VALUES
 (1,1,'admin','$2y$10$Yt3wiTd14EdTf4dGepP49.pWnboRhcwcO9YJN0wNX0ncCT.kALZXO',1,2);
 
 INSERT INTO `procedimientos` VALUES
-(1,'Consulta Dental','',50.00,'CONS','2024-12-01 21:01:40'),
-(2,'Ortodoncia','',3500.00,'ORTO','2024-12-01 21:40:58'),
-(3,'Sellantes','',50.00,'SELLA','2024-12-01 21:46:42'),
-(4,'Restauracion de niños','',80.00,'RESTNINOS','2024-12-01 21:46:42'),
-(5,'Restauracion Simple RFS','',120.00,'RFS','2025-02-05 11:40:28'),
-(6,'Restauracion compueta RFC','',180.00,'RFC','2025-02-05 11:39:50'),
-(7,'Restauracion Angular RFA','',180.00,'RFA','2025-01-19 19:31:36'),
-(8,'Endodoncia Posteriores','',300.00,'ENDO','2025-02-05 11:42:07'),
-(9,'Endodoncia Anteriores','',180.00,'ENAT','2025-02-05 11:43:16'),
-(10,'Poste de Seguridad','',200.00,'POST','2025-02-05 11:43:33'),
-(11,'Corona Porcelanato','',500.00,'CORO','2025-02-05 11:44:22'),
-(12,'Corona Ivocron','',300.00,'IVO','2025-02-05 11:44:49'),
-(13,'Provisional PPR','',400.00,'PPR','2025-02-05 11:45:20'),
-(14,'Provisional Coronas','',80.00,'CORO','2025-02-05 11:45:48'),
-(15,'Profilaxis + Fluorizacion','',300.00,'PROF','2025-02-05 11:46:11'),
-(16,'Blanqueamiento Dental','',300.00,'BLAN','2025-02-05 11:46:26'),
-(17,'Exodoncia','',60.00,'EXO','2025-02-05 11:47:01'),
-(18,'Tercer Molar','',300.00,'MOLAR','2025-02-05 11:47:21'),
-(19,'Cirugia Gingivoplastia. ENCIA POR DIENTE','',100.00,'GINGI','2025-02-05 11:47:21'),
-(20,'Cirugia Gingivoplastia. OSEA POR DIENTE','',350.00,'GINGI','2025-02-05 11:47:21'),
-(21,'Cirugia Gingivoplastia. OSEA + ENCIA','',1500.00,'GINGI','2025-02-05 11:47:21'),
-(22,'Protesis Parcial Removible','',1000.00,'PROT','2025-02-05 11:50:23'),
-(23,'Protesis Total Removible','',1000.00,'PROT','2025-02-05 11:50:46'),
-(24,'Endodoncia + Poste de SEG. + Resina POSTERIORES','',550.00,'ENDO','2025-02-05 11:50:46'),
-(25,'Endodoncia + Poste de SEG. + Resina ANTERIORES','',350.00,'ENDO','2025-02-05 11:50:46'),
-(26,'Endodoncia + Poste de SEG. + Corona POSTERIORES','',930.00,'ENDO','2025-02-05 11:50:46'),
-(27,'Endodoncia + Poste de SEG. + Corona ANTERIORES','',830.00,'ENDO','2025-02-05 11:50:46'),
-(28,'RX','',20.00,'RX','2025-02-05 11:51:04');
+(1,'Consulta Dental','',50.00,'CONS','2024-12-01 21:01:40','#2D5F7D'),
+(2,'Ortodoncia','',3500.00,'ORTO','2024-12-01 21:40:58','#5679A6'),
+(3,'Sellantes','',50.00,'SELLA','2024-12-01 21:46:42','#A7BBCF'),
+(4,'Restauracion de niños','',80.00,'rest','2024-12-01 21:46:42','#009AA6'),
+(5,'Restauracion Simple RFS','',120.00,'RFS','2025-02-05 11:40:28','#74C2C3'),
+(6,'Restauracion compueta RFC','',180.00,'RFC','2025-02-05 11:39:50','#9BAF47'),
+(7,'Restauracion Angular RFA','',180.00,'RFA','2025-01-19 19:31:36','#1E582A'),
+(8,'Endodoncia Posteriores','',300.00,'ENDO','2025-02-05 11:42:07','#788B50'),
+(9,'Endodoncia Anteriores','',180.00,'ENAT','2025-02-05 11:43:16','#A0A97A'),
+(10,'Poste de Seguridad','',200.00,'POST','2025-02-05 11:43:33','#5D6B49'),
+(11,'Corona Porcelanato','',500.00,'CORO','2025-02-05 11:44:22','#C1663B'),
+(12,'Corona Ivocron','',300.00,'CIVO','2025-02-05 11:44:49','#D8A578'),
+(13,'Provisional PPR','',400.00,'PPR','2025-02-05 11:45:20','#F4C6C0'),
+(14,'Provisional Coronas','',80.00,'PROC','2025-02-05 11:45:48','#F8E3BB'),
+(15,'Profilaxis + Fluorizacion','',300.00,'PROF','2025-02-05 11:46:11','#F4DFC5'),
+(16,'Blanqueamiento Dental','',300.00,'BLAN','2025-02-05 11:46:26','#C6C3B5'),
+(17,'Exodoncia','',60.00,'EXOD','2025-02-05 11:47:01','#C0B6A3'),
+(18,'Tercer Molar','',300.00,'TMOL','2025-02-05 11:47:21','#7D5233'),
+(19,'Cirugia Gingivoplastia. ENCIA POR DIENTE','',100.00,'GENG','2025-02-05 11:47:21','#B58E68'),
+(20,'Cirugia Gingivoplastia. OSEA POR DIENTE','',350.00,'GOSD','2025-02-05 11:47:21','#5A4632'),
+(21,'Cirugia Gingivoplastia. OSEA + ENCIA','',1500.00,'GOEN','2025-02-05 11:47:21','#6F5A4D'),
+(22,'Protesis Parcial Removible','',1000.00,'PPR','2025-02-05 11:50:23','#B0A9A1'),
+(23,'Protesis Total Removible','',1000.00,'PTR','2025-02-05 11:50:46','#A4B5C5'),
+(24,'Endodoncia + Poste de SEG. + Resina POSTERIORES','',550.00,'EPPR','2025-02-05 11:50:46','#8D9095'),
+(25,'Endodoncia + Poste de SEG. + Resina ANTERIORES','',350.00,'EPRA','2025-02-05 11:50:46','#5F7B86'),
+(26,'Endodoncia + Poste de SEG. + Corona POSTERIORES','',930.00,'EPCP','2025-02-05 11:50:46','#4D6570'),
+(27,'Endodoncia + Poste de SEG. + Corona ANTERIORES','',830.00,'EPCA','2025-02-05 11:50:46','#3B4F58'),
+(28,'RX','',20.00,'RX','2025-02-05 11:51:04','#2A3D46'),
+(29,'otro','',500.00,'otro','2025-02-16 13:24:32','#1B2C34');
 
 // COMPOSER INSTALL
 // NPM INSTALL

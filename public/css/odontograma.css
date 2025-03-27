@@ -2,7 +2,14 @@
     margin-bottom: 0 !important;
 }
 .img-odontograma img{
-    padding: 0 8%;
+    padding: 0 9%;
+}
+.inferior{
+    text-align: center;
+}
+.inferior img{
+    
+    width: 93%;
 }
 .superior{
     /* border: 1px solid red; */

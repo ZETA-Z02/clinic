@@ -98,7 +98,7 @@ function sugerencias() {
           sugerenciasBox.empty();
           data.forEach((element) => {
             sugerenciasBox.append(
-              `<li data-id="${element.id}">${element.nombre}</li>`
+              `<li data-id="${element.id}">${element.nombre} ${element.iniApellido}</li>`
             );
           });
           sugerenciasBox.show();
@@ -220,7 +220,6 @@ function editarCita(calendar){
     calendar.refetchEvents();
   });
 }
-
 function eliminarCita(calendar) {
   $("#info-citas").on("click", "#btn-eliminar-cita", function () {
     let id = $(this).attr("id-data");

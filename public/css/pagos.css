@@ -14,15 +14,18 @@ input{
     box-shadow: none !important;
     background-color: transparent !important;
     color: black;
+    margin-bottom: 0 !important;
 }
 select{
     border-radius: none !important;
     box-shadow: none !important;
     background-color: transparent !important;
     color: black;
+    margin-bottom: 0 !important;
 }
 input:disabled{
     border: none;
+    margin-bottom: 0 !important;
 }
 
 .cancelado {

@@ -25,10 +25,15 @@ class Odontograma extends Controller{
         $observaciones = $_POST['observaciones'];
         $estado = $_POST['estado'];
         $condicion = $_POST['condicion'];
-        $imagen = $_FILES['imagen'];
         $nombre = $this->model->GetOne($idcliente);
         $nombre = explode(' ',$nombre['nombre'])[0];
-        $rutaResult = $this->foto($imagen,$nombre,$pieza);
+        $imagen = $_FILES['imagen'];
+        if($imagen){
+            $rutaResult = $this->foto($imagen,$nombre,$pieza);
+        }
+        if(empty($imagen)){
+            $rutaResult = true;
+        }
         if($rutaResult){
             //echo 'ok';
             if($this->model->Create($idcliente,$idprocedimiento,$pieza,$observaciones,$estado,$condicion,$rutaResult)){

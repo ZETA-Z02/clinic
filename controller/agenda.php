@@ -37,10 +37,13 @@ class Agenda extends Controller
 		$query = $_POST['query'];
 		$data = $this->model->SearchCustomers($query);
 		while($row = mysqli_fetch_assoc($data)){
+			$ini = explode(" ", $row['apellido']);
 			$json[] = array(
 				"id" => $row['idcliente'],
 				"nombre" => $row['nombre'],
-				"apellido" => $row['apellido']
+				"apellido" => $row['apellido'],
+				"iniApellido" => $ini[0][0]. $ini[1][0],
+
 			);
 		}
 		echo json_encode($json);
@@ -153,7 +156,7 @@ class Agenda extends Controller
 		 // Generar todas las horas posibles (de 07:00 a 18:00)
 		 $horasDisponibles = [];
 		 $horaInicioDia = strtotime("07:00");
-		 $horaFinDia = strtotime("20:00");
+		 $horaFinDia = strtotime("21:00");
  
 		 for ($hora = $horaInicioDia; $hora < $horaFinDia; $hora += 1800) { // Intervalos de 30 min
 			 $horaStr = date('H:i', $hora);
