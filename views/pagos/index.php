@@ -5,6 +5,7 @@
         <div class="cell large-6">
             <h2><?php echo @$this->data['nombre'] . ' ' . @$this->data['apellido']; ?></h2>
             <input type="hidden" id="idcliente" class="idcliente" value="<?php echo @$this->data['idcliente']; ?>">
+            <span class="lead" id="mensaje"></span>
         </div>
         <div class="cell large-6 grid-x align-right">
             <table>
@@ -17,9 +18,9 @@
                 </thead>
                 <tbody class="text-center">
                     <tr>
-                        <td>s/. 20.00</td>
-                        <td>s/. 20.00</td>
-                        <td>s/. 20.00</td>
+                        <td id="deuda_total">s/. 00.00</td>
+                        <td id="importe_total">s/. 00.00</td>
+                        <td id="total_total">s/. 00.00</td>
                     </tr>
                 </tbody>
             </table>

@@ -32,3 +32,16 @@ input:disabled{
     color: var(--azul);
     font-weight: bold;
 }
+
+.mensaje-azul{
+    color: var(--azul);
+    font-weight: bold;
+}
+.mensaje-rojo{
+    color: var(--rojo);
+    font-weight: bold;
+}
+.mensaje-verde{
+    color: var(--verde);
+    font-weight: bold;
+}

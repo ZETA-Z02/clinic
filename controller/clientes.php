@@ -185,14 +185,19 @@ class Clientes extends Controller
 		$direccion = $_POST['direccion'];
 		// CONDICION DEL CLIENTE
 		$antecedente = $_POST['antecedente'];
+		$antecedente_observacion = $_POST['antecedente_observacion'];
 		$medicado = $_POST['medicamento'];
+		$medicado_observacion = $_POST['medicado_observacion'];
 		$anestesia = $_POST['anestesia'];
+		$anestesia_observacion = $_POST['anestesia_observacion'];
 		$alergiamedicamento = $_POST['alergiamedicamento'];
+		$alergiamedicamento_observacion = $_POST['alergiamedicamento_observacion'];
 		$hemorragias = $_POST['hemorragias'];
+		$hemorragias_observacion = $_POST['hemorragias_observacion'];
 		$enfermedad = $_POST['enfermedad'];
 		$observaciones = $_POST['observaciones'];
 
-		if ($this->model->ActualizarCliente($idcliente,$nombre,$apellido,$telefono,$email,$sexo,$ciudad,$direccion,$antecedente, $medicado, $anestesia, $alergiamedicamento, $hemorragias, $enfermedad, $observaciones)) {
+		if ($this->model->ActualizarCliente($idcliente,$nombre,$apellido,$telefono,$email,$sexo,$ciudad,$direccion,$antecedente, $medicado, $anestesia, $alergiamedicamento, $hemorragias, $enfermedad, $observaciones, $antecedente_observacion, $medicado_observacion, $anestesia_observacion, $alergiamedicamento_observacion, $hemorragias_observacion)) {
 			//echo "ok";
 		} else {
 			throw new Exception("Error al actualizar el cliente");

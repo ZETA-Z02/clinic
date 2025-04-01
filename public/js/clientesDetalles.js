@@ -9,7 +9,7 @@ function update(){
             respuestas[input.name] = input.value;
         });
         let data = $(this).serialize();
-        console.log(data);
+        //console.log(data);
         insert(data,'clientes','actualizarCliente');
     });
 }

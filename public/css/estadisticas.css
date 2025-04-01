@@ -1,8 +1,11 @@
 .card {
-    border-radius: 20px;
-  }
-  .cards .card .card-divider {
-    margin: 0;
-    background-color: var(--azul-claro);
-  }
-  
+  border-radius: 20px;
+}
+.cards .card .card-divider {
+  margin: 0;
+  background-color: var(--azul-claro);
+}
+
+.card-divider h3{
+  font-weight: 900 !important;
+}

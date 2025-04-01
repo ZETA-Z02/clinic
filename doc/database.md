@@ -51,19 +51,24 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 
 ### clientes_condicion
 
-| **COLUMNA**              | **TIPO**         | **DESCRIPCION**                                  |
-| ------------------------ | ---------------- | ------------------------------------------------ |
-| `idcondicion`            | **INT(PK)**      | Identificador unico de la odontograma            |
-| `idcliente`              | **INT(FK)**      | Relacion con la tabla `clientes`                 |
-| `antecedente_enfermedad` | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe |
-| `medicado`               | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe |
-| `complicacion_anestesia` | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe |
-| `alergia_medicamento`    | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe |
-| `hemorragias`            | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe |
-| `enfermedad`             | **VARCHAR(100)** | Enfermedad que sufre el paciente(cliente)        |
-| `observaciones`          | **TEXT**         | Observacion sobre el cliente y su condicion      |
-| `feCreate`               | **DATE**         | Fecha de creacion                                |
-| `feActualizacion`        | **DATE**         | Fecha de Actualizacion                           |
+| **COLUMNA**                      | **TIPO**         | **DESCRIPCION**                                   |
+| -------------------------------- | ---------------- | ------------------------------------------------- |
+| `idcondicion`                    | **INT(PK)**      | Identificador unico de la odontograma             |
+| `idcliente`                      | **INT(FK)**      | Relacion con la tabla `clientes`                  |
+| `antecedente_enfermedad`         | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe  |
+| `antecedente_observacion`        | **VARCHAR(20)**  | Obervaciones de sus antecedentes con enfermedades |
+| `medicado`                       | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe  |
+| `medicado_observacion`           | **VARCHAR(20)**  | Observaciones de medimentos que toma              |
+| `complicacion_anestesia`         | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe  |
+| `anestesia_observacion`          | **VARCHAR(20)**  | Observaciones con la anestesia                    |
+| `alergia_medicamento`            | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe  |
+| `alergiamedicamento_observacion` | **VARCHAR(20)**  | Obervaciones con alergias a medicamentos          |
+| `hemorragias`                    | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe  |
+| `hemorragias_observacion`        | **VARCHAR(20)**  | Observaciones de las hemorragias anteriores       |
+| `enfermedad`                     | **VARCHAR(100)** | Enfermedad que sufre el paciente(cliente)         |
+| `observaciones`                  | **TEXT**         | Observacion sobre el cliente y su condicion       |
+| `feCreate`                       | **DATE**         | Fecha de creacion                                 |
+| `feActualizacion`                | **DATE**         | Fecha de Actualizacion                            |
 
 ### PAGOS
 
@@ -141,8 +146,27 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `feCreate`        | **DATE**         | Fecha de creacion                                                 |
 | `feActualizacion` | **DATE**         | Fecha de Actualizacion                                            |
 
-### PRESUPUESTO
+### PRESUPUESTOS
 
+| **COLUMNA**       | **TIPO**          | **DESCRIPCION**                        |
+| ----------------- | ----------------- | -------------------------------------- |
+| `idpresupuesto`   | **INT(PK)**       | Identificador unico del presupuesto    |
+| `idcliente`       | **INT(FK)**       | Relacion con la tabla `cliente`        |
+| `idprocedimiento` | **INT(FK)**       | Relacion con la tabla `procedimientos` |
+| `monto_pagado`    | **DECIMAL(10,2)** | Pago total actual                      |
+| `deuda_pendiente` | **DECIMAL(10,2)** | Deuda pendiente                        |
+| `total_pagar`     | **DECIMAL(10,2)** | Total a pagar por el servicio          |
+| `feCreate`        | **DATETIME**      | Fecha de creacion del presupuesto      |
+
+### PRESUPUESTO_DETALLES
+
+| **COLUMNA**            | **TIPO**          | **DESCRIPCION**                                |
+| ---------------------- | ----------------- | ---------------------------------------------- |
+| `idpresupuestodetalle` | **INT(PK)**       | Identificador unico del detalle de presupuesto |
+| `idpresupuesto`        | **INT(FK)**       | Relacion con la tabla `presupuesot`            |
+| `pieza`                | **DECIMAL(10,2)** | Monto que pago en el presupuesto               |
+| `importe`              | **VARCHAR(100)**  | Concepto del pago realizado                    |
+| `fecha`                | **DATE**          | Fecha que se realizo el presupuesto            |
 
 ## RELACIONES
 

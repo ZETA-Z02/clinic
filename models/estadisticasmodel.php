@@ -4,24 +4,24 @@ class EstadisticasModel extends Model{
         parent::__construct();
     }
     public function get(){
-        $sql = "SELECT (SELECT COUNT(*) FROM clientes) AS clientes, (SELECT COUNT(*) FROM citas) AS citas, (SELECT SUM(monto) FROM pago_detalles) AS dinero;";
+        $sql = "SELECT (SELECT COUNT(idcliente) FROM clientes) AS clientes, (select count(idcita) from citas where current_date() < date(fecha_ini)) AS citas, (SELECT SUM(importe) FROM presupuesto_detalles) AS dinero;";
         $data = $this->conn->ConsultaArray($sql);
         return $data;
     }
     public function GetLine($fecha){
         $sql = "SELECT 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 1 AND YEAR(fecha) = $fecha) as enero, 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 2 AND YEAR(fecha) = $fecha) as febrero, 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 3 AND YEAR(fecha) = $fecha) as marzo, 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 4 AND YEAR(fecha) = $fecha) as abril, 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 5 AND YEAR(fecha) = $fecha) as mayo, 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 6 AND YEAR(fecha) = $fecha) as junio, 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 7 AND YEAR(fecha) = $fecha) as julio, 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 8 AND YEAR(fecha) = $fecha) as agosto, 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 9 AND YEAR(fecha) = $fecha) as setiembre, 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 10 AND YEAR(fecha) = $fecha) as octubre, 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 11 AND YEAR(fecha) = $fecha) as noviembre, 
-        (SELECT SUM(monto) FROM pago_detalles WHERE MONTH(fecha) = 12 AND YEAR(fecha) = $fecha) as diciembre;";
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 1 AND YEAR(fecha) = $fecha) as enero, 
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 2 AND YEAR(fecha) = $fecha) as febrero, 
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 3 AND YEAR(fecha) = $fecha) as marzo, 
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 4 AND YEAR(fecha) = $fecha) as abril, 
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 5 AND YEAR(fecha) = $fecha) as mayo, 
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 6 AND YEAR(fecha) = $fecha) as junio, 
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 7 AND YEAR(fecha) = $fecha) as julio, 
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 8 AND YEAR(fecha) = $fecha) as agosto, 
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 9 AND YEAR(fecha) = $fecha) as setiembre, 
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 10 AND YEAR(fecha) = $fecha) as octubre, 
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 11 AND YEAR(fecha) = $fecha) as noviembre, 
+        (SELECT SUM(importe) FROM presupuesto_detalles WHERE MONTH(fecha) = 12 AND YEAR(fecha) = $fecha) as diciembre;";
         $data = $this->conn->ConsultaArray($sql);
         return $data;
     }

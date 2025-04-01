@@ -258,10 +258,22 @@ class Pagos extends Controller
             throw new Exception("Error al actualizar el presupuesto Total");
         }
     }
-    public function deletePresupuestoTotoal(){
-
+    public function deletePresupuestoTotal(){
+        $idpresupuesto = $_POST['idpresupuesto'];
+        $idpresupuestodetalle = $_POST['idpresupuestodetalle'];
+        if($this->model->DeletePresupuestoTotal($idpresupuesto,$idpresupuestodetalle)){
+            echo "OK";
+        }else{
+            throw new Exception("Error al eliminar el presupuesto Total");
+        }
     }
-    
+    public function mostrarInformacionPagos(){
+        $idcliente = $_POST['idcliente'];
+        $data = $this->model->MostrarInformacionPagos(4);
+        echo json_encode($data);
+    }
+
+    // 
 }
 
 ?>

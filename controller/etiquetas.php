@@ -10,6 +10,7 @@ class Etiquetas extends Controller
 		$this->view->Render('etiquetas/index');
 	}
 	public function get(){
+		$this->disabledCache();
 		$data = $this->model->Get();
 		while($row = mysqli_fetch_assoc($data)){
 			$json[] = array(
@@ -22,11 +23,13 @@ class Etiquetas extends Controller
 		echo json_encode($json);
 	}
 	public function getOne(){
+		$this->disabledCache();
 		$id = $_POST['id'];
 		$data = $this->model->GetOne($id);
 		echo json_encode($data);
 	}
 	public function create(){
+		$this->disabledCache();
 		$idetiqueta = $_POST['id'];
 		$idpersonal = $_POST['idpersonal'];
 		$nombre = $_POST['nombre'];
@@ -46,6 +49,7 @@ class Etiquetas extends Controller
 		}
 	}
 	public function delete(){
+		$this->disabledCache();
 		$id = $_POST['id'];
 		if($this->model->Delete($id)){
 			echo 1;
@@ -54,6 +58,7 @@ class Etiquetas extends Controller
 		}
 	}
 	public function getPersonal(){
+		$this->disabledCache();
 		$data = $this->model->GetPersonal();
 		while($row = mysqli_fetch_assoc($data)){
 			$json[] = array(

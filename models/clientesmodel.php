@@ -11,9 +11,10 @@ class ClientesModel extends Model{
     }
     // Condicion de un solo cliente para detalles
     public function Condicion($id){
-        $sql = "SELECT antecedente_enfermedad, medicado,complicacion_anestesia,alergia_medicamento,hemorragias,enfermedad,observaciones FROM clientes_condicion WHERE idcliente = '$id';";
+        $sql = "SELECT antecedente_enfermedad, antecedente_observacion, medicado, medicado_observacion, complicacion_anestesia, anestesia_observacion, alergia_medicamento, alergiamedicamento_observacion, hemorragias, hemorragias_observacion, enfermedad, observaciones FROM clientes_condicion WHERE idcliente = '$id';";
         $data = $this->conn->ConsultaArray($sql);
         return $data;
+        
     }
 
     public function Get(){
@@ -104,14 +105,14 @@ class ClientesModel extends Model{
         }
         $this->conn->conn->close();
     }
-    public function ActualizarCliente($idcliente,$nombre,$apellido,$telefono,$email,$sexo,$ciudad,$direccion,$antecedente, $medicado, $anestesia, $alergiamedicamento, $hemorragias, $enfermedad, $observaciones){
+    public function ActualizarCliente($idcliente,$nombre,$apellido,$telefono,$email,$sexo,$ciudad,$direccion,$antecedente, $medicado, $anestesia, $alergiamedicamento, $hemorragias, $enfermedad, $observaciones, $antecedente_observacion, $medicado_observacion, $anestesia_observacion, $alergiamedicamento_observacion, $hemorragias_observacion){
         $this->conn->conn->begin_transaction();
         try{
             $fechaActualizacion = date('Y-m-d H:i:s');
             $fecha = date('Y-m-d');
             $sql = "UPDATE clientes SET nombre='$nombre', apellido='$apellido', telefono = '$telefono', email = '$email', sexo = '$sexo', ciudad = '$ciudad', direccion = '$direccion', feUpdate='$fechaActualizacion' WHERE idcliente = '$idcliente';";
             $result = $this->conn->ConsultaSin($sql);
-            $sqlcondicion = "UPDATE clientes_condicion SET antecedente_enfermedad='$antecedente', medicado='$medicado',complicacion_anestesia='$anestesia',alergia_medicamento='$alergiamedicamento',hemorragias='$hemorragias',enfermedad='$enfermedad',observaciones='$observaciones', feActualizacion='$fecha' WHERE idcliente = '$idcliente';";
+            $sqlcondicion = "UPDATE clientes_condicion SET antecedente_enfermedad='$antecedente',antecedente_observacion='$antecedente_observacion', medicado='$medicado',medicado_observacion='$medicado_observacion', complicacion_anestesia='$anestesia',anestesia_observacion='$anestesia_observacion', alergia_medicamento='$alergiamedicamento',alergiamedicamento_observacion='$alergiamedicamento_observacion', hemorragias='$hemorragias',hemorragias_observacion='$hemorragias_observacion', enfermedad='$enfermedad',observaciones='$observaciones', feActualizacion='$fecha' WHERE idcliente = '$idcliente';";
             $result1 = $this->conn->ConsultaSin($sqlcondicion);
             $this->conn->conn->commit();
             return true;

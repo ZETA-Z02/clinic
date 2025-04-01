@@ -1,4 +1,5 @@
 <?php require 'views/navbar.php'; ?>
+<link rel="stylesheet" href="<?php css('estadisticas')?>">
 <script src="<?php getrute('node_modules/chart.js/dist/chart.umd.js') ?>"></script>
 <div class="grid-container full margin-2">
     <!-- CARDS -->
@@ -16,7 +17,7 @@
                 <h3 id="card-citas">20</h3>
             </div>
             <div class="card-section text-center">
-                <p class="lead">Citas</p>
+                <p class="lead">Citas Pendientes</p>
             </div>
         </div>
         <div class="card margin-horizontal-3 shadow">

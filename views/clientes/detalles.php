@@ -58,7 +58,8 @@
                             <th></th>
                             <th>SI</th>
                             <th>NO</th>
-                            <th>NO SABE</th>
+                            <th class="text-left">No Sabe</th>
+                            <th class="text-left">Observaciones</th>
                         </tr>
                     </thead>
                     <tbody class="tbody-detalles">
@@ -67,30 +68,45 @@
                             <td><input type="radio" name="antecedente" id="antecedente" value="1" <?php echo ($this->response['antecedente_enfermedad'] == 1) ? 'checked' : '';?>></td>
                             <td><input type="radio" name="antecedente" id="antecedente" value="2" <?php echo ($this->response['antecedente_enfermedad'] == 2) ? 'checked' : '';?>></td>
                             <td><input type="radio" name="antecedente" id="antecedente" value="3" <?php echo ($this->response['antecedente_enfermedad'] == 3) ? 'checked' : '';?>></td>
+                            <td>
+                                <input type="text" name="antecedente_observacion" id="antecedente_observacion" value="<?php echo $this->response['antecedente_observacion']?>">
+                            </td>
                         </tr>
                         <tr>
                             <td>¿Toma actualmente un medicamento?</td>
                             <td><input type="radio" name="medicamento" id="medicamento" value="1" <?php echo ($this->response['medicado'] == 1) ? 'checked' : '';?>></td>
                             <td><input type="radio" name="medicamento" id="medicamento" value="2" <?php echo ($this->response['medicado'] == 2) ? 'checked' : '';?>></td>
                             <td><input type="radio" name="medicamento" id="medicamento" value="3" <?php echo ($this->response['medicado'] == 3) ? 'checked' : '';?>></td>
+                            <td>
+                                <input type="text" name="medicado_observacion" id="medicado_observacion" value="<?php echo $this->response['medicado_observacion']?>">
+                            </td>
                         </tr>
                         <tr>
                             <td>¿Ha tenido alguna complicacion por anestesia?</td>
                             <td><input type="radio" name="anestesia" id="anestesia" value="1" <?php echo ($this->response['complicacion_anestesia'] == 1) ? 'checked' : '';?>></td>
                             <td><input type="radio" name="anestesia" id="anestesia" value="2" <?php echo ($this->response['complicacion_anestesia'] == 2) ? 'checked' : '';?>></td>
                             <td><input type="radio" name="anestesia" id="anestesia" value="3" <?php echo ($this->response['complicacion_anestesia'] == 3) ? 'checked' : '';?>></td>
+                            <td>
+                                <input type="text" name="anestesia_observacion" id="anestesia_observacion" value="<?php echo $this->response['anestesia_observacion']?>">
+                            </td>
                         </tr>
                         <tr>
                             <td>¿Es alergico a algun medicamento?</td>
                             <td><input type="radio" name="alergiamedicamento" id="medicamento" value="1" <?php echo ($this->response['alergia_medicamento'] == 1) ? 'checked' : '';?>></td>
                             <td><input type="radio" name="alergiamedicamento" id="medicamento" value="2" <?php echo ($this->response['alergia_medicamento'] == 2) ? 'checked' : '';?>></td>
                             <td><input type="radio" name="alergiamedicamento" id="medicamento" value="3" <?php echo ($this->response['alergia_medicamento'] == 3) ? 'checked' : '';?>></td>
+                            <td>
+                                <input type="text" name="alergiamedicamento_observacion" id="alergiamedicamento_observacion" value="<?php echo $this->response['alergiamedicamento_observacion']?>">
+                            </td>
                         </tr>
                         <tr>
                             <td>¿Es Propenso a hemorragias?</td>
                             <td><input type="radio" name="hemorragias" id="hemorragias" value="1" <?php echo ($this->response['hemorragias'] == 1) ? 'checked' : '';?>></td>
                             <td><input type="radio" name="hemorragias" id="hemorragias" value="2" <?php echo ($this->response['hemorragias'] == 2) ? 'checked' : '';?>></td>
                             <td><input type="radio" name="hemorragias" id="hemorragias" value="3" <?php echo ($this->response['hemorragias'] == 3) ? 'checked' : '';?>></td>
+                            <td>
+                                <input type="text" name="hemorragias_observacion" id="hemorragias_observacion" value="<?php echo $this->response['hemorragias_observacion']?>">
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -100,7 +116,7 @@
                 <input type="text" name="enfermedad" id="enfermedad" value="<?php echo $this->response['enfermedad']?>">
             </div>
             <div class="cell large-7">
-                <label for="email">Observaciones</label>
+                <label for="email">Observaciones Generales</label>
                 <textarea name="observaciones" id="observaciones"><?php echo $this->response['observaciones']?></textarea>
             </div>
         </div>

@@ -70,12 +70,12 @@
           </div>
           <div class="cell margin-top-3">
             <ul class="vertical menu">
-              <li>
+              <!-- <li>
                 <a href="#">
                   <i class="fas fa-gears"></i>
                   <span class="nav-item">Configuracion</span>
                 </a>
-              </li>
+              </li> -->
               <li>
                 <a href="<?php getrute('dashboard') ?>">
                   <i class="fa-solid fa-door-open"></i>

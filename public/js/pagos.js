@@ -433,6 +433,10 @@ $(document).ready(function(){
   deudaPresupuestoTotal();
   // actualizar
   actualizarFilaPresupuesto();
+  // Eliminar 
+  eliminarPresupuestoTotal();
+  // MENSAJE
+  mostrarInformacionPagos();
 });
 
 // -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -487,7 +491,7 @@ async function PresupuestoTotal() {
             <td class="text-center"><input type="text" class="text-center importe-editar general-input-monto" value="${element.importe}" disabled></td>
             <td>${deuda}</td>
             <td class="row-trash" style="display:none;">
-              <button class="btn-delete-row-presupuesto" data-idpresupuestodetalle="${element.idpresupuestodetalle}">
+              <button class="btn-delete-row-presupuesto" data-idpresupuestodetalle="${element.idpresupuestodetalle}" data-idpresupuesto="${element.idpresupuesto}">
                 <i class="fa-solid fa-trash"></i>
               </button>
             </td>
@@ -628,7 +632,18 @@ async function NuevoPagoPresupuestoTotal(){
 }
 // ELIMINAR UN PRESUPUESTO TOTAL
 function eliminarPresupuestoTotal(){
-  // btn-delete-row-presupuesto ->clase para agarrar y eliminar
+  $("#tbody-presupuesto-total").on("click",".btn-delete-row-presupuesto",function () {
+    let idpresupuesto = $(this).data("idpresupuesto");
+    let idpresupuestodetalle = $(this).data("idpresupuestodetalle");
+    // console.log(idpresupuesto, idpresupuestodetalle);
+    const data = {
+      idpresupuesto: `${idpresupuesto}`,
+      idpresupuestodetalle: `${idpresupuestodetalle}`,
+    }
+    delet(data, 'pagos', 'deletePresupuestoTotal');
+    generarTablas();
+    PresupuestoTotal();
+  });
 }
 // ACTUALIZAR DEL PRESUPUESTO TOTAL
 async function actualizarFilaPresupuesto() {
@@ -663,5 +678,34 @@ async function actualizarFilaPresupuesto() {
       });
   }catch(error){
       console.log(error+"ERROR EN ACTUALIZAR FILA");
+  }
+}
+
+async function mostrarInformacionPagos(){
+  try{
+    const idcliente = $("#idcliente").val();
+    const data = await getOne(idcliente, "pagos", "mostrarInformacionPagos");
+    const presupuesto = data.presupuesto, general = data.general;
+    const mensaje = $("#mensaje");
+    const deuda = $("#deuda_total");
+    const importe = $("#importe_total");
+    const total = $("#total_total");
+    deudaTotal = parseFloat(presupuesto.suma_total) - parseFloat(presupuesto.suma_importe);
+    deuda.html(`S/. ${deudaTotal}`)
+    importe.html(`S/. ${presupuesto.suma_importe}`)
+    total.html(`S/. ${presupuesto.suma_total}`)
+    if (general.suma_total != presupuesto.suma_total){
+      mensaje.html("El Presupuesto total no coincide con el General");
+      mensaje.addClass("mensaje-rojo");
+      return;
+    }
+    if (general.suma_monto < presupuesto.suma_importe){
+      mensaje.html("Los pagos estan desactualizados, actualice los pagos");
+      mensaje.css("color: #ff0000");
+      return;
+    }
+    mensaje.html("Datos Correctos");
+  }catch(error){
+    console.log(error+"ERROR EN MOSTRAR INFORMACION DE PAGOS");
   }
 }

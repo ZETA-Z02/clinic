@@ -22,9 +22,9 @@
         </thead>
         <tbody id="tabla-data-citas">
           <tr>
-            <td>2025-01-29</td>
-            <td>JS-JERSSON-ORTO-1H30M-JS</td>
-            <td>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Sit voluptatum eius explicabo molestias quisquam minima eos voluptate dolores officia deserunt, impedit beatae soluta incidunt vel? Nesciunt ducimus veritatis neque nam!</td>
+            <td>2025-01-01</td>
+            <td>JS-NOMBRE-ORTO-1H30M-JS</td>
+            <td>No hay citas registradas</td>
             <td>07:00:00</td>
           </tr>
           <tr></tr>

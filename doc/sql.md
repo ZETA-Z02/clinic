@@ -120,16 +120,21 @@ CREATE TABLE `odontograma` (
   CONSTRAINT `odontograma_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
 );
 
-CREATE TABLE `clientes_condicion`(
+CREATE TABLE `clientes_condicion` (
   `idcondicion` int(11) NOT NULL AUTO_INCREMENT,
   `idcliente` int(11) NOT NULL,
   `antecedente_enfermedad` tinyint(4) DEFAULT NULL,
+  `antecedente_observacion` varchar(20) DEFAULT NULL,
   `medicado` tinyint(4) DEFAULT NULL,
+  `medicado_observacion` varchar(20) DEFAULT NULL,
   `complicacion_anestesia` tinyint(4) DEFAULT NULL,
-  `alergia_medicamento` tinyint(4) DEFAULT NULL, 
+  `anestesia_observacion` varchar(20) DEFAULT NULL,
+  `alergia_medicamento` tinyint(4) DEFAULT NULL,
+  `alergiamedicamento_observacion` varchar(20) DEFAULT NULL,
   `hemorragias` tinyint(4) DEFAULT NULL,
+  `hemorragias_observacion` varchar(20) DEFAULT NULL,
   `enfermedad` varchar(100) DEFAULT NULL,
-  `observaciones` text default null,
+  `observaciones` text DEFAULT NULL,
   `feCreate` datetime DEFAULT current_timestamp(),
   `feActualizacion` date DEFAULT NULL,
   PRIMARY KEY (`idcondicion`),
@@ -137,7 +142,7 @@ CREATE TABLE `clientes_condicion`(
   CONSTRAINT `clientes_condicion_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
 );
 
-CREATE TABLE `presupuestos`(
+CREATE TABLE `presupuestos` (
   `idpresupuesto` int(11) NOT NULL AUTO_INCREMENT,
   `idcliente` int(11) DEFAULT NULL,
   `idprocedimiento` int(11) NOT NULL,
@@ -169,8 +174,15 @@ done
 
 # --------
 
-
 ALTER TABLE procedimientos ADD COLUMN color VARCHAR(50) DEFAULT NULL;
+# Condicion
+ALTER TABLE clientes_condicion ADD COLUMN antecedente_observacion VARCHAR(20) DEFAULT NULL AFTER antecedente_enfermedad;
+ALTER TABLE clientes_condicion ADD COLUMN medicado_observacion VARCHAR(20) DEFAULT NULL AFTER medicado;
+ALTER TABLE clientes_condicion ADD COLUMN anestesia_observacion VARCHAR(20) DEFAULT NULL AFTER complicacion_anestesia;
+ALTER TABLE clientes_condicion ADD COLUMN alergiamedicamento_observacion VARCHAR(20) DEFAULT NULL AFTER alergia_medicamento;
+ALTER TABLE clientes_condicion ADD COLUMN hemorragias_observacion VARCHAR(20) DEFAULT NULL AFTER hemorragias;
+
+# -------------------------------------
 
 INSERT INTO `personal` VALUES
 (1,'ADMINISTRADOR','ADMINISTRADOR',72535244,'998777712','MASCULINO','jersson.z032@gmail.com',NULL,'2024-12-05',NULL,'2024-12-05');
@@ -178,6 +190,8 @@ INSERT INTO `personal` VALUES
 INSERT INTO `login` VALUES
 (1,1,'admin','$2y$10$Yt3wiTd14EdTf4dGepP49.pWnboRhcwcO9YJN0wNX0ncCT.kALZXO',1,2);
 
+
+INSERT INTO etiquetas VALUES(null, 1, 'AA', '#ffffff');
 INSERT INTO `procedimientos` VALUES
 (1,'Consulta Dental','',50.00,'CONS','2024-12-01 21:01:40','#2D5F7D'),
 (2,'Ortodoncia','',3500.00,'ORTO','2024-12-01 21:40:58','#5679A6'),

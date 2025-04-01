@@ -168,8 +168,8 @@ INSERT INTO `clientes` VALUES
 (1,'YOJAN VICTOR','QUISPE APAZA',72535242,'988929723',NULL,NULL,NULL,'','2025-02-16 11:21:13','2025-02-16 11:21:13'),
 (2,'JERSSON PELAYO','QUISPE APAZA',72535244,'594643513',NULL,NULL,NULL,'','2025-02-21 12:51:16','2025-02-21 12:51:16'),
 (3,'ENGERBETH YERICO','CASTRO CHUQUINEIRA',75135464,'798794513',NULL,NULL,NULL,'9945641','2025-02-21 15:17:52','2025-02-21 15:17:52'),
-(4,'RENZO PELAYO','QUISPE SUBIA',1298506,'896546123','','','','','2025-02-21 20:31:44','2025-02-21 20:31:44'),
-(5,'LAURA YANE','SERIN YUPANQUI',72143123,'978923649','','','','no se','2025-03-11 18:39:54','2025-03-11 21:07:13');
+(4,'RENZO PELAYO','QUISPE SUBIA',1298506,'896546123','','','','','2025-02-21 20:31:44','2025-03-31 12:11:46'),
+(5,'LAURA YANE','SERIN YUPANQUI',72143123,'978923649','','','','no se','2025-03-11 18:39:54','2025-03-31 11:00:32');
 /*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -184,10 +184,15 @@ CREATE TABLE `clientes_condicion` (
   `idcondicion` int(11) NOT NULL AUTO_INCREMENT,
   `idcliente` int(11) NOT NULL,
   `antecedente_enfermedad` tinyint(4) DEFAULT NULL,
+  `antecedente_observacion` varchar(20) DEFAULT NULL,
   `medicado` tinyint(4) DEFAULT NULL,
+  `medicado_observacion` varchar(20) DEFAULT NULL,
   `complicacion_anestesia` tinyint(4) DEFAULT NULL,
+  `anestesia_observacion` varchar(20) DEFAULT NULL,
   `alergia_medicamento` tinyint(4) DEFAULT NULL,
+  `alergiamedicamento_observacion` varchar(20) DEFAULT NULL,
   `hemorragias` tinyint(4) DEFAULT NULL,
+  `hemorragias_observacion` varchar(20) DEFAULT NULL,
   `enfermedad` varchar(100) DEFAULT NULL,
   `observaciones` text DEFAULT NULL,
   `feCreate` datetime DEFAULT current_timestamp(),
@@ -205,11 +210,11 @@ CREATE TABLE `clientes_condicion` (
 LOCK TABLES `clientes_condicion` WRITE;
 /*!40000 ALTER TABLE `clientes_condicion` DISABLE KEYS */;
 INSERT INTO `clientes_condicion` VALUES
-(1,5,2,3,2,1,2,'covid','es intolorante a un medicamento','2025-03-11 18:39:54','2025-03-11'),
-(2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-03-11 18:40:58',NULL),
-(3,2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-03-11 18:41:00',NULL),
-(4,3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-03-11 18:41:02',NULL),
-(5,4,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-03-11 18:41:06',NULL);
+(1,5,2,NULL,3,NULL,2,NULL,3,NULL,2,NULL,'covid','es intolorante a un medicamento','2025-03-11 18:39:54','2025-03-31'),
+(2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-03-11 18:40:58',NULL),
+(3,2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-03-11 18:41:00',NULL),
+(4,3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-03-11 18:41:02',NULL),
+(5,4,1,'tiene algo',3,'no tiene nada',3,'algo tiene',3,'no es alergico',3,'si es propenso','una enfermedad','algo general','2025-03-11 18:41:06','2025-03-31');
 /*!40000 ALTER TABLE `clientes_condicion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -228,7 +233,7 @@ CREATE TABLE `etiquetas` (
   PRIMARY KEY (`idetiqueta`),
   UNIQUE KEY `idpersonal` (`idpersonal`),
   CONSTRAINT `etiquetas_ibfk_1` FOREIGN KEY (`idpersonal`) REFERENCES `personal` (`idpersonal`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -238,7 +243,8 @@ CREATE TABLE `etiquetas` (
 LOCK TABLES `etiquetas` WRITE;
 /*!40000 ALTER TABLE `etiquetas` DISABLE KEYS */;
 INSERT INTO `etiquetas` VALUES
-(1,2,'JJ','#c01c28');
+(1,2,'JJ','#c01c28'),
+(2,1,'AA','#c01c29');
 /*!40000 ALTER TABLE `etiquetas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -299,7 +305,7 @@ CREATE TABLE `odontograma` (
   KEY `odontograma_ibfk_2` (`idprocedimiento`),
   CONSTRAINT `odontograma_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
   CONSTRAINT `odontograma_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,7 +324,10 @@ INSERT INTO `odontograma` VALUES
 (7,5,17,17,'http://localhost/clinic/dumps/piezas/LAURA17/diente.png','123',1,1,'2025-03-16',NULL),
 (8,5,3,16,'http://localhost/clinic/dumps/piezas/LAURA16/icon.jpg','123',2,1,'2025-03-16',NULL),
 (9,5,4,15,'http://localhost/clinic/dumps/piezas/LAURA15/lm.png','123',1,2,'2025-03-16',NULL),
-(10,5,17,14,'http://localhost/clinic/dumps/piezas/LAURA14/diente.png','123',2,2,'2025-03-16',NULL);
+(10,5,17,14,'http://localhost/clinic/dumps/piezas/LAURA14/diente.png','123',2,2,'2025-03-16',NULL),
+(11,4,16,26,'http://localhost/clinic/dumps/piezas/RENZO26/icon.jpg','123',1,2,'2025-03-26',NULL),
+(12,4,10,27,'http://localhost/clinic/dumps/piezas/RENZO27/icon.jpg','456',2,1,'2025-03-26',NULL),
+(13,4,15,25,'http://localhost/clinic/dumps/piezas/RENZO25/icon.jpg','789',1,1,'2025-03-26',NULL);
 /*!40000 ALTER TABLE `odontograma` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -566,7 +575,7 @@ INSERT INTO `pago_detalles` VALUES
 (228,31,2,100.00,NULL,'4.7','2025-02-24 13:30:51'),
 (229,31,2,100.00,NULL,'4.7','2025-02-24 13:30:58'),
 (230,34,2,100.00,NULL,'1.2','2025-02-24 16:08:52'),
-(232,35,2,100.00,NULL,'2.3','2025-03-07 15:59:23'),
+(232,35,1,100.00,NULL,'2.3','2025-03-07 15:59:23'),
 (233,36,2,10.00,NULL,'4.3','2025-03-12 11:37:21'),
 (236,36,2,10.00,NULL,'1.1','2025-03-12 11:41:06');
 /*!40000 ALTER TABLE `pago_detalles` ENABLE KEYS */;
@@ -678,7 +687,78 @@ INSERT INTO `personal` VALUES
 /*!40000 ALTER TABLE `personal` ENABLE KEYS */;
 UNLOCK TABLES;
 
+--
+-- Table structure for table `presupuesto_detalles`
+--
 
+DROP TABLE IF EXISTS `presupuesto_detalles`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `presupuesto_detalles` (
+  `idpresupuestodetalle` int(11) NOT NULL AUTO_INCREMENT,
+  `idpresupuesto` int(11) NOT NULL,
+  `pieza` varchar(20) DEFAULT NULL,
+  `importe` decimal(10,2) NOT NULL,
+  `fecha` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`idpresupuestodetalle`),
+  KEY `idpresupuesto` (`idpresupuesto`),
+  CONSTRAINT `presupuesto_detalles_ibfk_1` FOREIGN KEY (`idpresupuesto`) REFERENCES `presupuestos` (`idpresupuesto`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `presupuesto_detalles`
+--
+
+LOCK TABLES `presupuesto_detalles` WRITE;
+/*!40000 ALTER TABLE `presupuesto_detalles` DISABLE KEYS */;
+INSERT INTO `presupuesto_detalles` VALUES
+(3,2,'3.3',100.00,'2025-03-20 11:32:18'),
+(4,2,'2.5',50.00,'2025-03-20 11:32:24'),
+(7,3,'1.1',100.00,'2025-03-26 21:01:11'),
+(8,1,'1.1',20.00,'2025-03-13 10:10:10'),
+(9,1,'1.1',10.00,'2025-03-13 10:10:10'),
+(11,1,'1.1',7.00,'2025-03-13 10:10:10');
+/*!40000 ALTER TABLE `presupuesto_detalles` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `presupuestos`
+--
+
+DROP TABLE IF EXISTS `presupuestos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `presupuestos` (
+  `idpresupuesto` int(11) NOT NULL AUTO_INCREMENT,
+  `idcliente` int(11) DEFAULT NULL,
+  `idprocedimiento` int(11) NOT NULL,
+  `monto_pagado` decimal(10,2) DEFAULT NULL,
+  `deuda_pendiente` decimal(10,2) DEFAULT NULL,
+  `total_pagar` decimal(10,2) DEFAULT NULL,
+  `feCreate` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`idpresupuesto`),
+  KEY `idcliente` (`idcliente`),
+  CONSTRAINT `presupuesto_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `presupuestos`
+--
+
+LOCK TABLES `presupuestos` WRITE;
+/*!40000 ALTER TABLE `presupuestos` DISABLE KEYS */;
+INSERT INTO `presupuestos` VALUES
+(1,5,1,37.00,13.00,50.00,'2025-03-20 10:28:59'),
+(2,5,13,150.00,250.00,400.00,'2025-03-20 11:32:18'),
+(3,4,11,100.00,400.00,500.00,'2025-03-26 21:01:11');
+/*!40000 ALTER TABLE `presupuestos` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `procedimientos`
+--
 
 DROP TABLE IF EXISTS `procedimientos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -743,4 +823,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-03-20 10:05:41
+-- Dump completed on 2025-04-01  8:57:25
