@@ -3,15 +3,15 @@
 <link rel="stylesheet" href="<?php css('clientes') ?>">
 
 <div class="grid-container" id="clientes-main">
-    <div class="grid-x grid-margin-x margin-top-3">
-        <div class="cell large-9 search">
-            <div class="search__item">
-                <input type="text" id="search-clientes" placeholder="Buscar Cliente">
-            </div>
-        </div>
+    <div class="grid-x margin-top-3">
         <div class="cell large-3 add">
             <div class="cell add_item">
                 <button class="button search" id="btn-nuevocliente"><i class="fa fa-plus"></i> Agregar Cliente</button>
+            </div>
+        </div>
+        <div class="cell large-9 search">
+            <div class="search__item">
+                <input type="text" id="search-clientes" placeholder="Buscar Cliente">
             </div>
         </div>
     </div>

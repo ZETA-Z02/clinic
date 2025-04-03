@@ -296,12 +296,21 @@ class PagosModel extends Model{
     }
     public function MostrarInformacionPagos($idcliente){
         // Obtiene los presupuestos de un cliente
-        $sqlpresupuestos = "SELECT (SELECT SUM(pdt.importe) FROM presupuestos p JOIN presupuesto_detalles pdt ON p.idpresupuesto=pdt.idpresupuesto WHERE p.idcliente=5) AS suma_importe, (SELECT SUM(total_pagar) FROM presupuestos WHERE idcliente=5) AS suma_total;";
+        $sqlpresupuestos = "SELECT (SELECT SUM(pdt.importe) FROM presupuestos p JOIN presupuesto_detalles pdt ON p.idpresupuesto=pdt.idpresupuesto WHERE p.idcliente='$idcliente') AS suma_importe, (SELECT SUM(total_pagar) FROM presupuestos WHERE idcliente='$idcliente') AS suma_total;";
         $datapresupuesto = $this->conn->ConsultaArray($sqlpresupuestos);
         // Obtiene los pagos de un cliente escepto ortodoncia
-        $sqlgeneral = "SELECT (SELECT SUM(pdt.monto) FROM pago_detalles pdt JOIN pagos p ON pdt.idpago=p.idpago WHERE p.idcliente=4 AND p.idprocedimiento!=2) AS suma_monto, (SELECT SUM(DISTINCT p.total_pagar) FROM pagos p JOIN pago_detalles pdt ON p.idpago = pdt.idpago WHERE p.idcliente = 4 AND p.idprocedimiento!=2) AS suma_total;";
+        $sqlgeneral = "SELECT (SELECT SUM(pdt.monto) FROM pago_detalles pdt JOIN pagos p ON pdt.idpago=p.idpago WHERE p.idcliente='$idcliente' AND p.idprocedimiento!=2) AS suma_monto, (SELECT SUM(DISTINCT p.total_pagar) FROM pagos p JOIN pago_detalles pdt ON p.idpago = pdt.idpago WHERE p.idcliente = '$idcliente' AND p.idprocedimiento!=2) AS suma_total;";
         $datageneral = $this->conn->ConsultaArray($sqlgeneral);
         return array("presupuesto" => $datapresupuesto, "general" => $datageneral);
+    }
+    public function DataBoleta($idcliente,$status){
+        $sql = "SELECT p.procedimiento, pd.importe FROM presupuesto_detalles pd JOIN presupuestos pre ON pd.idpresupuesto = pre.idpresupuesto JOIN procedimientos p ON pre.idprocedimiento=p.idprocedimiento WHERE pre.idcliente='$idcliente'";
+        if($status=='actual'){
+            $sql .= "ORDER BY pd.fecha DESC LIMIT 1";
+        }
+        $sql .= ";";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
     }
 }
 ?>

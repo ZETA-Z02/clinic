@@ -417,10 +417,15 @@
         </div>
         <div class="cell grid-x align-spaced botones-tabla-general margin-1">
             <button class="button btn-edit btn-editar" id="btn-editar">Editar</button>
-            <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda') ?>">Ir a Agenda</a>
             <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i class="fa fa-trash"></i></button>
+            <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda') ?>">Ir a Agenda</a>
+            <button id="boletaprint" class="boleta button warning">Boleta Actual</button>
+            <button id="boletaparaimprimir" class="boleta button warning">Boleta Todo</button>
         </div>
     </div>
 </div>
+<!-- <button id="boletaprint" class="boleta button warning">Boleta</button> -->
+<div id="contenidoticket"></div>
+<!-- <iframe src="<?php getrute('boleta.pdf') ?>" frameborder="0" id="pdfFrame"></iframe> -->
 <script src="<?php js('pagos'); ?>"></script>
 <?php require('views/footer.php'); ?>

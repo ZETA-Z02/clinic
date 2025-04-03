@@ -1,74 +1,88 @@
-$(document).ready(function(){
-    generarTablas();
-    NuevoProcedimiento();
-    continuarPago();
-    //ASSETS
-    btnTablas();
-    calcularDeuda();
-    numberFloat(".importe");
-    generarDoctores();
+$(document).ready(function () {
+  generarTablas();
+  NuevoProcedimiento();
+  continuarPago();
+  //ASSETS
+  btnTablas();
+  calcularDeuda();
+  numberFloat(".importe");
+  generarDoctores();
 
-    // DELET
-    habilitarDelet();
-    eliminarPago();
+  // DELET
+  habilitarDelet();
+  eliminarPago();
 
-    // OBTENER PROCEDIMIENTOS
-    getProcedimientos("general");
-    getProcedimientos("ortodoncia");
-    getProcedimientos("otros");
-    getProcedimientos("presupuesto");
+  // OBTENER PROCEDIMIENTOS
+  getProcedimientos("general");
+  getProcedimientos("ortodoncia");
+  getProcedimientos("otros");
+  getProcedimientos("presupuesto");
 
-    //EDIT
-    activarEdit();
-    actualizarFilaData();
+  //EDIT
+  activarEdit();
+  actualizarFilaData();
 });
-function generarTablas(){
-    Presupuestos('general');
-    Presupuestos('ortodoncia');
-    Presupuestos('otros');
+function generarTablas() {
+  Presupuestos("general");
+  Presupuestos("ortodoncia");
+  Presupuestos("otros");
 }
 function btnTablas() {
+  $(".modal").hide();
+  $(".activate").click(function () {
+    let idtabla = $(this).data("id");
+    // console.log(idtabla);
     $(".modal").hide();
-    $(".activate").click(function () {
-      let idtabla = $(this).data("id");
-      // console.log(idtabla);
-      $(".modal").hide();
-      $("#tabla-" + idtabla).show();
-    });
+    $("#tabla-" + idtabla).show();
+  });
 }
 async function Presupuestos(type) {
   try {
-    let total_mostrar=0, pagado_mostrar=0, deuda_mostrar=0;
+    let total_mostrar = 0,
+      pagado_mostrar = 0,
+      deuda_mostrar = 0;
     // Obteniendo el id del cliente
     let idcliente = $("#idcliente").val();
-    const data = await getOne({id:idcliente,tipo:type}, "pagos", "presupuestos");//SOlicitud al servidor
+    const data = await getOne(
+      { id: idcliente, tipo: type },
+      "pagos",
+      "presupuestos"
+    ); //SOlicitud al servidor
     const tbody = $(`#tbody-${type}`); // ID de la tabla
     tbody.empty(); // Vaciamos la tabla
     let fechaActual = new Date().toISOString().slice(0, 10);
-    let monto = 0; //Variables para los calculos 
-    let deuda = 0; //Variables para los calculos 
-    let total = 0; //Variables para los calculos 
+    let monto = 0; //Variables para los calculos
+    let deuda = 0; //Variables para los calculos
+    let total = 0; //Variables para los calculos
     let html = ""; //Codigo HTML
     // Recorremos los datos que llegaron
     data.forEach((element) => {
       //console.log(element);
-        // variables que se asignan de la tabla PAGOS 
+      // variables que se asignan de la tabla PAGOS
       deuda = parseFloat(element.saldo_pendiente); // la deuda es el saldo pendiente
-      total = parseFloat(element.total_pagar); // el total es el total a pagar 
+      total = parseFloat(element.total_pagar); // el total es el total a pagar
       let restante = total - monto - parseFloat(element.monto);
       html += `
-        <tr data-idpago="${element.idpago}" data-idpagodetalle="${element.idpagodetalle}" data-total="${total}" data-deuda="${deuda}" data-monto="${element.monto_pagado}" data-importeactual="${element.monto}">
+        <tr data-idpago="${element.idpago}" data-idpagodetalle="${
+        element.idpagodetalle
+      }" data-total="${total}" data-deuda="${deuda}" data-monto="${
+        element.monto_pagado
+      }" data-importeactual="${element.monto}">
                   <td>${element.fecha}</td>
                   <td class="row-pieza">${element.pieza}</td>
                   <td>${element.procedimiento}</td>
                   <td class="text-right">${total - monto}</td>
                   <td>
-                    <input type="text" class="general-input-monto text-center" id="input-importe-data" value="${element.monto}" disabled>
+                    <input type="text" class="general-input-monto text-center" id="input-importe-data" value="${
+                      element.monto
+                    }" disabled>
                   </td>
                   <td>${restante}</td>
                   <td class="row-etiqueta">${element.etiqueta}</td>
                   <td class="row-trash" style="display:none;">
-                    <button class="btn-delete-row" data-idpagodetalle="${element.idpagodetalle}">
+                    <button class="btn-delete-row" data-idpagodetalle="${
+                      element.idpagodetalle
+                    }">
                       <i class="fa-solid fa-trash"></i>
                     </button>
                   </td>
@@ -76,14 +90,20 @@ async function Presupuestos(type) {
               `;
       monto += parseFloat(element.monto); // Suma el monto a la variable monto
       //console.log('antes de ingresar al primer if: ',deuda,monto,total);
-      // SI LA DEUDA ES MAYOR A CERO Y EL MONTO MAS LA DEUDA ES IGUAL AL TOTAL 
+      // SI LA DEUDA ES MAYOR A CERO Y EL MONTO MAS LA DEUDA ES IGUAL AL TOTAL
       // SE AGREGA UNA FILA PARA UN NUEVO PAGO DEL MISMO PROCEDIMIENTO Y DE UN MISMO PAGO
       if (deuda > 0 && monto + deuda === total) {
-        html += `<tr class="fila-pago" data-idpago="${element.idpago}" data-total="${total}" data-monto="${element.monto_pagado}" data-deuda="${deuda}">
+        html += `<tr class="fila-pago" data-idpago="${
+          element.idpago
+        }" data-total="${total}" data-monto="${
+          element.monto_pagado
+        }" data-deuda="${deuda}">
                           <td>${fechaActual}</td>
                           <td>${generarSelectPiezas()}</td>
                           <td>${element.procedimiento}</td>
-                          <td><input type="text" class="text-right" value="${total - monto}" disabled></td>
+                          <td><input type="text" class="text-right" value="${
+                            total - monto
+                          }" disabled></td>
                           <td>
                             <input type="text" class="importe-tabla" placeholder="Nuevo importe" id='importe-tabla'>
                           </td>
@@ -133,296 +153,307 @@ async function Presupuestos(type) {
     $(`#${type}-pagado`).html(`s/. ${pagado_mostrar}`);
     tbody.append(html);
   } catch (error) {
-    console.log(error+"AL OBTENER DATOS EN LA TABLAS PAGOS");
+    console.log(error + "AL OBTENER DATOS EN LA TABLAS PAGOS");
   }
 }
 function generarSelectPiezas() {
-    let opciones = "";
-    for (let i = 1; i <= 4; i++) {
-        for (let j = 1; j <= 8; j++) {
-        opciones += `<option value="${i}.${j}">${i}.${j}</option>`;
-        }
+  let opciones = "";
+  for (let i = 1; i <= 4; i++) {
+    for (let j = 1; j <= 8; j++) {
+      opciones += `<option value="${i}.${j}">${i}.${j}</option>`;
     }
-    return `<select name="pieza" id="pieza-tabla" class="pieza-tablas">${opciones}</select>`;
+  }
+  return `<select name="pieza" id="pieza-tabla" class="pieza-tablas">${opciones}</select>`;
 }
 async function generarDoctores() {
-    try {
-        const data = await get("pagos", "getDoctores");
-        let html = "";
-        data.forEach((element) => {
-            html += `<option value="${element.idpersonal}" data-id="${element.etiqueta}">${element.nombre}</option>`;
-        });
-        $(".doctor-tablas, .doctor").html(html);
-        $(".pieza, .pieza-tablas, .doctor, .doctor-tablas").val("");
-        //return html;
-        // $("#pieza, #pieza-tabla-general").val("");
-    } catch (error) {
-        console.log("Error en obtener Doctores.." + error);
-    }
+  try {
+    const data = await get("pagos", "getDoctores");
+    let html = "";
+    data.forEach((element) => {
+      html += `<option value="${element.idpersonal}" data-id="${element.etiqueta}">${element.nombre}</option>`;
+    });
+    $(".doctor-tablas, .doctor").html(html);
+    $(".pieza, .pieza-tablas, .doctor, .doctor-tablas").val("");
+    //return html;
+    // $("#pieza, #pieza-tabla-general").val("");
+  } catch (error) {
+    console.log("Error en obtener Doctores.." + error);
+  }
 }
 // NUEVO PROCEDIMIENTO
 async function NuevoProcedimiento() {
-    try {
-      let timeout;
-      $(".importe, .procedimiento, .pieza, .doctor").on("input change",function () {
-          let fila = $(this).closest("tr");
-          let procedimiento = fila.find(".procedimiento");
-          let importe = fila.find(".importe");
-          let total_pagar = fila.find(".monto-a-pagar");
-          let pieza = fila.find(".pieza");
-          let doctor = fila.find(".doctor");
-          clearTimeout(fila.data("timeout"));
-          //console.log("Nuevo procedimiento procesando...");
-          // Esperar 2 segundo después de que todos los inputs estén llenos
-          timeout = setTimeout(() => {
-            const data = {
-              idcliente: $("#idcliente").val(),
-              idprocedimiento: procedimiento.val(),
-              total_pagar: total_pagar.val(),
-              importe: importe.val(),
-              pieza: pieza.val(),
-              doctor: doctor.val(),
-            };
-            //console.log(data);
-            // Validar si los campos están llenos
-            if (Object.values(data).every((value) => value.trim() !== "")) {
-              insert(data, "pagos", "nuevoProcedimientoPago");
-              //console.log(data, "Enviando datos al servidor");
-              importe.val("");
-              procedimiento.val("");
-              pieza.val("");
-              doctor.val("");
-              generarTablas();
-            }
-          }, 2000); // Espera de 1 segundo
-          fila.data("timeout",timeout); //Guardar timeout en la fila
-        }
-      );
-    } catch (error) {
-      console.log("ERror al insertar nuevo pago con su procedimiento" + error);
-    }
+  try {
+    let timeout;
+    $(".importe, .procedimiento, .pieza, .doctor").on(
+      "input change",
+      function () {
+        let fila = $(this).closest("tr");
+        let procedimiento = fila.find(".procedimiento");
+        let importe = fila.find(".importe");
+        let total_pagar = fila.find(".monto-a-pagar");
+        let pieza = fila.find(".pieza");
+        let doctor = fila.find(".doctor");
+        clearTimeout(fila.data("timeout"));
+        //console.log("Nuevo procedimiento procesando...");
+        // Esperar 2 segundo después de que todos los inputs estén llenos
+        timeout = setTimeout(() => {
+          const data = {
+            idcliente: $("#idcliente").val(),
+            idprocedimiento: procedimiento.val(),
+            total_pagar: total_pagar.val(),
+            importe: importe.val(),
+            pieza: pieza.val(),
+            doctor: doctor.val(),
+          };
+          //console.log(data);
+          // Validar si los campos están llenos
+          if (Object.values(data).every((value) => value.trim() !== "")) {
+            insert(data, "pagos", "nuevoProcedimientoPago");
+            //console.log(data, "Enviando datos al servidor");
+            importe.val("");
+            procedimiento.val("");
+            pieza.val("");
+            doctor.val("");
+            generarTablas();
+          }
+        }, 2000); // Espera de 1 segundo
+        fila.data("timeout", timeout); //Guardar timeout en la fila
+      }
+    );
+  } catch (error) {
+    console.log("ERror al insertar nuevo pago con su procedimiento" + error);
+  }
 }
 // CONTINUAR CON EL PAGO DE UN PROCEDIMIENTO
 async function continuarPago() {
-    try {
-      let timeout;
-      $(document).on("input change",".importe-tabla, .pieza-tablas, .doctor-tablas",function () {
+  try {
+    let timeout;
+    $(document).on(
+      "input change",
+      ".importe-tabla, .pieza-tablas, .doctor-tablas",
+      function () {
         numberFloat(".importe-tabla");
-          let trfila = $(this).closest("tr");
-          let importe = trfila.find("#importe-tabla");
-          let pieza = trfila.find("#pieza-tabla");
-          let doctor = trfila.find("#doctor");
-          let idpago = trfila.data("idpago");
-          let idpagodetalle = trfila.data("idpagodetalle");
-          let total = trfila.data("total");
-          let deuda = trfila.data("deuda");
-          let monto = trfila.data("monto");
-          // REINICIAR EL TIME
-          clearTimeout(trfila.data("timeout"));
-          // Esperar 1 segundo después de que todos los inputs estén llenos
-          timeout = setTimeout(() => {
-            const data = {
-              idcliente: $("#idcliente").val(),
-              idpago: `${idpago}`,
-              importe: importe.val(),
-              pieza: pieza.val(),
-              doctor: doctor.val(),
-              total: `${total}`,
-              deuda: `${deuda}`,
-              monto: monto,
-            };
-            //console.log(data);
-            // Validar si los campos están llenos
-            if (Object.values(data).every((value) => value.trim() !== "")) {
-              insert(data, "pagos", "nuevoPago");
-              //console.log(data, "Enviando datos al servidor");
-              importe.val("");
-              doctor.val("");
-              pieza.val("");
-              generarTablas();
-            }
-          }, 2000); // Espera de 2 segundo
-          trfila.data("timeout",timeout); //Guardar timeout en la fila
-        }
-      );
-    } catch (error) {
-      console.log("ERror al hacer un nuevo pago de un procedimiento ya creado" + error);
-    }
+        let trfila = $(this).closest("tr");
+        let importe = trfila.find("#importe-tabla");
+        let pieza = trfila.find("#pieza-tabla");
+        let doctor = trfila.find("#doctor");
+        let idpago = trfila.data("idpago");
+        let idpagodetalle = trfila.data("idpagodetalle");
+        let total = trfila.data("total");
+        let deuda = trfila.data("deuda");
+        let monto = trfila.data("monto");
+        // REINICIAR EL TIME
+        clearTimeout(trfila.data("timeout"));
+        // Esperar 1 segundo después de que todos los inputs estén llenos
+        timeout = setTimeout(() => {
+          const data = {
+            idcliente: $("#idcliente").val(),
+            idpago: `${idpago}`,
+            importe: importe.val(),
+            pieza: pieza.val(),
+            doctor: doctor.val(),
+            total: `${total}`,
+            deuda: `${deuda}`,
+            monto: monto,
+          };
+          //console.log(data);
+          // Validar si los campos están llenos
+          if (Object.values(data).every((value) => value.trim() !== "")) {
+            insert(data, "pagos", "nuevoPago");
+            //console.log(data, "Enviando datos al servidor");
+            importe.val("");
+            doctor.val("");
+            pieza.val("");
+            generarTablas();
+          }
+        }, 2000); // Espera de 2 segundo
+        trfila.data("timeout", timeout); //Guardar timeout en la fila
+      }
+    );
+  } catch (error) {
+    console.log(
+      "ERror al hacer un nuevo pago de un procedimiento ya creado" + error
+    );
+  }
 }
 // CALCULAR DEUDA
 function calcularDeuda() {
-    $(document).on("keyup", '.importe, .importe-tabla', function () {
-        let fila = $(this).closest("tr");
-        let montototal = fila.find("input").eq(0).val();
-        let importe = $(this).val();
-        let deuda = montototal - importe;
-        // console.log(deuda,montototal,importe);
-        fila.find("td").eq(5).html(deuda.toFixed(2));
-    });
+  $(document).on("keyup", ".importe, .importe-tabla", function () {
+    let fila = $(this).closest("tr");
+    let montototal = fila.find("input").eq(0).val();
+    let importe = $(this).val();
+    let deuda = montototal - importe;
+    // console.log(deuda,montototal,importe);
+    fila.find("td").eq(5).html(deuda.toFixed(2));
+  });
 }
 // HABILITAR ELIMINACION
-function habilitarDelet(){
-    $(document).on('click','.btn-eliminar',function(){
-        let fila = $(".row-trash");
-        if(fila.css("display") == "block"){
-            fila.css("display","none");
-        }else{
-            fila.css("display","block");
-        }
-    });
+function habilitarDelet() {
+  $(document).on("click", ".btn-eliminar", function () {
+    let fila = $(".row-trash");
+    if (fila.css("display") == "block") {
+      fila.css("display", "none");
+    } else {
+      fila.css("display", "block");
+    }
+  });
 }
 // ELIMINAR PAGO
-async function eliminarPago(){
-    $(document).on("click",".btn-delete-row",function(){
-      //console.log("eliminando esta fila"+$(this).data("idpagodetalle"));
-      let idpagodetalle = $(this).data("idpagodetalle");
-      let fila = $(this).closest("tr");
-      let idpago = fila.data("idpago");
-      let monto = fila.data("monto");
-      let deuda = fila.data("deuda");
-      let total = fila.data("total");
-      let importeActual = fila.data("importeactual");
-      const data = {
-        idpagodetalle: `${idpagodetalle}`,
-        idpago: `${idpago}`,
-        monto: monto,
-        deuda: `${deuda}`,
-        total: `${total}`,
-        importeActual: importeActual
-      }
-      console.log(data);
-      delet(data, 'pagos', 'deletePago');
-      generarTablas();
-    });
+async function eliminarPago() {
+  $(document).on("click", ".btn-delete-row", function () {
+    //console.log("eliminando esta fila"+$(this).data("idpagodetalle"));
+    let idpagodetalle = $(this).data("idpagodetalle");
+    let fila = $(this).closest("tr");
+    let idpago = fila.data("idpago");
+    let monto = fila.data("monto");
+    let deuda = fila.data("deuda");
+    let total = fila.data("total");
+    let importeActual = fila.data("importeactual");
+    const data = {
+      idpagodetalle: `${idpagodetalle}`,
+      idpago: `${idpago}`,
+      monto: monto,
+      deuda: `${deuda}`,
+      total: `${total}`,
+      importeActual: importeActual,
+    };
+    console.log(data);
+    delet(data, "pagos", "deletePago");
+    generarTablas();
+  });
 }
 
 // OBTENER PROCEDIMIENTOS
 async function getProcedimientos(type) {
-    if(type=="general"){
-        type = "general";
-    }else if(type=="ortodoncia"){
-        type = "ortodoncia";
-    }else if(type=="otros"){
-        type = "otros";
-    }else if(type=="presupuesto"){
-        type = "presupuesto";
-    }
-    try {
-        const data = await get("pagos", `getProcedimientos${type}`);
-        let html = "";
-        data.forEach((element, index) => {
-            html += `<option value="${element.idprocedimiento}">${element.procedimiento}</option>`;
-        });
-        $(`#procedimiento-${type}`).html(html);
-        $(`#procedimiento-${type}`).val("");
-        const idprocedimiento = data.length > 0 ? data[0].idprocedimiento : null;
-        if (idprocedimiento) {
-            //console.log("El primer valor es: firstValue "+idprocedimiento);
-            procedimientoPrecio(idprocedimiento,type);
-        }
-        selectProcedimientos(type);
-    } catch (error) {
-        console.log("Error en obtener Procedimientos.." + error);
-    }
-}
-function selectProcedimientos(type=null) {
-    $(document).on("input change", `#procedimiento-${type}`, function () {
-        let idprocedimiento = $(this).val();
-        //console.log(idprocedimiento);
-        procedimientoPrecio(idprocedimiento,type);
+  if (type == "general") {
+    type = "general";
+  } else if (type == "ortodoncia") {
+    type = "ortodoncia";
+  } else if (type == "otros") {
+    type = "otros";
+  } else if (type == "presupuesto") {
+    type = "presupuesto";
+  }
+  try {
+    const data = await get("pagos", `getProcedimientos${type}`);
+    let html = "";
+    data.forEach((element, index) => {
+      html += `<option value="${element.idprocedimiento}">${element.procedimiento}</option>`;
     });
-    let fecha = new Date().toISOString().slice(0, 10);
-    $(".mostrar-fecha").html(fecha);
+    $(`#procedimiento-${type}`).html(html);
+    $(`#procedimiento-${type}`).val("");
+    const idprocedimiento = data.length > 0 ? data[0].idprocedimiento : null;
+    if (idprocedimiento) {
+      //console.log("El primer valor es: firstValue "+idprocedimiento);
+      procedimientoPrecio(idprocedimiento, type);
+    }
+    selectProcedimientos(type);
+  } catch (error) {
+    console.log("Error en obtener Procedimientos.." + error);
+  }
+}
+function selectProcedimientos(type = null) {
+  $(document).on("input change", `#procedimiento-${type}`, function () {
+    let idprocedimiento = $(this).val();
+    //console.log(idprocedimiento);
+    procedimientoPrecio(idprocedimiento, type);
+  });
+  let fecha = new Date().toISOString().slice(0, 10);
+  $(".mostrar-fecha").html(fecha);
 }
 // Muestra el Precio de procedimiento
-async function procedimientoPrecio(idprocedimiento,type=null) {
-    try {
-        const data = await getOne(idprocedimiento, "procedimientos", "getOne");
-        //console.log(data);
-        $(`#monto-pagar-${type}`).val(data.precio);
-    } catch (error) {
-        console.log("ERror al obtener el precio del procedimiento" + error);
-    }
+async function procedimientoPrecio(idprocedimiento, type = null) {
+  try {
+    const data = await getOne(idprocedimiento, "procedimientos", "getOne");
+    //console.log(data);
+    $(`#monto-pagar-${type}`).val(data.precio);
+  } catch (error) {
+    console.log("ERror al obtener el precio del procedimiento" + error);
+  }
 }
 // EDITAR
 async function activarEdit() {
-    try {
-        const data = await get("pagos", "getDoctores");
-        $(document).on("click", ".btn-editar", function () {
-        const input = $(".general-input-monto");
+  try {
+    const data = await get("pagos", "getDoctores");
+    $(document).on("click", ".btn-editar", function () {
+      const input = $(".general-input-monto");
 
-        if (input.prop("disabled")) {
-            input.prop("disabled", false);
-            $(this).html("Dejar de Editar");
-            let html = '<select id="row-etiqueta-doctor" class="row-etiqueta-doctor">';
-            data.forEach((element) => {
-                html += `<option value="${element.idpersonal}" data-id="${element.etiqueta}">${element.nombre}</option>`;
-            });
-            html += "</select>";
-            $(".row-etiqueta").html(html);
-            let htmlpieza = `${generarSelectPiezas()}`;
-            $(".row-pieza").html(htmlpieza);
-            $(".pieza, .pieza-tablas, .doctor, .doctor-tablas").val("");
-            $("#row-etiqueta-doctor, .pieza-tablas").val("");
-        } else {
-            input.prop("disabled", true);
-            $(this).html("Editar");
-            generarTablas();
-            PresupuestoTotal();
-        }
+      if (input.prop("disabled")) {
+        input.prop("disabled", false);
+        $(this).html("Dejar de Editar");
+        let html =
+          '<select id="row-etiqueta-doctor" class="row-etiqueta-doctor">';
+        data.forEach((element) => {
+          html += `<option value="${element.idpersonal}" data-id="${element.etiqueta}">${element.nombre}</option>`;
         });
-    } catch (error) {
-        console.log("Error en activar EDIT" + error);
-    }
+        html += "</select>";
+        $(".row-etiqueta").html(html);
+        let htmlpieza = `${generarSelectPiezas()}`;
+        $(".row-pieza").html(htmlpieza);
+        $(".pieza, .pieza-tablas, .doctor, .doctor-tablas").val("");
+        $("#row-etiqueta-doctor, .pieza-tablas").val("");
+      } else {
+        input.prop("disabled", true);
+        $(this).html("Editar");
+        generarTablas();
+        PresupuestoTotal();
+      }
+    });
+  } catch (error) {
+    console.log("Error en activar EDIT" + error);
+  }
 }
 // update una fila, un pago_detalle
 async function actualizarFilaData() {
-    try{
-        let timeout;
-        $(document).on("input change",".general-input-monto,.pieza-tablas,.row-etiqueta-doctor",function () {
-            numberFloat(".general-input-monto");
+  try {
+    let timeout;
+    $(document).on(
+      "input change",
+      ".general-input-monto,.pieza-tablas,.row-etiqueta-doctor",
+      function () {
+        numberFloat(".general-input-monto");
 
-            clearTimeout(timeout);
-            let trfila = $(this).closest("tr");
-            let idpago = trfila.data("idpago");
-            let idpagodetalle = trfila.data("idpagodetalle");
-            let importeActualizado = trfila.find(".general-input-monto");
-            let importeActual = trfila.data("importeactual");
-            let pieza = trfila.find(".pieza-tablas");
-            let doctor = trfila.find(".row-etiqueta-doctor");
-            let total = trfila.data("total");
-            let deuda = trfila.data("deuda");
-            let monto = trfila.data("monto");
-            timeout = setTimeout(() => {
-                const data = {
-                    idcliente: $("#idcliente").val(),
-                    idpago: `${idpago}`,
-                    idpagodetalle: `${idpagodetalle}`,
-                    importeActual: `${importeActual}`,
-                    pieza: pieza.val(),
-                    doctor: doctor.val(),
-                    total: `${total}`,
-                    deuda: `${deuda}`,
-                    montoPagado: `${monto}`,
-                    importeActualizado: importeActualizado.val(),
-                };
-                //console.log(data);
-                // Validar si los campos están llenos
-                if (Object.values(data).every((value) => value.trim() !== "")) {
-                    insert(data, "pagos", "updatePago");
-                    console.log(data, "Enviando datos al servidor");
-                    generarTablas();
-                }
-            }, 2000); // Espera de 1 segundo
-        });
-    }catch(error){
-        console.log(error+"ERROR EN ACTUALIZAR FILA");
-    }
+        clearTimeout(timeout);
+        let trfila = $(this).closest("tr");
+        let idpago = trfila.data("idpago");
+        let idpagodetalle = trfila.data("idpagodetalle");
+        let importeActualizado = trfila.find(".general-input-monto");
+        let importeActual = trfila.data("importeactual");
+        let pieza = trfila.find(".pieza-tablas");
+        let doctor = trfila.find(".row-etiqueta-doctor");
+        let total = trfila.data("total");
+        let deuda = trfila.data("deuda");
+        let monto = trfila.data("monto");
+        timeout = setTimeout(() => {
+          const data = {
+            idcliente: $("#idcliente").val(),
+            idpago: `${idpago}`,
+            idpagodetalle: `${idpagodetalle}`,
+            importeActual: `${importeActual}`,
+            pieza: pieza.val(),
+            doctor: doctor.val(),
+            total: `${total}`,
+            deuda: `${deuda}`,
+            montoPagado: `${monto}`,
+            importeActualizado: importeActualizado.val(),
+          };
+          //console.log(data);
+          // Validar si los campos están llenos
+          if (Object.values(data).every((value) => value.trim() !== "")) {
+            insert(data, "pagos", "updatePago");
+            console.log(data, "Enviando datos al servidor");
+            generarTablas();
+          }
+        }, 2000); // Espera de 1 segundo
+      }
+    );
+  } catch (error) {
+    console.log(error + "ERROR EN ACTUALIZAR FILA");
+  }
 }
 
-
-// PRESUPUESTO TOTAL TABLA, DIFERENTES A LAS DEMAS TABLAS 
-$(document).ready(function(){
+// PRESUPUESTO TOTAL TABLA, DIFERENTES A LAS DEMAS TABLAS
+$(document).ready(function () {
   // NUEVO PRESUPUESTO TOTAL Y NUEVO PAGO DEL PRESUPUESTO
   NuevoPresupuestoTotal();
   NuevoPagoPresupuestoTotal();
@@ -433,10 +464,12 @@ $(document).ready(function(){
   deudaPresupuestoTotal();
   // actualizar
   actualizarFilaPresupuesto();
-  // Eliminar 
+  // Eliminar
   eliminarPresupuestoTotal();
   // MENSAJE
   mostrarInformacionPagos();
+  // BOLETA
+  mostrarImpresion();
 });
 
 // -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -450,10 +483,10 @@ async function PresupuestoTotal() {
     const fechaActual = new Date().toISOString().slice(0, 10);
     const data = await getOne(id, "pagos", "getPresupuestoTotal");
     //console.log(data);
-    let html = '';
+    let html = "";
     // Agrupar por idpresupuesto para calcular totales correctos
     const presupuestosPorId = {};
-    
+
     data.forEach((element) => {
       if (!presupuestosPorId[element.idpresupuesto]) {
         presupuestosPorId[element.idpresupuesto] = {
@@ -462,12 +495,16 @@ async function PresupuestoTotal() {
           procedimiento: element.procedimiento,
           total_pagar: parseFloat(element.total_pagar),
           monto_total: parseFloat(element.monto_pagado),
-          importe_total: 0
+          importe_total: 0,
         };
       }
       presupuestosPorId[element.idpresupuesto].detalles.push(element);
-      presupuestosPorId[element.idpresupuesto].monto_total += parseFloat(element.monto);
-      presupuestosPorId[element.idpresupuesto].importe_total += parseFloat(element.importe);
+      presupuestosPorId[element.idpresupuesto].monto_total += parseFloat(
+        element.monto
+      );
+      presupuestosPorId[element.idpresupuesto].importe_total += parseFloat(
+        element.importe
+      );
       //console.log(presupuestosPorId);
     });
     //console.log("presupuesto por id: ",presupuestosPorId);
@@ -480,7 +517,7 @@ async function PresupuestoTotal() {
       let importe = 0;
       presupuesto.detalles.forEach((element) => {
         //console.log(monto_pagado_index);
-        importe += parseFloat(element.importe)
+        importe += parseFloat(element.importe);
         let deuda = parseFloat(element.total_pagar) - importe;
         html += `
           <tr data-idpresupuestodetalle="${element.idpresupuestodetalle}" data-idpresupuesto="${element.idpresupuesto}">
@@ -499,14 +536,17 @@ async function PresupuestoTotal() {
         `;
         monto_pagado_index -= parseFloat(element.importe);
       });
-      
+
       // Calcular si quedan pagos pendientes
-      const deudaPendiente = presupuesto.total_pagar - presupuesto.importe_total;
-      
+      const deudaPendiente =
+        presupuesto.total_pagar - presupuesto.importe_total;
+
       // Si hay deuda pendiente, mostrar fila para nuevo pago
       if (deudaPendiente > 0) {
         html += `
-          <tr class="fila-pago-pendiente" data-idpresupuesto="${presupuesto.idpresupuesto}">
+          <tr class="fila-pago-pendiente" data-idpresupuesto="${
+            presupuesto.idpresupuesto
+          }">
             <td>${fechaActual}</td>
             <td>${generarSelectPiezas()}</td>
             <td>${presupuesto.procedimiento}</td>
@@ -539,25 +579,31 @@ async function PresupuestoTotal() {
                 </tr>`;
       }
     });
-    
-    $("#tbody-presupuesto-total").html(html);    
-  } catch(e) {
-    console.log("Error en presupuesto total: ",e);
+
+    $("#tbody-presupuesto-total").html(html);
+  } catch (e) {
+    console.log("Error en presupuesto total: ", e);
   }
 }
-function deudaPresupuestoTotal(){
-  $("#tbody-presupuesto-total").on("input change","#importe-nuevo",function () {
-    let importeNuevo = $(this).val();
-    let monto = $(".presupuesto-monto").val();
-    let deuda = $("#deuda-tabla-presupuesto");
-    deuda.html(monto - importeNuevo);
-  });
+function deudaPresupuestoTotal() {
+  $("#tbody-presupuesto-total").on(
+    "input change",
+    "#importe-nuevo",
+    function () {
+      let importeNuevo = $(this).val();
+      let monto = $(".presupuesto-monto").val();
+      let deuda = $("#deuda-tabla-presupuesto");
+      deuda.html(monto - importeNuevo);
+    }
+  );
 }
 // FUNCIONA
 async function NuevoPresupuestoTotal() {
   try {
     let timeout;
-    $("#importe-presupuesto, .procedimiento-total, .pieza-total").on("input change",function () {
+    $("#importe-presupuesto, .procedimiento-total, .pieza-total").on(
+      "input change",
+      function () {
         let fila = $(this).closest("tr");
         let procedimiento = fila.find(".procedimiento-total");
         let importe = fila.find(".importe");
@@ -586,17 +632,20 @@ async function NuevoPresupuestoTotal() {
             PresupuestoTotal();
           }
         }, 2000); // Espera de 1 segundo
-        fila.data("timeout",timeout); //Guardar timeout en la fila
+        fila.data("timeout", timeout); //Guardar timeout en la fila
       }
     );
   } catch (error) {
     console.log("Error al insertar nuevo pago con su procedimiento" + error);
   }
 }
-async function NuevoPagoPresupuestoTotal(){
-  try{
+async function NuevoPagoPresupuestoTotal() {
+  try {
     let timeout;
-    $(document).on("input change",".importe-nuevo, .pieza-tablas",function () {
+    $(document).on(
+      "input change",
+      ".importe-nuevo, .pieza-tablas",
+      function () {
         numberFloat(".importe-nuevo");
         let trfila = $(this).closest("tr");
         let idpresupuesto = trfila.data("idpresupuesto");
@@ -623,89 +672,124 @@ async function NuevoPagoPresupuestoTotal(){
             PresupuestoTotal();
           }
         }, 2000); // Espera de 2 segundo
-        trfila.data("timeout",timeout); //Guardar timeout en la fila
+        trfila.data("timeout", timeout); //Guardar timeout en la fila
       }
     );
-  }catch(e){
-    console.log("Error al insertar nuevo pago con su procedimiento"+e);
+  } catch (e) {
+    console.log("Error al insertar nuevo pago con su procedimiento" + e);
   }
 }
 // ELIMINAR UN PRESUPUESTO TOTAL
-function eliminarPresupuestoTotal(){
-  $("#tbody-presupuesto-total").on("click",".btn-delete-row-presupuesto",function () {
-    let idpresupuesto = $(this).data("idpresupuesto");
-    let idpresupuestodetalle = $(this).data("idpresupuestodetalle");
-    // console.log(idpresupuesto, idpresupuestodetalle);
-    const data = {
-      idpresupuesto: `${idpresupuesto}`,
-      idpresupuestodetalle: `${idpresupuestodetalle}`,
+function eliminarPresupuestoTotal() {
+  $("#tbody-presupuesto-total").on(
+    "click",
+    ".btn-delete-row-presupuesto",
+    function () {
+      let idpresupuesto = $(this).data("idpresupuesto");
+      let idpresupuestodetalle = $(this).data("idpresupuestodetalle");
+      // console.log(idpresupuesto, idpresupuestodetalle);
+      const data = {
+        idpresupuesto: `${idpresupuesto}`,
+        idpresupuestodetalle: `${idpresupuestodetalle}`,
+      };
+      delet(data, "pagos", "deletePresupuestoTotal");
+      generarTablas();
+      PresupuestoTotal();
     }
-    delet(data, 'pagos', 'deletePresupuestoTotal');
-    generarTablas();
-    PresupuestoTotal();
-  });
+  );
 }
 // ACTUALIZAR DEL PRESUPUESTO TOTAL
 async function actualizarFilaPresupuesto() {
-  try{
-      let timeout;
-      $(document).on("input change",".importe-editar",function () {
-          numberFloat(".importe-editar");
+  try {
+    let timeout;
+    $(document).on("input change", ".importe-editar", function () {
+      numberFloat(".importe-editar");
 
-          clearTimeout(timeout);
-          let trfila = $(this).closest("tr");
-          let idpresupuesto = trfila.data("idpresupuesto");
-          let idpresupuestodetalle = trfila.data("idpresupuestodetalle");
-          let importeActualizado = trfila.find(".importe-editar");
-          let pieza = trfila.find(".pieza-tablas");
-          timeout = setTimeout(() => {
-              const data = {
-                  idcliente: $("#idcliente").val(),
-                  idpresupuesto: `${idpresupuesto}`,
-                  idpresupuestodetalle: `${idpresupuestodetalle}`,
-                  importe: `${importeActualizado.val()}`,
-                  pieza: pieza.val(),
-              };
-              //console.log(data);
-              // Validar si los campos están llenos
-              if (Object.values(data).every((value) => value.trim() !== "")) {
-                  insert(data, "pagos", "updatePresupuestoTotal");
-                  console.log(data, "Enviando datos al servidor");
-                  generarTablas();
-                  PresupuestoTotal();
-              }
-          }, 2000); // Espera de 1 segundo
-      });
-  }catch(error){
-      console.log(error+"ERROR EN ACTUALIZAR FILA");
+      clearTimeout(timeout);
+      let trfila = $(this).closest("tr");
+      let idpresupuesto = trfila.data("idpresupuesto");
+      let idpresupuestodetalle = trfila.data("idpresupuestodetalle");
+      let importeActualizado = trfila.find(".importe-editar");
+      let pieza = trfila.find(".pieza-tablas");
+      timeout = setTimeout(() => {
+        const data = {
+          idcliente: $("#idcliente").val(),
+          idpresupuesto: `${idpresupuesto}`,
+          idpresupuestodetalle: `${idpresupuestodetalle}`,
+          importe: `${importeActualizado.val()}`,
+          pieza: pieza.val(),
+        };
+        //console.log(data);
+        // Validar si los campos están llenos
+        if (Object.values(data).every((value) => value.trim() !== "")) {
+          insert(data, "pagos", "updatePresupuestoTotal");
+          console.log(data, "Enviando datos al servidor");
+          generarTablas();
+          PresupuestoTotal();
+        }
+      }, 2000); // Espera de 1 segundo
+    });
+  } catch (error) {
+    console.log(error + "ERROR EN ACTUALIZAR FILA");
   }
 }
 
-async function mostrarInformacionPagos(){
-  try{
+async function mostrarInformacionPagos() {
+  try {
     const idcliente = $("#idcliente").val();
     const data = await getOne(idcliente, "pagos", "mostrarInformacionPagos");
-    const presupuesto = data.presupuesto, general = data.general;
+    const presupuesto = data.presupuesto,
+      general = data.general;
     const mensaje = $("#mensaje");
     const deuda = $("#deuda_total");
     const importe = $("#importe_total");
     const total = $("#total_total");
-    deudaTotal = parseFloat(presupuesto.suma_total) - parseFloat(presupuesto.suma_importe);
-    deuda.html(`S/. ${deudaTotal}`)
-    importe.html(`S/. ${presupuesto.suma_importe}`)
-    total.html(`S/. ${presupuesto.suma_total}`)
-    if (general.suma_total != presupuesto.suma_total){
+    deudaTotal =
+      parseFloat(presupuesto.suma_total) - parseFloat(presupuesto.suma_importe);
+    deuda.html(`S/. ${deudaTotal}`);
+    importe.html(`S/. ${presupuesto.suma_importe}`);
+    total.html(`S/. ${presupuesto.suma_total}`);
+    if (general.suma_total != presupuesto.suma_total) {
       mensaje.html("El Presupuesto total no coincide con el General");
       mensaje.addClass("mensaje-rojo");
       return;
     }
-    if (general.suma_monto < presupuesto.suma_importe){
+    if (general.suma_monto < presupuesto.suma_importe) {
       mensaje.html("Los pagos estan desactualizados, actualice los pagos");
       mensaje.css("color: #ff0000");
       return;
     }
     mensaje.html("Datos Correctos");
-  }catch(error){
-    console.log(error+"ERROR EN MOSTRAR INFORMACION DE PAGOS");
+  } catch (error) {
+    console.log(error + "ERROR EN MOSTRAR INFORMACION DE PAGOS");
   }
+}
+
+function mostrarImpresion() {
+  $("#boletaparaimprimir").on("click", async function () {
+    try {
+      const idcliente = $("#idcliente").val();
+      await getOne({id:idcliente,status:"todo"}, "pagos", "DataBoleta");
+    } catch (e) {
+      console.log("No se pudo imprimri", e);
+    }
+    $("#contenidoticket").html(`<iframe id="frmticket" src="http://localhost/clinic/boleta.pdf" style="display:none;"></iframe>`);
+        $("#frmticket").on("load", function () {
+        this.contentWindow.focus();
+        this.contentWindow.print();
+      });
+  });
+  $("#boletaprint").on("click", async function () {
+    try {
+      const idcliente = $("#idcliente").val();
+      await getOne({id:idcliente,status:"actual"}, "pagos", "DataBoleta");
+    } catch (e) {
+      console.log("No se pudo imprimri", e);
+    }
+    $("#contenidoticket").html(`<iframe id="frmticket" src="http://localhost/clinic/boleta.pdf" style="display:none;"></iframe>`);
+        $("#frmticket").on("load", function () {
+        this.contentWindow.focus();
+        this.contentWindow.print();
+      });
+  });
 }

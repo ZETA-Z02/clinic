@@ -1,4 +1,5 @@
 <?php
+require_once './vendor/setasign/fpdf/fpdf.php';
 class Pagos extends Controller
 {
     function __construct()
@@ -27,15 +28,16 @@ class Pagos extends Controller
         echo json_encode($json);
     }
     // PRESUPUESTOS
-    public function presupuestos(){
+    public function presupuestos()
+    {
         $this->disabledCache();
         $id = $_POST['id'];
         $type = $_POST['tipo'];
-        if($type=='general'){
+        if ($type == 'general') {
             $data = $this->model->GetPresupuestoGeneral($id);
-        }else if($type=='ortodoncia'){
+        } else if ($type == 'ortodoncia') {
             $data = $this->model->GetPresupuestoOrtodoncia($id);
-        }else if($type=='otros'){
+        } else if ($type == 'otros') {
             $data = $this->model->GetPresupuestoOtros($id);
         }
         while ($row = mysqli_fetch_assoc($data)) {
@@ -64,7 +66,7 @@ class Pagos extends Controller
         $monto = $_POST['importe'];
         $pieza = $_POST['pieza'];
         $idpersonal = $_POST['doctor'];
-        if ($this->model->NuevoProcedimientoPago($idcliente, $idprocedimiento, $monto, $pieza, $idpersonal,$total)) {
+        if ($this->model->NuevoProcedimientoPago($idcliente, $idprocedimiento, $monto, $pieza, $idpersonal, $total)) {
             echo 'ok';
         } else {
             throw new Exception('Error al crear el pago');
@@ -102,38 +104,39 @@ class Pagos extends Controller
         $deuda = $_POST["deuda"];
         $montoPagado = $_POST["montoPagado"];
 
-        if($importeActualizado > $importeActual){
+        if ($importeActualizado > $importeActual) {
             $diferencia = $importeActualizado - $importeActual;
             $nuevoMontoTotal = $montoPagado + $diferencia;
             $nuevaDeudaTotal = $deuda - $diferencia;
-            if($diferencia > $deuda && $nuevaDeudaTotal <= 0){
+            if ($diferencia > $deuda && $nuevaDeudaTotal <= 0) {
                 throw new Exception("Error al actualizar, el importe actualizado tiene inconvenientes");
             }
         }
-        if($importeActualizado < $importeActual){
+        if ($importeActualizado < $importeActual) {
             $diferencia = $importeActual - $importeActualizado;
             $nuevoMontoTotal = $montoPagado - $diferencia;
             $nuevaDeudaTotal = $deuda + $diferencia;
-            if($nuevaDeudaTotal <= 0){
+            if ($nuevaDeudaTotal <= 0) {
                 throw new Exception("Error al actualizar, el importe actualizado tiene inconvenientes");
             }
         }
-        if($importeActualizado == $importeActual){
+        if ($importeActualizado == $importeActual) {
             $diferencia = 0;
             $nuevoMontoTotal = $montoPagado;
             $nuevaDeudaTotal = $deuda;
         }
-        if($importeActualizado <= 0){
+        if ($importeActualizado <= 0) {
             throw new Exception("Error al actualizar, el importe actualizado tiene inconvenientes");
-        }   
+        }
 
-        if ($this->model->UpdatePago($idpago,$idcliente,$idpagodetalle,$idpersonal,$importeActualizado,$pieza,$nuevoMontoTotal,$nuevaDeudaTotal)) {
+        if ($this->model->UpdatePago($idpago, $idcliente, $idpagodetalle, $idpersonal, $importeActualizado, $pieza, $nuevoMontoTotal, $nuevaDeudaTotal)) {
             echo "ok";
         } else {
             throw new Exception("Error al actualizar el pago");
         }
     }
-    public function deletePago(){
+    public function deletePago()
+    {
         $idpago = $_POST['idpago'];
         $idpagodetalle = $_POST['idpagodetalle'];
         $monto = $_POST['monto'];
@@ -143,7 +146,7 @@ class Pagos extends Controller
         $nuevoMontoTotal = $monto - $importeActual;
         $nuevoDeuda = $deuda + $importeActual;
 
-        if($this->model->DeletePagoGeneral($idpago,$idpagodetalle,$nuevoMontoTotal,$nuevoDeuda)){
+        if ($this->model->DeletePagoGeneral($idpago, $idpagodetalle, $nuevoMontoTotal, $nuevoDeuda)) {
             echo "ok";
         } else {
             throw new Exception("Error al eliminar el pago");
@@ -161,7 +164,8 @@ class Pagos extends Controller
         }
         echo json_encode($json);
     }
-    public function getProcedimientosOrtodoncia(){
+    public function getProcedimientosOrtodoncia()
+    {
         $data = $this->model->GetProcedimientos('ortodoncia');
         while ($row = mysqli_fetch_assoc($data)) {
             $json[] = array(
@@ -172,7 +176,8 @@ class Pagos extends Controller
         }
         echo json_encode($json);
     }
-    public function getProcedimientosOtros(){
+    public function getProcedimientosOtros()
+    {
         $data = $this->model->GetProcedimientos('otros');
         while ($row = mysqli_fetch_assoc($data)) {
             $json[] = array(
@@ -183,7 +188,8 @@ class Pagos extends Controller
         }
         echo json_encode($json);
     }
-    public function getProcedimientosPresupuesto(){
+    public function getProcedimientosPresupuesto()
+    {
         $data = $this->model->GetProcedimientos('presupuesto');
         while ($row = mysqli_fetch_assoc($data)) {
             $json[] = array(
@@ -198,7 +204,8 @@ class Pagos extends Controller
     // PRESUPUESTO TOTAL OTRA TABLA DE TRATAMIENTOS Y PAGOS QUE SIGUE EL CLIENTE
     // Presupuesto total de un cliente, suma de todos sus procedimientos y del total de sus pagos
     // Tambien el total de su deuda y si tiene un saldo, si deja dinero extra
-    public function getPresupuestoTotal(){
+    public function getPresupuestoTotal()
+    {
         $this->disabledCache();
         $idcliente = $_POST['id'];
         $data = $this->model->GetPresupuestoTotal($idcliente);
@@ -217,7 +224,8 @@ class Pagos extends Controller
         }
         echo json_encode($json);
     }
-    public function nuevoPresupuestoTotal(){
+    public function nuevoPresupuestoTotal()
+    {
         $idcliente = $_POST['idcliente'];
         $idprocedimiento = $_POST['idprocedimiento'];
         $monto = $_POST['importe'];
@@ -229,7 +237,8 @@ class Pagos extends Controller
             throw new Exception('Error al crear el presupuesto total');
         }
     }
-    public function nuevoPagoPresupuestoTotal(){
+    public function nuevoPagoPresupuestoTotal()
+    {
         $this->disabledCache();
         $idpresupuesto = $_POST['idpresupuesto'];
         $idcliente = $_POST['idcliente'];
@@ -245,35 +254,149 @@ class Pagos extends Controller
     // REDISE;AR LAS TABLAS PRESUPUESTO Y PRESUPEUSTO DETALLES YA QUE HAY MUCHA DEPENDENDIA 
     // EN LOS CAMPOS DE MONTO Y DEUDA.REHACER PRESUPUESTOS APRENDIENDO A NO HACER TABLAS DEPENDIENTES MRD
     // PTM -> by: ZETA
-    public function updatePresupuestoTotal(){
+    public function updatePresupuestoTotal()
+    {
         $idcliente = $_POST['idcliente'];
         $idpresupuesto = $_POST['idpresupuesto'];
         $idpresupuestodetalle = $_POST['idpresupuestodetalle'];
         $importeNuevo = $_POST['importe'];
         $piezaNuevo = $_POST['pieza'];
 
-        if($this->model->UpdatePresupuestoTotal($idpresupuesto,$idpresupuestodetalle,$importeNuevo,$piezaNuevo)){
+        if ($this->model->UpdatePresupuestoTotal($idpresupuesto, $idpresupuestodetalle, $importeNuevo, $piezaNuevo)) {
             echo "OK";
-        }else{
+        } else {
             throw new Exception("Error al actualizar el presupuesto Total");
         }
     }
-    public function deletePresupuestoTotal(){
+    public function deletePresupuestoTotal()
+    {
         $idpresupuesto = $_POST['idpresupuesto'];
         $idpresupuestodetalle = $_POST['idpresupuestodetalle'];
-        if($this->model->DeletePresupuestoTotal($idpresupuesto,$idpresupuestodetalle)){
+        if ($this->model->DeletePresupuestoTotal($idpresupuesto, $idpresupuestodetalle)) {
             echo "OK";
-        }else{
+        } else {
             throw new Exception("Error al eliminar el presupuesto Total");
         }
     }
-    public function mostrarInformacionPagos(){
-        $idcliente = $_POST['idcliente'];
-        $data = $this->model->MostrarInformacionPagos(4);
+    public function mostrarInformacionPagos()
+    {
+        $idcliente = $_POST['id'];
+        $data = $this->model->MostrarInformacionPagos($idcliente);
         echo json_encode($data);
     }
+    public function DataBoleta($nparam=null)
+    {   $this->disabledCache();
+        //$idcliente = $nparam[0];
+        $idcliente = $_POST['id'];
+        $status = $_POST['status'];
+        if($status == 'todo'){
+            $status = 'todo';
+        }
+        $data = $this->model->DataBoleta($idcliente, $status);
+        $cliente = $this->model->GetOne($idcliente);
+        $nombre = $cliente['nombre'].' '.$cliente['apellido'];
+        while ($row = mysqli_fetch_assoc($data)) {
+            $datos[] = array($row['procedimiento'], $row['importe']);
+        }
+        //echo json_encode($datos);
+        $this->Boleta($datos,$nombre);
+        //$this->render($idcliente);
+    }
+    public function boleta($data, $nombre)
+    {
+        if(count($data) < 7){
+            $height = 140;
+        }
+        // 7 ya se hace otra pagina
+        if(count($data) > 6){
+            $porFila = 20;
+            $height = $porFila * count($data);
+        }
+        
+        $pdf = new Boleta('P', 'mm', array(72, $height)); // Asegurar el ancho correcto
+        $pdf->SetMargins(4, 2, 4); // Agregar márgenes para evitar desbordamientos
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', '', 9);
+        $pdf->Cell(70, 6, 'Boleta N: B001-00012345', 0, 1, 'L');
+        //$pdf->Cell(70, 6, 'Cliente: '.$nombre, 0, 1, 'L');
+        $pdf->MultiCell(70, 6, 'Cliente: '.$nombre, 0, 'L');
+        $pdf->Cell(35, 6, 'Fecha: ' . date('d/m/Y'), 0, 0, 'L');
+        $pdf->Cell(35, 6, 'Hora: ' . date(' h:i A'), 0, 1, 'L');
+        $pdf->Ln(2);
+        $pdf->Cell(70, 0, str_repeat('-', 60), 0, 1, 'C');
+        $pdf->Ln(2);
 
-    // 
+        // Detalle de productos
+        $pdf->SetFont('Arial', 'B', 9);
+        // $pdf->Cell(15, 6, 'Cant', 0, 0, 'C');
+        $pdf->Cell(40, 6, 'Descripcion', 0, 0, 'C');
+        $pdf->Cell(30, 6, 'Total', 0, 1, 'C');
+        $pdf->Cell(70, 0, str_repeat('-', 60), 0, 1, 'C');
+        $pdf->Ln(2);
+
+        $total = 0;
+        $pdf->SetFont('Arial', '', 9);
+        foreach ($data as $p) {
+            if(strlen($p[0]) < 27){
+                $pdf->Cell(40, 6, $p[0], 0, 0, 'L');
+                $pdf->Cell(30, 6, number_format($p[1], 2), 0, 1, 'C');
+                $total += $p[1];
+            }
+            if(strlen($p[0]) > 27){
+                $x = $pdf->GetX(); // Guarda la posición actual
+                $y = $pdf->GetY(); // Guarda la posición actual
+                $pdf->MultiCell(50, 6, $p[0], 0, 'L'); // Descripción (salto de línea automático)
+                // Ajustar la posición del siguiente dato
+                $pdf->SetXY($x + 40, $y); // Mueve el cursor después de la descripción     
+                $pdf->Cell(30, 6, number_format($p[1], 2), 0, 1, 'C');
+                $pdf->ln(5);  
+                $total += $p[1];
+            }
+        }
+        $pdf->ln(4);
+        $pdf->Cell(70, 0, str_repeat('-', 60), 0, 1, 'C');
+        $pdf->Ln(2);
+        $pdf->Cell(45, 6, 'Subtotal:', 0, 0, 'R');
+        $pdf->Cell(18, 6, number_format($total, 2), 0, 1, 'R');
+        $pdf->Cell(45, 6, 'IGV (18%):', 0, 0, 'R');
+        $pdf->Cell(18, 6, number_format($total * 0.18, 2), 0, 1, 'R');
+        $pdf->Cell(45, 6, 'Total a pagar:', 0, 0, 'R');
+        $pdf->Cell(18, 6, number_format($total * 1.18, 2), 0, 1, 'R');
+        // $pdf->Ln(5);
+
+        $pdf->Output('F', 'boleta.pdf');     
+
+    }
+}
+class Boleta extends FPDF
+{
+    function Header()
+    {
+        $this->SetFont('Arial', 'B', 10);
+        $this->Cell(70, 6, 'CHIC CONSULTORIO DENTAL', 0, 1, 'C');
+        $this->SetFont('Arial', '', 9);
+        $this->Cell(
+            70,
+            4,
+            'Jr. Lambayeque 123, Puno',
+            0,
+            1,
+            'C'
+        );
+        $this->Cell(70, 4, 'RUC: 12345678901', 0, 1, 'C');
+        $this->Cell(70, 4, 'Tel: 951781807', 0, 1, 'C');
+        $this->Ln(2);
+        $this->Cell(70, 0, str_repeat('-', 60), 0, 1, 'C');
+        $this->Ln(2);
+    }
+
+    function Footer()
+    {
+        $this->SetY(-20);
+        $this->SetFont('Arial', '', 9);
+        $this->Cell(72, 6, '!Gracias por su compra!', 0, 1, 'C');
+        $this->Cell(72, 0, str_repeat('-', 32), 0, 1, 'C');
+    }
 }
 
 ?>
