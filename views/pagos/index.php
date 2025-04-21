@@ -28,20 +28,21 @@
     </div>
     <hr>
     <div class="grid-x grid-margin-x">
-        <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-general" data-id="general">
-            <h4>Presupuesto Detallado</h4>
-        </button>
-        <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-otros" data-id="otros">
-            <h4>Presupuesto Nuevos</h4>
-        </button>
-        <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-ortodoncia" data-id="ortodoncia">
-            <h4>Presupuesto Ortodoncia</h4>
-        </button>
         <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-presupuesto-total"
             data-id="presupuesto-total">
             <h4>Presupuesto Total</h4>
         </button>
+        <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-general" data-id="general">
+            <h4>Presupuesto Detallado</h4>
+        </button>
+        <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-ortodoncia" data-id="ortodoncia">
+            <h4>Presupuesto Ortodoncia</h4>
+        </button>
+        <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-otros" data-id="otros">
+            <h4>Presupuesto Nuevos</h4>
+        </button>
     </div>
+    <!-- PRESUPUESTO DETALLADO -->
     <div class="grid-x modal margin-horizontal-3 padding-horizontal-3" id="tabla-general">
         <div class="cell">
             <table class="stack">
@@ -138,6 +139,7 @@
                     class="fa fa-trash"></i></button>
         </div>
     </div>
+    <!-- PRESUPUESTO ORTODONCIA -->
     <div class="grid-x modal margin-horizontal-3 padding-horizontal-3" id="tabla-ortodoncia">
         <!-- tabla Ortodoncia -->
         <div class="cell">
@@ -241,6 +243,7 @@
                     class="fa fa-trash"></i></button>
         </div>
     </div>
+    <!-- PRESUPUESTO OTROS->NUEVOS PROCEDIMIENTOS QUE SE PUEDAN CREAR -->
     <div class="grid-x modal margin-horizontal-3 padding-horizontal-3" id="tabla-otros">
         <!-- tabla otros -->
         <div class="cell">
@@ -343,15 +346,14 @@
                     class="fa fa-trash"></i></button>
         </div>
     </div>
+    <!-- PRESUPUESTO TOTAL -->
     <div class="grid-x modal margin-horizontal-3 padding-horizontal-3" id="tabla-presupuesto-total">
         <!-- tabla presupuesto total -->
-        <div class="cell">
-            <table>
+        <div class="grid-x padding-horizontal-3 margin-horizontal-3 align-center">
+            <table class="tabla-presupuesto-total">
                 <thead>
                     <tr>
-                        <th>Fecha</th>
-                        <th>Pieza</th>
-                        <th>Tratamiento</th>
+                        <th>Fecha</th>                    
                         <th>Monto</th>
                         <th>Importe</th>
                         <th>Deuda</th>
@@ -362,50 +364,13 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td id="mostrar-fecha-otros" class="mostrar-fecha"></td>
                         <td>
-                            <select name="pieza" id="pieza-otros" class="pieza-total">
-                                <option value="1.1">1.1</option>
-                                <option value="1.2">1.2</option>
-                                <option value="1.3">1.3</option>
-                                <option value="1.4">1.4</option>
-                                <option value="1.5">1.5</option>
-                                <option value="1.6">1.6</option>
-                                <option value="1.7">1.7</option>
-                                <option value="1.8">1.8</option>
-                                <option value="2.1">2.1</option>
-                                <option value="2.2">2.2</option>
-                                <option value="2.3">2.3</option>
-                                <option value="2.4">2.4</option>
-                                <option value="2.5">2.5</option>
-                                <option value="2.6">2.6</option>
-                                <option value="2.7">2.7</option>
-                                <option value="2.8">2.8</option>
-                                <option value="3.1">3.1</option>
-                                <option value="3.2">3.2</option>
-                                <option value="3.3">3.3</option>
-                                <option value="3.4">3.4</option>
-                                <option value="3.5">3.5</option>
-                                <option value="3.6">3.6</option>
-                                <option value="3.7">3.7</option>
-                                <option value="3.8">3.8</option>
-                                <option value="4.1">4.1</option>
-                                <option value="4.2">4.2</option>
-                                <option value="4.3">4.3</option>
-                                <option value="4.4">4.4</option>
-                                <option value="4.5">4.5</option>
-                                <option value="4.6">4.6</option>
-                                <option value="4.7">4.7</option>
-                                <option value="4.8">4.8</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select name="procedimiento" id="procedimiento-presupuesto" class="procedimiento-total">
+                            <select name="procedimiento" id="procedimiento-presupuesto" class="procedimiento procedimiento-presupuesto">
                                 <!-- <option value="ortodoncia">Ortodoncia</option> -->
                             </select>
                         </td>
                         <td>
-                            <input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-presupuesto" class="monto-a-pagar" value="">
+                            <input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-presupuesto" class="monto-a-pagar text-right" value="">
                         </td>
                         <td>
                             <input type="text" placeholder="Importe" name="importe" id="importe-presupuesto" class="importe">

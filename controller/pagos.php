@@ -5,6 +5,7 @@ class Pagos extends Controller
     function __construct()
     {
         parent::__construct();
+        $this->disabledCache();
     }
     public function render($npam = null)
     {
@@ -213,8 +214,6 @@ class Pagos extends Controller
             $json[] = array(
                 'idpresupuesto' => $row['idpresupuesto'],
                 'idpresupuestodetalle' => $row['idpresupuestodetalle'],
-                'procedimiento' => $row['procedimiento'],
-                'pieza' => $row['pieza'],
                 'total_pagar' => $row['total_pagar'],
                 'monto_pagado' => $row['monto_pagado'],
                 'importe' => $row['importe'],
@@ -226,8 +225,10 @@ class Pagos extends Controller
     }
     public function nuevoPresupuestoTotal()
     {
+        $this->disabledCache();
         $idcliente = $_POST['idcliente'];
-        $idprocedimiento = $_POST['idprocedimiento'];
+        //$idprocedimiento = $_POST['idprocedimiento'];
+        $idprocedimiento = 1;
         $monto = $_POST['importe'];
         $pieza = $_POST['pieza'];
         $total = $_POST['total_pagar'];
@@ -261,6 +262,7 @@ class Pagos extends Controller
         $idpresupuestodetalle = $_POST['idpresupuestodetalle'];
         $importeNuevo = $_POST['importe'];
         $piezaNuevo = $_POST['pieza'];
+        $piezaNuevo = '1.1';
 
         if ($this->model->UpdatePresupuestoTotal($idpresupuesto, $idpresupuestodetalle, $importeNuevo, $piezaNuevo)) {
             echo "OK";
@@ -307,9 +309,12 @@ class Pagos extends Controller
         if(count($data) < 7){
             $height = 140;
         }
+        if(count($data) > 7 && count($data) <= 12){
+            $height = 200;
+        }
         // 7 ya se hace otra pagina
-        if(count($data) > 6){
-            $porFila = 20;
+        if(count($data) > 12){
+            $porFila = 14.5;
             $height = $porFila * count($data);
         }
         
@@ -392,8 +397,10 @@ class Boleta extends FPDF
 
     function Footer()
     {
-        $this->SetY(-20);
+        $this->SetY(-30);
         $this->SetFont('Arial', '', 9);
+        $this->MultiCell(68, 6, 'Representacion impresa de la Boleta de venta Electronica', 0, 'C');
+        $this->MultiCell(70, 6, 'CHIC CONSULTORIO DENTAL', 0, 'C');
         $this->Cell(72, 6, '!Gracias por su compra!', 0, 1, 'C');
         $this->Cell(72, 0, str_repeat('-', 32), 0, 1, 'C');
     }

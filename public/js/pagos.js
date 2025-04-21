@@ -521,9 +521,7 @@ async function PresupuestoTotal() {
         let deuda = parseFloat(element.total_pagar) - importe;
         html += `
           <tr data-idpresupuestodetalle="${element.idpresupuestodetalle}" data-idpresupuesto="${element.idpresupuesto}">
-            <td>${element.fecha}</td>
-            <td class="row-pieza">${element.pieza}</td>
-            <td>${element.procedimiento}</td>
+            <td class="text-right">${element.fecha}</td>
             <td class="text-right">${monto_pagado_index}</td>
             <td class="text-center"><input type="text" class="text-center importe-editar general-input-monto" value="${element.importe}" disabled></td>
             <td>${deuda}</td>
@@ -547,9 +545,7 @@ async function PresupuestoTotal() {
           <tr class="fila-pago-pendiente" data-idpresupuesto="${
             presupuesto.idpresupuesto
           }">
-            <td>${fechaActual}</td>
-            <td>${generarSelectPiezas()}</td>
-            <td>${presupuesto.procedimiento}</td>
+            <td class="text-right">${fechaActual}</td>
             <td class="text-right">
               <input type="text" class="text-right presupuesto-monto" id="presupuesto-monto" value="${deudaPendiente}" disabled>
             </td>
@@ -563,16 +559,12 @@ async function PresupuestoTotal() {
               <td>-</td>
               <td>-</td>
               <td>-</td>
-              <td>-</td>
-              <td>-</td>
           </tr>
         `;
       } else {
         // Presupuesto completamente pagado
         html += `<tr>
                   <td class="cancelado">-</td>
-                  <td class="cancelado">-</td>
-                  <td class="cancelado">${presupuesto.procedimiento}</td>
                   <td class="cancelado">Cancelado</td>
                   <td class="cancelado">Cancelado</td>
                   <td class="cancelado">Cancelado</td>
@@ -601,24 +593,20 @@ function deudaPresupuestoTotal() {
 async function NuevoPresupuestoTotal() {
   try {
     let timeout;
-    $("#importe-presupuesto, .procedimiento-total, .pieza-total").on(
+    $("#importe-presupuesto").on(
       "input change",
       function () {
         let fila = $(this).closest("tr");
-        let procedimiento = fila.find(".procedimiento-total");
         let importe = fila.find(".importe");
         let total_pagar = fila.find(".monto-a-pagar");
-        let pieza = fila.find(".pieza-total");
         clearTimeout(fila.data("timeout"));
         //console.log("Nuevo procedimiento procesando...");
         // Esperar 2 segundo después de que todos los inputs estén llenos
         timeout = setTimeout(() => {
           const data = {
             idcliente: $("#idcliente").val(),
-            idprocedimiento: procedimiento.val(),
             total_pagar: total_pagar.val(),
             importe: importe.val(),
-            pieza: pieza.val(),
           };
           console.log(data);
           // Validar si los campos están llenos
@@ -626,8 +614,6 @@ async function NuevoPresupuestoTotal() {
             insert(data, "pagos", "nuevoPresupuestoTotal");
             console.log(data, "Enviando datos al servidor");
             importe.val("");
-            procedimiento.val("");
-            pieza.val("");
             generarTablas();
             PresupuestoTotal();
           }
@@ -644,12 +630,11 @@ async function NuevoPagoPresupuestoTotal() {
     let timeout;
     $(document).on(
       "input change",
-      ".importe-nuevo, .pieza-tablas",
+      ".importe-nuevo",
       function () {
         numberFloat(".importe-nuevo");
         let trfila = $(this).closest("tr");
         let idpresupuesto = trfila.data("idpresupuesto");
-        let pieza = trfila.find("#pieza-tabla");
         let importe = trfila.find("#importe-nuevo");
         // REINICIAR EL TIME
         clearTimeout(trfila.data("timeout"));
@@ -658,7 +643,6 @@ async function NuevoPagoPresupuestoTotal() {
           const data = {
             idcliente: $("#idcliente").val(),
             idpresupuesto: `${idpresupuesto}`,
-            pieza: pieza.val(),
             importe: importe.val(),
           };
           //console.log(data);
@@ -667,9 +651,8 @@ async function NuevoPagoPresupuestoTotal() {
             insert(data, "pagos", "nuevoPagoPresupuestoTotal");
             //console.log(data, "Enviando datos al servidor");
             importe.val("");
-            pieza.val("");
-            generarTablas();
             PresupuestoTotal();
+            generarTablas();
           }
         }, 2000); // Espera de 2 segundo
         trfila.data("timeout", timeout); //Guardar timeout en la fila

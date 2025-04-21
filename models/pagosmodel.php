@@ -165,7 +165,7 @@ class PagosModel extends Model{
     }
     // Presupuesto Total */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/**/*/*/*/*/*/*/*/*/*/*/*/* */
     public function GetPresupuestoTotal($idcliente){
-        $sql = "SELECT ptd.idpresupuestodetalle,ptd.pieza,ptd.importe,ptd.fecha,p.idcliente,p.idpresupuesto,p.total_pagar,p.monto_pagado,p.deuda_pendiente,pro.procedimiento,pro.idprocedimiento FROM presupuestos p JOIN presupuesto_detalles ptd ON p.idpresupuesto=ptd.idpresupuesto JOIN procedimientos pro ON pro.idprocedimiento=p.idprocedimiento WHERE p.idcliente='$idcliente';";
+        $sql = "SELECT ptd.idpresupuestodetalle,ptd.importe,ptd.fecha,p.idcliente,p.idpresupuesto,p.total_pagar,p.monto_pagado,p.deuda_pendiente FROM presupuestos p JOIN presupuesto_detalles ptd ON p.idpresupuesto=ptd.idpresupuesto JOIN procedimientos pro ON pro.idprocedimiento=p.idprocedimiento WHERE p.idcliente='$idcliente';";
         $data = $this->conn->ConsultaCon($sql); 
         return $data;
     }

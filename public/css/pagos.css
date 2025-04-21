@@ -45,3 +45,9 @@ input:disabled{
     color: var(--verde);
     font-weight: bold;
 }
+.tabla-presupuesto-total{
+    width: 60%;
+}
+/* .procedimiento-presupuesto{
+    width: 50%;
+} */
