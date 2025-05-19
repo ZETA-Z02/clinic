@@ -51,12 +51,12 @@
         <div class="nav__box nav--btn">
             <?php if($_SESSION['katari'] == "katariAdmin"){?>
             <div class="nav__icons">
-                <a href="<?php getrute('personal')?>"><i class="fa-solid fa-gear"></i></a>
+                <a href="<?php getrute('personal')?>"><i class="fa-solid fa-gear"></i> Configuracion</a>
             </div>
             <?php } ?>
             <div class="nav__icons">
                 <!-- <a href=""><i class="fa-solid fa-door-open"></i></a> -->
-                <a href="<?php getrute('login/logout')?>"><i class="fa-solid fa-right-from-bracket"></i></a>
+                <a href="<?php getrute('login/logout')?>" title="Salir"><i class="fa-solid fa-right-from-bracket"></i> Salir</a>
             </div>
         </div>
     </nav>

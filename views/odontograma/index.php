@@ -131,49 +131,58 @@
             </div>
         </div>
     </div>
-    <div class="grid-x margin-top-2 info-diente-seleccionado" id="info-diente">
-        <div class="cell large-2 text-center">
-            <div class="cell">
-                <span class="lead">Diente: </span><strong class="diente-seleccionado" id="diente-seleccionado">0.0</strong>
-                <input type="hidden" name="diente" id="diente-input">
+    <div class="grid-x grid-margin-x margin-top-2 info-diente-seleccionado" id="info-diente">
+        <div class="cell large-5">
+            <div class="grid-x cell text-center">
+                <div class="cell large-4 text-left">
+                    <span class="lead">Diente: </span><strong class="diente-seleccionado" id="diente-seleccionado">0.0</strong>
+                    <input type="hidden" name="diente" id="diente-input">
+                </div>
+                <div class="cell large-8">
+                    <select name="procedimientos-select" id="procedimientos-select" class="procedimientos-select"></select>
+                </div>
             </div>
-            <div class="cell margin-top-1">
-                <select name="procedimientos-select" id="procedimientos-select" class="procedimientos-select"></select>
-            </div>
-        </div>
-        <div class="cell grid-x large-3">
-            <div class="cell box-img" id="box-img">
-                <img id="imagen-pieza" src="" alt="Sin imagen subida">
-            </div>
-            <div class="cell file-upload">
-                <label for="file" class="file-label">📂 Subir Imagen</label>
-                <input type="file" name="file" id="file" accept="image/*">
-                <div class="file-name" id="file-name">Ningun Archivo Seleccionado</div>
+            <div class="cell grid-x grid-margin-x">
+                <div class="cell large-6">
+                    <div class="cell callout">
+                        Imagen representativa del diente
+                    </div>
+                </div>
+                <div class="cell large-6">
+                    <div class="cell box-img" id="box-img">
+                        <img id="imagen-pieza" src="" alt="Sin imagen subida">
+                    </div>
+                    <div class="cell file-upload">
+                        <label for="file" class="file-label">📂 Subir Imagen</label>
+                        <input type="file" name="file" id="file" accept="image/*">
+                        <div class="file-name" id="file-name">Ningun Archivo Seleccionado</div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="cell large-7 grid-x grid-margin-x">
-            <div class="cell large-8">
+            <div class="cell">
                 <h4>Observaciones: </h4>
                 <textarea name="observaciones" id="observaciones" class="observaciones"></textarea>
             </div>
-            <div class="cell large-4">
-                <div class="cell">
-                    <select name="estado" id="estado">
+            <div class="cell grid-x">
+                <div class="cell large-6">
+                    <select name="estado" id="estado"> 
                         <option value="1">ZOE</option>
                         <option value="2">DICAL+IONOMERO</option>
                         <option value="3">DIR</option>
                     </select>
                 </div>
-                <div class="cell">
+                <div class="cell large-6">
                     <select name="condicion" id="condicion">
                         <option value="1">Sano</option>
                         <option value="2">Cariado</option>
                         <option value="3">Ausente</option>
                     </select>
                 </div>
-                <div class="cell text-center">
-                    <button class="button btn-success" id="guardar">Guardar Todo</button>
-                </div>
+            </div>
+            <div class="cell text-right">
+                <button class="button btn-success" id="guardar">Guardar Todo</button>
             </div>
         </div>
     </div>

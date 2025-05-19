@@ -21,7 +21,7 @@ h4{
 }
 .info-diente-seleccionado{
     padding: 1rem;
-    border: 2px solid var(--azul);
+    /* border: 2px solid var(--azul); */
     border-radius: 5px;
 }
 .procedimiento{
@@ -103,9 +103,9 @@ select{
     appearance: none; /* Oculta el estilo nativo */
     -webkit-appearance: none; /* Para Safari */
     -moz-appearance: none; /* Para Firefox */
-    height: 100% !important;
+    /* height: 100% !important; */
     color: var(--azul) !important;
-    padding: 1rem !important; 
+    /* padding: 1rem !important;  */
     border-radius: 5px;
     cursor: pointer;
     font-size: 1.6rem;
