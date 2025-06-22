@@ -26,7 +26,7 @@ function InfoPieza(){
         $("#info-diente").show();
         ColorPieza();
         let pieza = $(this).data("pieza");
-        let diente = $(this).text();
+        let diente = $(this).attr("title");
         let idcliente = $("#idcliente").val();
         $("#diente-seleccionado").text(diente);
         $("#diente-input").val(pieza);
@@ -99,8 +99,13 @@ async function ColorPieza() {
             const data = await getOne({ idcliente: idcliente, pieza: pieza }, 'odontograma', 'colorPieza');
             //console.log(data);
             if (data !== 0) {
-                $(element).attr("style", `background-color: ${data.color} !important;`);
-                //console.log(data.color);
+                $(element).attr("style", `stroke: ${data.color} !important;`);
+                $(element).hover(
+                    function(){
+                    $(this).css(`fill`, `${data.color}99`)
+                },function(){
+                    $(this).css(`fill`, ``)
+                })
             }
         } catch (e) {
             console.log("ERROR obtener colores", e);
