@@ -28,21 +28,21 @@
     </div>
     <hr>
     <div class="grid-x grid-margin-x">
-        <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-presupuesto-total"
+        <button class="cell large-4 callout shadow pagos--titulos activate" id="btn-presupuesto-total"
             data-id="presupuesto-total">
             <h4>Presupuesto Total</h4>
         </button>
-        <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-general" data-id="general">
+        <button class="cell large-4 callout shadow pagos--titulos activate" id="btn-general" data-id="general">
             <h4>Presupuesto Detallado</h4>
         </button>
-        <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-ortodoncia" data-id="ortodoncia">
+        <button class="cell large-4 callout shadow pagos--titulos activate" id="btn-ortodoncia" data-id="ortodoncia">
             <h4>Presupuesto Ortodoncia</h4>
         </button>
-        <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-otros" data-id="otros">
+        <!-- <button class="cell large-3 callout shadow pagos--titulos activate" id="btn-otros" data-id="otros">
             <h4>Presupuesto Nuevos</h4>
-        </button>
+        </button> -->
     </div>
-    <!-- PRESUPUESTO DETALLADO -->
+    <!-- PAGOS DETALLADOS: SE DETALLA LOS PAGOS DE CADA PROCEDIMIENTO PARA VER CUANTO SE PAGA POR CADA SESION HASTA QUE SE TERMINE DE PAGAR -->
     <div class="grid-x modal margin-horizontal-3 padding-horizontal-3" id="tabla-general">
         <div class="cell">
             <table class="stack">
@@ -139,7 +139,7 @@
                     class="fa fa-trash"></i></button>
         </div>
     </div>
-    <!-- PRESUPUESTO ORTODONCIA -->
+    <!-- PRESUPUESTO: PAGOS ORTODONCIA -->
     <div class="grid-x modal margin-horizontal-3 padding-horizontal-3" id="tabla-ortodoncia">
         <!-- tabla Ortodoncia -->
         <div class="cell">
@@ -244,6 +244,7 @@
         </div>
     </div>
     <!-- PRESUPUESTO OTROS->NUEVOS PROCEDIMIENTOS QUE SE PUEDAN CREAR -->
+    <!-- ELIMINADO: POR DECIDIR -->
     <div class="grid-x modal margin-horizontal-3 padding-horizontal-3" id="tabla-otros">
         <!-- tabla otros -->
         <div class="cell">
@@ -307,7 +308,8 @@
                             </select>
                         </td>
                         <td>
-                            <input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-otros" class="monto-a-pagar" value="500">
+                            <input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-otros"
+                                class="monto-a-pagar" value="500">
                         </td>
                         <td>
                             <input type="text" placeholder="Importe" name="importe" id="importe-otros" class="importe">
@@ -346,43 +348,117 @@
                     class="fa fa-trash"></i></button>
         </div>
     </div>
-    <!-- PRESUPUESTO TOTAL -->
-    <div class="grid-x modal margin-horizontal-3 padding-horizontal-3" id="tabla-presupuesto-total">
+    <!-- PRESUPUESTO TOTAL -> PRESUPUESTO DONDE SE VE PROCEDIMIENTOS Y SUS PAGOS DESCONTANDO DESDE EL TOTAL -->
+    <div class="grid-x modal" id="tabla-presupuesto-total">
         <!-- tabla presupuesto total -->
-        <div class="grid-x padding-horizontal-3 margin-horizontal-3 align-center">
-            <table class="tabla-presupuesto-total">
-                <thead>
-                    <tr>
-                        <th>Fecha</th>                    
-                        <th>Monto</th>
-                        <th>Importe</th>
-                        <th>Deuda</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody-presupuesto-total">
+        <div class="cell grid-x grid-margin-x">
+            <div class="cell large-6">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Pieza</th>
+                            <th>Tratamientos</th>
+                            <th colspan="2">Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-presupuesto-general">
 
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td>
-                            <select name="procedimiento" id="procedimiento-presupuesto" class="procedimiento procedimiento-presupuesto">
-                                <!-- <option value="ortodoncia">Ortodoncia</option> -->
-                            </select>
-                        </td>
-                        <td>
-                            <input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-presupuesto" class="monto-a-pagar text-right" value="">
-                        </td>
-                        <td>
-                            <input type="text" placeholder="Importe" name="importe" id="importe-presupuesto" class="importe">
-                        </td>
-                        <td id="mostrar-deuda-presupuesto" class="mostrar-deuda">-</td>
-                    </tr>
-                </tfoot>
-            </table>
+                    </tbody>
+                    <tfoot id="total-presupuesto">
+                        <tr id="nuevo-procedimiento">
+                            <td class="mostrar-fecha"></td>
+                            <td>
+                                <select name="pieza" id="pieza-presupuesto" class="pieza">
+                                    <option value="1.1">1.1</option>
+                                    <option value="1.2">1.2</option>
+                                    <option value="1.3">1.3</option>
+                                    <option value="1.4">1.4</option>
+                                    <option value="1.5">1.5</option>
+                                    <option value="1.6">1.6</option>
+                                    <option value="1.7">1.7</option>
+                                    <option value="1.8">1.8</option>
+                                    <option value="2.1">2.1</option>
+                                    <option value="2.2">2.2</option>
+                                    <option value="2.3">2.3</option>
+                                    <option value="2.4">2.4</option>
+                                    <option value="2.5">2.5</option>
+                                    <option value="2.6">2.6</option>
+                                    <option value="2.7">2.7</option>
+                                    <option value="2.8">2.8</option>
+                                    <option value="3.1">3.1</option>
+                                    <option value="3.2">3.2</option>
+                                    <option value="3.3">3.3</option>
+                                    <option value="3.4">3.4</option>
+                                    <option value="3.5">3.5</option>
+                                    <option value="3.6">3.6</option>
+                                    <option value="3.7">3.7</option>
+                                    <option value="3.8">3.8</option>
+                                    <option value="4.1">4.1</option>
+                                    <option value="4.2">4.2</option>
+                                    <option value="4.3">4.3</option>
+                                    <option value="4.4">4.4</option>
+                                    <option value="4.5">4.5</option>
+                                    <option value="4.6">4.6</option>
+                                    <option value="4.7">4.7</option>
+                                    <option value="4.8">4.8</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="procedimiento" id="procedimiento-presupuesto"
+                                    class="procedimiento"></select>
+                            </td>
+                            <td>
+                                <input type="text" placeholder="Monto a Pagar" name="monto-pagar"
+                                    id="monto-pagar-presupuesto" class="monto-a-pagar" value="50">
+                            </td>
+                            <td><button id="confirmar-procedimiento" class="button btn-success">✔</button></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><button id="guardar-presupuesto-general" class="button btn-success">Guardar</button>
+                            </td>
+                            <td class="text-right">Total: </td>
+                            <td class="text-right">s/. </td>
+                            <td class="text-right" id="mostrar-total-presupuesto"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="cell large-6">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Monto</th>
+                            <th>Adelanto</th>
+                            <th>Deuda</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-presupuesto-total">
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>
+                                <input type="text" name="monto-pagar"
+                                    id="monto_pagar" class="text-right" disabled>
+                            </td>
+                            <td>
+                                <input type="text" placeholder="Importe" name="importe" id="importe-presupuesto"
+                                    class="importe">
+                            </td>
+                            <td id="mostrar-deuda-presupuesto" class="mostrar-deuda">-</td>
+                            <td class="mostrar-fecha"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
         <div class="cell grid-x align-spaced botones-tabla-general margin-1">
             <button class="button btn-edit btn-editar" id="btn-editar">Editar</button>
-            <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i class="fa fa-trash"></i></button>
+            <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i
+                    class="fa fa-trash"></i></button>
             <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda') ?>">Ir a Agenda</a>
             <button id="boletaprint" class="boleta button warning">Boleta Actual</button>
             <button id="boletaparaimprimir" class="boleta button warning">Boleta Todo</button>

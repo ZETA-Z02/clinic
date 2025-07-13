@@ -26,3 +26,7 @@ function abrirModal(modalId){
 function cerrarModal(modalId){
     $(`#${modalId}`).hide();
 }
+
+function validar(variable){
+    return typeof variable !== 'undefined' && variable !== null && variable !== '';
+}

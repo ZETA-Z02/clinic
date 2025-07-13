@@ -6,7 +6,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 
 ## ENTIDADES
 
-### PERSONAL
+### PERSONAL: Se registra a cada personal
 
 | **COLUMNA**  | **TIPO**         | **DESCRIPCION**                       |
 | ------------ | ---------------- | ------------------------------------- |
@@ -22,7 +22,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `feCreate`   | **DATETIME**     | Fecha y hora de creacion del registro |
 | `feUpdate`   | **DATE**         | FEcha de la ultima actualizacion      |
 
-### LOGIN
+### LOGIN: Registro de usuarios para ingresar al sistema
 
 | **COLUMNA**  | **TIPO**         | **DESCRIPCION**                                   |
 | ------------ | ---------------- | ------------------------------------------------- |
@@ -33,7 +33,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `estado`     | **TINYINT**      | Estado del login, 1->activo,0->inactivo           |
 | `nivel`      | **TINYINT**      | Nivel del personal,1->administrador o 2->personal |
 
-### CLIENTES
+### CLIENTES: Registro de clientes que tienen un procedimiento y pagos pendientes
 
 | **COLUMNA** | **TIPO**         | **DESCRIPCION**                     |
 | ----------- | ---------------- | ----------------------------------- |
@@ -49,7 +49,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `feCreate`  | **DATETIME**     | Fecha de creacion del registro      |
 | `feUpdate`  | **DATE**         | Fecha de actualizacion del registro |
 
-### clientes_condicion
+### clientes_condicion: Condicion de un cliente, verificar antecedentes de salud
 
 | **COLUMNA**                      | **TIPO**         | **DESCRIPCION**                                   |
 | -------------------------------- | ---------------- | ------------------------------------------------- |
@@ -70,7 +70,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `feCreate`                       | **DATE**         | Fecha de creacion                                 |
 | `feActualizacion`                | **DATE**         | Fecha de Actualizacion                            |
 
-### PAGOS
+### PAGOS: Pago de un procedimiento
 
 | **COLUMNA**       | **TIPO**          | **DESCRIPCION**                        |
 | ----------------- | ----------------- | -------------------------------------- |
@@ -83,7 +83,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `total_pagar`     | **DECIMAL(10,2)** | Total a pagar por el servicio          |
 | `feCreate`        | **DATETIME**      | Fecha de creacion del pago             |
 
-### PAGO_DETALLEs
+### PAGO_DETALLES: Detalles de un pago de un procedimiento
 
 | **COLUMNA**     | **TIPO**          | **DESCRIPCION**                         |
 | --------------- | ----------------- | --------------------------------------- |
@@ -95,7 +95,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `pieza`         | **VARCHAR(20)**   | Numero de Pieza(Diente)                 |
 | `fecha`         | **DATE**          | Fecha que se realizo el pago            |
 
-### PROCEDIMIENTOS
+### PROCEDIMIENTOS: Todos los procedimientos que se hace en el consultorio
 
 | **COLUMNA**       | **TIPO**          | **DESCRIPCION**                       |
 | ----------------- | ----------------- | ------------------------------------- |
@@ -107,7 +107,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `feCreate`        | **DATE**          | Fecha de creacion                     |
 | `color`           | **VARCHAR(50)**   | Color que tendra de la etiqueta       |
 
-### ETIQUETAS
+### ETIQUETAS: Etiquetas de color con abreviacion de nombre del personal para simplificar el titulo de la cita
 
 | **COLUMNA**  | **TIPO**        | **DESCRIPCION**                  |
 | ------------ | --------------- | -------------------------------- |
@@ -116,7 +116,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `nombre`     | **VARCHAR(50)** | Nombre de la etiqueta            |
 | `color`      | **VARCHAR(50)** | Color que tendra de la etiqueta  |
 
-### CITAS
+### CITAS: Registro de citas de la agenda
 
 | **COLUMNA**  | **TIPO**        | **DESCRIPCION**                                                          |
 | ------------ | --------------- | ------------------------------------------------------------------------ |
@@ -131,7 +131,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `hora_fin`   | **TIME**        | Hora de finalizacion de la cita                                          |
 | `estado`     | **TINYINT**     | Estado de la cita: 1->atendido,0->En espera,2->reprogramado,3->cancelado |
 
-### ODONTOGRAMA
+### ODONTOGRAMA: Detalle de cada diente
 
 | **COLUMNA**       | **TIPO**         | **DESCRIPCION**                                                   |
 | ----------------- | ---------------- | ----------------------------------------------------------------- |
@@ -146,6 +146,39 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `feCreate`        | **DATE**         | Fecha de creacion                                                 |
 | `feActualizacion` | **DATE**         | Fecha de Actualizacion                                            |
 
+### PRESUPUESTO_GENERAL:
+
+| **COLUMNA**            | **TIPO**          | **DESCRIPCION**                                               |
+| ---------------------- | ----------------- | ------------------------------------------------------------- |
+| `idpresupuestogeneral` | **INT(PK)**       | Identificador unico del presupuesto                           |
+| `idcliente`            | **INT(FK)**       | Relacion con la tabla `cliente`                               |
+| `monto_pagado`         | **DECIMAL(10,2)** | Pago total actual                                             |
+| `deuda_pendiente`      | **DECIMAL(10,2)** | Deuda pendiente                                               |
+| `total_pagar`          | **DECIMAL(10,2)** | Total a pagar por el servicio                                 |
+| `estado`               | **TINYINT**       | Estado del procedimiento, 0=pendiente, 1=pagado completamente |
+| `feCreate`             | **DATETIME**      | Fecha de creacion del presupuesto                             |
+
+### PRESUPUESTO_PROCEDIMIENTOS: cuantos procedimientos tiene en un solo presupuesto
+
+| **COLUMNA**                  | **TIPO**          | **DESCRIPCION**                             |
+| ---------------------------- | ----------------- | ------------------------------------------- |
+| `idpresupuestoprocedimiento` | **INT(PK)**       | Identificador unico del presupuesto         |
+| `idpresupuestogeneral`       | **INT(FK)**       | Relacion con la tabla `presupuesto_general` |
+| `idprocedimiento`            | **INT(FK)**       | Relacion con la tabla `procedimientos`      |
+| `pieza`                      | **VARCHAR(20)**   | Numero de Pieza(Diente)                     |
+| `precio`                     | **DECIMAL(10,2)** | Precio estimado del procedimiento           |
+
+### PRESUPUESTO_PAGOS
+
+| **COLUMNA**            | **TIPO**          | **DESCRIPCION**                                |
+| ---------------------- | ----------------- | ---------------------------------------------- |
+| `idpresupuestopago`    | **INT(PK)**       | Identificador unico del detalle de presupuesto |
+| `idpresupuestogeneral` | **INT(FK)**       | Relacion con la tabla `presupuesto`            |
+| `importe`              | **DECIMAL(10,2)** | Importe del pago                               |
+| `fecha`                | **DATE**          | Fecha que se realizo el presupuesto de pago    |
+
+
+### ------------------
 ### PRESUPUESTOS
 
 | **COLUMNA**       | **TIPO**          | **DESCRIPCION**                        |
@@ -163,7 +196,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | **COLUMNA**            | **TIPO**          | **DESCRIPCION**                                |
 | ---------------------- | ----------------- | ---------------------------------------------- |
 | `idpresupuestodetalle` | **INT(PK)**       | Identificador unico del detalle de presupuesto |
-| `idpresupuesto`        | **INT(FK)**       | Relacion con la tabla `presupuesot`            |
+| `idpresupuesto`        | **INT(FK)**       | Relacion con la tabla `presupuesto`            |
 | `pieza`                | **DECIMAL(10,2)** | Monto que pago en el presupuesto               |
 | `importe`              | **VARCHAR(100)**  | Concepto del pago realizado                    |
 | `fecha`                | **DATE**          | Fecha que se realizo el presupuesto            |

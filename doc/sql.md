@@ -142,6 +142,35 @@ CREATE TABLE `clientes_condicion` (
   CONSTRAINT `clientes_condicion_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
 );
 
+CREATE TABLE `presupuesto_general` (
+  `idpresupuestogeneral` INT PRIMARY KEY AUTO_INCREMENT,
+  `idcliente` INT NOT NULL,
+  `monto_pagado` DECIMAL(10,2) DEFAULT NULL,
+  `deuda_pendiente` DECIMAL(10,2) DEFAULT NULL,
+  `total_pagar` DECIMAL(10,2) DEFAULT NULL,
+  `estado` TINYINT,
+  `feCreate` DATETIME DEFAULT current_timestamp(),
+  FOREIGN KEY(`idcliente`) REFERENCES clientes(`idcliente`)
+);
+
+CREATE TABLE `presupuesto_procedimientos`(
+  `idpresupuestoprocedimiento` INT PRIMARY KEY AUTO_INCREMENT,
+  `idpresupuestogeneral` INT NOT NULL,
+  `idprocedimiento` INT NOT NULL,
+  `pieza` VARCHAR(20) DEFAULT NULL,
+  `precio` DECIMAL(10,2) DEFAULT NULL,
+  FOREIGN KEY(`idpresupuestogeneral`) REFERENCES presupuesto_general(`idpresupuestogeneral`),
+  FOREIGN KEY(`idprocedimiento`) REFERENCES procedimientos(`idprocedimiento`)
+);
+
+CREATE TABLE `presupuesto_pagos`(
+  `idpresupuestopago` INT PRIMARY KEY AUTO_INCREMENT,
+  `idpresupuestogeneral` INT NOT NULL,
+  `importe` DECIMAL(10,2),
+  `fecha` datetime DEFAULT current_timestamp(),
+  FOREIGN KEY(`idpresupuestogeneral`) REFERENCES presupuesto_general(`idpresupuestogeneral`)
+);
+
 CREATE TABLE `presupuestos` (
   `idpresupuesto` int(11) NOT NULL AUTO_INCREMENT,
   `idcliente` int(11) DEFAULT NULL,
@@ -165,6 +194,12 @@ CREATE TABLE `presupuesto_detalles` (
   KEY `idpresupuesto` (`idpresupuesto`),
   CONSTRAINT `presupuesto_detalles_ibfk_1` FOREIGN KEY (`idpresupuesto`) REFERENCES `presupuestos` (`idpresupuesto`)
 );
+
+
+
+
+
+
 
 para la condicion de cada cliente ----><- ->
 #!/bin/bash 

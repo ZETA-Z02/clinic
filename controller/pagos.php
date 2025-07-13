@@ -223,38 +223,77 @@ class Pagos extends Controller
         }
         echo json_encode($json);
     }
-    public function nuevoPresupuestoTotal()
+
+
+    // Obtiene el presupuesto general de un cliente, mostrando los procedimientos y el total a pagar
+    public function getPresupuestoGeneral()
     {
         $this->disabledCache();
-        $idcliente = $_POST['idcliente'];
-        //$idprocedimiento = $_POST['idprocedimiento'];
-        $idprocedimiento = 1;
-        $monto = $_POST['importe'];
-        $pieza = $_POST['pieza'];
-        $total = $_POST['total_pagar'];
-        if ($this->model->NuevoPresupuestoTotal($idcliente, $idprocedimiento, $monto, $pieza, $total)) {
+        $idcliente = $_POST['id'];
+        $data = $this->model->GetPresupuestoGeneralTotal($idcliente);
+        if (mysqli_num_rows($data)===0) {
+            echo json_encode(array("response" => false));
+        } else {
+            while ($row = mysqli_fetch_assoc($data)) {
+                $json[] = array(
+                    "idpresupuestogeneral" => $row['idpresupuestogeneral'],
+                    "pieza" => $row['pieza'],
+                    "procedimiento" => $row['procedimiento'],
+                    "precio" => $row['precio'],
+                    "total" => $row['total_pagar'],
+                    "fecha" => $row['feCreate'],
+                );
+            }
+            echo json_encode($json);
+        }
+    }
+    // Crea el presupuesto general, con informacion de los procedimientos y el total a pagar
+    public function nuevoPresupuestoGeneral()
+    {
+        $this->disabledCache();
+        $data = $_POST['data'];
+        $idcliente = $data[0]["idcliente"];
+        $datos = $data[1];
+        if (empty($idcliente)) {
+            throw new Exception("Error al obtener los datos del pago.");
+        }
+        // echo json_encode($data);
+        if ($this->model->NuevoPresupuestoGeneral($idcliente, $datos)) {
             echo 'ok';
         } else {
-            throw new Exception('Error al crear el presupuesto total');
+            throw new Exception('Error al crear el presupuesto general');
         }
     }
-    public function nuevoPagoPresupuestoTotal()
+    // NUevo pago de un presupuesto general 
+    public function nuevoPagoPresupuestoGeneral()
     {
         $this->disabledCache();
-        $idpresupuesto = $_POST['idpresupuesto'];
         $idcliente = $_POST['idcliente'];
-        $pieza = $_POST['pieza'];
         $importe = $_POST['importe'];
-        if ($this->model->NuevoPagoPresupuestoTotal($idpresupuesto, $idcliente, $importe, $pieza)) {
+        if ($this->model->NuevoPagoPresupuestoGeneral($idcliente, $importe)) {
             echo "ok";
         } else {
-            throw new Exception("Error al crear el presupuesto");
+            //throw new Exception("Error al crear el pago del presupuesto");
         }
     }
-    // Actualiza el saldo del presupuesto
-    // REDISE;AR LAS TABLAS PRESUPUESTO Y PRESUPEUSTO DETALLES YA QUE HAY MUCHA DEPENDENDIA 
-    // EN LOS CAMPOS DE MONTO Y DEUDA.REHACER PRESUPUESTOS APRENDIENDO A NO HACER TABLAS DEPENDIENTES MRD
-    // PTM -> by: ZETA
+    // Obtiene datos de los pagos de un presupuesto activo
+    public function getPresupuestoPagos()
+    {
+        $this->disabledCache();
+        $idcliente = $_POST['id'];
+        $idpresupuestogeneral = $_POST['idpresupuestogeneral'];
+        $data = $this->model->GetPresupuestoPagos($idcliente, $idpresupuestogeneral);
+        while ($row = mysqli_fetch_assoc($data)) {
+            $json[] = array(
+                'idpresupuestopago' => $row['idpresupuestopago'],
+                'importe' => $row['importe'],
+                'monto_pagado' => $row['monto_pagado'],
+                'total' => $row['total_pagar'],
+                'fecha' => date("Y-m-d", strtotime($row['fecha'])),
+            );
+        }
+        echo json_encode($json);
+    }
     public function updatePresupuestoTotal()
     {
         $idcliente = $_POST['idcliente'];
@@ -286,45 +325,46 @@ class Pagos extends Controller
         $data = $this->model->MostrarInformacionPagos($idcliente);
         echo json_encode($data);
     }
-    public function DataBoleta($nparam=null)
-    {   $this->disabledCache();
+    public function DataBoleta($nparam = null)
+    {
+        $this->disabledCache();
         //$idcliente = $nparam[0];
         $idcliente = $_POST['id'];
         $status = $_POST['status'];
-        if($status == 'todo'){
+        if ($status == 'todo') {
             $status = 'todo';
         }
         $data = $this->model->DataBoleta($idcliente, $status);
         $cliente = $this->model->GetOne($idcliente);
-        $nombre = $cliente['nombre'].' '.$cliente['apellido'];
+        $nombre = $cliente['nombre'] . ' ' . $cliente['apellido'];
         while ($row = mysqli_fetch_assoc($data)) {
             $datos[] = array($row['procedimiento'], $row['importe']);
         }
         //echo json_encode($datos);
-        $this->Boleta($datos,$nombre);
+        $this->Boleta($datos, $nombre);
         //$this->render($idcliente);
     }
     public function boleta($data, $nombre)
     {
-        if(count($data) < 7){
+        if (count($data) < 7) {
             $height = 140;
         }
-        if(count($data) > 7 && count($data) <= 12){
+        if (count($data) > 7 && count($data) <= 12) {
             $height = 200;
         }
         // 7 ya se hace otra pagina
-        if(count($data) > 12){
+        if (count($data) > 12) {
             $porFila = 14.5;
             $height = $porFila * count($data);
         }
-        
+
         $pdf = new Boleta('P', 'mm', array(72, $height)); // Asegurar el ancho correcto
         $pdf->SetMargins(4, 2, 4); // Agregar márgenes para evitar desbordamientos
         $pdf->AddPage();
         $pdf->SetFont('Arial', '', 9);
         $pdf->Cell(70, 6, 'Boleta N: B001-00012345', 0, 1, 'L');
         //$pdf->Cell(70, 6, 'Cliente: '.$nombre, 0, 1, 'L');
-        $pdf->MultiCell(70, 6, 'Cliente: '.$nombre, 0, 'L');
+        $pdf->MultiCell(70, 6, 'Cliente: ' . $nombre, 0, 'L');
         $pdf->Cell(35, 6, 'Fecha: ' . date('d/m/Y'), 0, 0, 'L');
         $pdf->Cell(35, 6, 'Hora: ' . date(' h:i A'), 0, 1, 'L');
         $pdf->Ln(2);
@@ -342,19 +382,19 @@ class Pagos extends Controller
         $total = 0;
         $pdf->SetFont('Arial', '', 9);
         foreach ($data as $p) {
-            if(strlen($p[0]) < 27){
+            if (strlen($p[0]) < 27) {
                 $pdf->Cell(40, 6, $p[0], 0, 0, 'L');
                 $pdf->Cell(30, 6, number_format($p[1], 2), 0, 1, 'C');
                 $total += $p[1];
             }
-            if(strlen($p[0]) > 27){
+            if (strlen($p[0]) > 27) {
                 $x = $pdf->GetX(); // Guarda la posición actual
                 $y = $pdf->GetY(); // Guarda la posición actual
                 $pdf->MultiCell(50, 6, $p[0], 0, 'L'); // Descripción (salto de línea automático)
                 // Ajustar la posición del siguiente dato
                 $pdf->SetXY($x + 40, $y); // Mueve el cursor después de la descripción     
                 $pdf->Cell(30, 6, number_format($p[1], 2), 0, 1, 'C');
-                $pdf->ln(5);  
+                $pdf->ln(5);
                 $total += $p[1];
             }
         }
@@ -369,7 +409,7 @@ class Pagos extends Controller
         $pdf->Cell(18, 6, number_format($total * 1.18, 2), 0, 1, 'R');
         // $pdf->Ln(5);
 
-        $pdf->Output('F', 'boleta.pdf');     
+        $pdf->Output('F', 'boleta.pdf');
 
     }
 }

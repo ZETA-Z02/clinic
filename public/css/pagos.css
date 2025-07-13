@@ -45,9 +45,15 @@ input:disabled{
     color: var(--verde);
     font-weight: bold;
 }
-.tabla-presupuesto-total{
-    width: 60%;
+/* Quita el color intercalado de las filas de las tablas*/
+td{
+    background-color: #fff;
 }
+
+
+/* .tabla-presupuesto-total{
+    width: 60%;
+} */
 /* .procedimiento-presupuesto{
     width: 50%;
 } */
