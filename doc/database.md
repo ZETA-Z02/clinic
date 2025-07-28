@@ -6,200 +6,202 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 
 ## ENTIDADES
 
-### PERSONAL: Se registra a cada personal
+### PERSONAL
 
-| **COLUMNA**  | **TIPO**         | **DESCRIPCION**                       |
+| **COLUMNA**  | **TIPO**         | **DESCRIPCIÓN**                       |
 | ------------ | ---------------- | ------------------------------------- |
-| `idpersonal` | **INT(PK)**      | Identificador unico del personal      |
+| `idpersonal` | **INT(PK)**      | Identificador único del personal      |
 | `nombre`     | **VARCHAR(100)** | Nombre del personal                   |
 | `apellido`   | **VARCHAR(100)** | Apellido del personal                 |
-| `dni`        | **INT**          | Documento del identidad               |
-| `telefono`   | **VARCHAR(15)**  | Numero de Contacto                    |
-| `sexo`       | **VARCHAR(15)**  | Genero del personal                   |
-| `email`      | **VARCHAR(100)** | Correo electronico                    |
-| `foto`       | **VARCHAR(200)** | URL O ruta de la foto del personal    |
-| `fechaNac`   | **DATE**         | Fecha de Nacimiento                   |
-| `feCreate`   | **DATETIME**     | Fecha y hora de creacion del registro |
-| `feUpdate`   | **DATE**         | FEcha de la ultima actualizacion      |
+| `dni`        | **INT**          | Documento de identidad                |
+| `telefono`   | **VARCHAR(15)**  | Número de contacto                    |
+| `sexo`       | **VARCHAR(15)**  | Género del personal                   |
+| `email`      | **VARCHAR(100)** | Correo electrónico                    |
+| `foto`       | **VARCHAR(200)** | URL o ruta de la foto del personal    |
+| `fechaNac`   | **DATE**         | Fecha de nacimiento                   |
+| `feCreate`   | **DATETIME**     | Fecha de creación del registro        |
+| `feUpdate`   | **DATETIME**     | Fecha de la última actualización      |
 
-### LOGIN: Registro de usuarios para ingresar al sistema
+---
 
-| **COLUMNA**  | **TIPO**         | **DESCRIPCION**                                   |
+### LOGIN
+
+| **COLUMNA**  | **TIPO**         | **DESCRIPCIÓN**                                   |
 | ------------ | ---------------- | ------------------------------------------------- |
-| `idlogin`    | **INT(PK)**      | Identificador unico del login                     |
-| `idpersonal` | **INT(FK)**      | Relacion con la tabla `personal`                  |
-| `username`   | **VARCHAR(50)**  | Nombre de usuario                                 |
-| `password`   | **VARCHAR(300)** | Contrasena en formato hash                        |
-| `estado`     | **TINYINT**      | Estado del login, 1->activo,0->inactivo           |
-| `nivel`      | **TINYINT**      | Nivel del personal,1->administrador o 2->personal |
+| `idlogin`    | **INT(PK)**      | Identificador único del login                     |
+| `idpersonal` | **INT(FK)**      | Relación con la tabla `personal`                  |
+| `username`   | **VARCHAR(50)**  | Nombre de usuario (único)                         |
+| `password`   | **VARCHAR(300)** | Contraseña en formato hash                        |
+| `estado`     | **TINYINT**      | Estado del login (1 = activo, 0 = inactivo)      |
+| `nivel`      | **TINYINT**      | Nivel de usuario (1 = admin, 2 = personal)       |
 
-### CLIENTES: Registro de clientes que tienen un procedimiento y pagos pendientes
+---
 
-| **COLUMNA** | **TIPO**         | **DESCRIPCION**                     |
+### CLIENTES
+
+| **COLUMNA** | **TIPO**         | **DESCRIPCIÓN**                     |
 | ----------- | ---------------- | ----------------------------------- |
-| `idcliente` | **INT(PK)**      | Identificador unico del cliente     |
-| `nombre`    | **VARCHAR(100)** | Nombre del cliente                  |
-| `apellido`  | **VARCHAR(100)** | Apellido del cliente                |
-| `dni`       | **INT**          | Documento de identidad              |
-| `telefono`  | **VARCHAR(15)**  | Numero de celular                   |
-| `email`     | **VARCHAR(100)** | Correo electronico                  |
-| `sexo`      | **VARCHAR(15)**  | Genero del cliente                  |
+| `idcliente` | **INT(PK)**      | Identificador único del cliente     |
+| `nombre`    | **VARCHAR(50)**  | Nombre del cliente                  |
+| `apellido`  | **VARCHAR(50)**  | Apellido del cliente                |
+| `dni`       | **INT**          | Documento de identidad (único)      |
+| `telefono`  | **VARCHAR(15)**  | Número de celular                   |
+| `email`     | **VARCHAR(100)** | Correo electrónico                  |
+| `sexo`      | **VARCHAR(15)**  | Género del cliente                  |
 | `ciudad`    | **VARCHAR(100)** | Ciudad de procedencia               |
-| `direccion` | **VARCHAR(100)** | Direccion actual                    |
-| `feCreate`  | **DATETIME**     | Fecha de creacion del registro      |
-| `feUpdate`  | **DATE**         | Fecha de actualizacion del registro |
+| `direccion` | **VARCHAR(100)** | Dirección actual                    |
+| `feCreate`  | **DATETIME**     | Fecha de creación del registro      |
+| `feUpdate`  | **DATETIME**     | Fecha de actualización del registro |
 
-### clientes_condicion: Condicion de un cliente, verificar antecedentes de salud
+---
 
-| **COLUMNA**                      | **TIPO**         | **DESCRIPCION**                                   |
+### CLIENTES_CONDICION
+
+| **COLUMNA**                      | **TIPO**         | **DESCRIPCIÓN**                                   |
 | -------------------------------- | ---------------- | ------------------------------------------------- |
-| `idcondicion`                    | **INT(PK)**      | Identificador unico de la odontograma             |
-| `idcliente`                      | **INT(FK)**      | Relacion con la tabla `clientes`                  |
-| `antecedente_enfermedad`         | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe  |
-| `antecedente_observacion`        | **VARCHAR(20)**  | Obervaciones de sus antecedentes con enfermedades |
-| `medicado`                       | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe  |
-| `medicado_observacion`           | **VARCHAR(20)**  | Observaciones de medimentos que toma              |
-| `complicacion_anestesia`         | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe  |
-| `anestesia_observacion`          | **VARCHAR(20)**  | Observaciones con la anestesia                    |
-| `alergia_medicamento`            | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe  |
-| `alergiamedicamento_observacion` | **VARCHAR(20)**  | Obervaciones con alergias a medicamentos          |
-| `hemorragias`                    | **TINYINT**      | Condicion del cliente, 1=>Si,2=>No,3=>No se sabe  |
-| `hemorragias_observacion`        | **VARCHAR(20)**  | Observaciones de las hemorragias anteriores       |
-| `enfermedad`                     | **VARCHAR(100)** | Enfermedad que sufre el paciente(cliente)         |
-| `observaciones`                  | **TEXT**         | Observacion sobre el cliente y su condicion       |
-| `feCreate`                       | **DATE**         | Fecha de creacion                                 |
-| `feActualizacion`                | **DATE**         | Fecha de Actualizacion                            |
+| `idcondicion`                    | **INT(PK)**      | Identificador único de la condición               |
+| `idcliente`                      | **INT(FK)**      | Relación con la tabla `clientes`                  |
+| `antecedente_enfermedad`         | **TINYINT**      | Tiene antecedentes de enfermedad (1/0)            |
+| `antecedente_observacion`        | **VARCHAR(20)**  | Observaciones de antecedentes                     |
+| `medicado`                       | **TINYINT**      | Está medicado (1/0)                               |
+| `medicado_observacion`           | **VARCHAR(20)**  | Observaciones de medicación                       |
+| `complicacion_anestesia`         | **TINYINT**      | Complicación con anestesia (1/0)                  |
+| `anestesia_observacion`          | **VARCHAR(20)**  | Observaciones sobre la anestesia                  |
+| `alergia_medicamento`            | **TINYINT**      | Alergia a medicamentos (1/0)                      |
+| `alergiamedicamento_observacion` | **VARCHAR(20)**  | Observaciones de alergias a medicamentos          |
+| `hemorragias`                    | **TINYINT**      | Historial de hemorragias (1/0)                    |
+| `hemorragias_observacion`        | **VARCHAR(20)**  | Observaciones sobre hemorragias                   |
+| `enfermedad`                     | **VARCHAR(100)** | Enfermedad que padece                             |
+| `observaciones`                  | **TEXT**         | Observaciones generales                           |
+| `feCreate`                       | **DATETIME**     | Fecha de creación                                 |
+| `feActualizacion`                | **DATE**         | Fecha de actualización                            |
 
-### PAGOS: Pago de un procedimiento
+---
 
-| **COLUMNA**       | **TIPO**          | **DESCRIPCION**                        |
-| ----------------- | ----------------- | -------------------------------------- |
-| `idpago`          | **INT(PK)**       | Identificador unico del pago           |
-| `idcliente`       | **INT(FK)**       | Relacion con la tabla `cliente`        |
-| `idprocedimiento` | **INT(FK)**       | Relacion con la tabla `procedimientos` |
-| `monto_pagado`    | **DECIMAL(10,2)** | Pago total actual                      |
-| `saldo_pendiente` | **DECIMAL(10,2)** | Deuda pendiente                        |
-| `igv`             | **DECIMAL(10,2)** | Impuestos IGV                          |
-| `total_pagar`     | **DECIMAL(10,2)** | Total a pagar por el servicio          |
-| `feCreate`        | **DATETIME**      | Fecha de creacion del pago             |
+### CITAS
 
-### PAGO_DETALLES: Detalles de un pago de un procedimiento
+| **COLUMNA**  | **TIPO**        | **DESCRIPCIÓN**                                                           |
+| ------------ | --------------- | ------------------------------------------------------------------------- |
+| `idcita`     | **INT(PK)**     | Identificador único de la cita                                            |
+| `idcliente`  | **INT(FK)**     | Relación con la tabla `clientes`                                          |
+| `idetiqueta` | **INT(FK)**     | Relación con la tabla `etiquetas`                                         |
+| `titulo`     | **VARCHAR(50)** | Título de la cita                                                         |
+| `mensaje`    | **TEXT**        | Mensaje o detalle adicional                                               |
+| `fecha_ini`  | **DATE**        | Fecha de inicio de la cita                                                |
+| `hora_ini`   | **TIME**        | Hora de inicio de la cita                                                 |
+| `estado`     | **TINYINT**     | Estado de la cita: 1 = atendido, 0 = pendiente, 2 = reprogramado, 3 = cancelado |
+| `fecha_fin`  | **DATE**        | Fecha de finalización                                                     |
+| `hora_fin`   | **TIME**        | Hora de finalización                                                      |
 
-| **COLUMNA**     | **TIPO**          | **DESCRIPCION**                         |
-| --------------- | ----------------- | --------------------------------------- |
-| `idpagodetalle` | **INT(PK)**       | Identificador unico del detalle de pago |
-| `idpago`        | **INT(FK)**       | Relacion con la tabla `pagos`           |
-| `idpersonal`    | **INT(FK)**       | Relacion con la tabla `personal`        |
-| `monto`         | **DECIMAL(10,2)** | Monto que pago                          |
-| `concepto`      | **VARCHAR(100)**  | Concepto del pago realizado             |
-| `pieza`         | **VARCHAR(20)**   | Numero de Pieza(Diente)                 |
-| `fecha`         | **DATE**          | Fecha que se realizo el pago            |
+---
 
-### PROCEDIMIENTOS: Todos los procedimientos que se hace en el consultorio
+### ETIQUETAS
 
-| **COLUMNA**       | **TIPO**          | **DESCRIPCION**                       |
-| ----------------- | ----------------- | ------------------------------------- |
-| `idprocedimiento` | **INT(PK)**       | Identificador unico del procedimiento |
-| `procedimiento`   | **VARCHAR(100)**  | Nombre del procedimiento a realizar   |
-| `descripcion`     | **TEXT**          | Descripcion del procedimiento         |
-| `precio`          | **DECIMAL(10,2)** | Precio del procedimiento              |
-| `iniciales`       | **VARCHAR(20)**   | Iniciales del procedimiento           |
-| `feCreate`        | **DATE**          | Fecha de creacion                     |
-| `color`           | **VARCHAR(50)**   | Color que tendra de la etiqueta       |
-
-### ETIQUETAS: Etiquetas de color con abreviacion de nombre del personal para simplificar el titulo de la cita
-
-| **COLUMNA**  | **TIPO**        | **DESCRIPCION**                  |
+| **COLUMNA**  | **TIPO**        | **DESCRIPCIÓN**                  |
 | ------------ | --------------- | -------------------------------- |
-| `idetiqueta` | **INT(PK)**     | Identificador unico de la cita   |
-| `idpersonal` | **INT(FK)**     | Relacion con la tabla `personal` |
+| `idetiqueta` | **INT(PK)**     | Identificador único de la etiqueta |
+| `idpersonal` | **INT(FK)**     | Relación con la tabla `personal` |
 | `nombre`     | **VARCHAR(50)** | Nombre de la etiqueta            |
-| `color`      | **VARCHAR(50)** | Color que tendra de la etiqueta  |
+| `color`      | **VARCHAR(50)** | Color de la etiqueta             |
 
-### CITAS: Registro de citas de la agenda
+---
 
-| **COLUMNA**  | **TIPO**        | **DESCRIPCION**                                                          |
-| ------------ | --------------- | ------------------------------------------------------------------------ |
-| `idcita`     | **INT(PK)**     | Identificador unico de la cita                                           |
-| `idcliente`  | **INT(FK)**     | Relacion con la tabla `clientes`                                         |
-| `idetiqueta` | **INT(FK)**     | Relacion con la tabla `etiquetas`                                        |
-| `titulo`     | **VARCHAR(50)** | Nombre de la cita                                                        |
-| `mensaje`    | **TEXT**        | Algun mensaje en especifico sobre la cita                                |
-| `fecha_ini`  | **DATE**        | Fecha del inicio de la cita                                              |
-| `hora_ini`   | **TIME**        | Hora del inicio de la cita                                               |
-| `fecha_fin`  | **DATE**        | Fecha de finalizacion de la cita                                         |
-| `hora_fin`   | **TIME**        | Hora de finalizacion de la cita                                          |
-| `estado`     | **TINYINT**     | Estado de la cita: 1->atendido,0->En espera,2->reprogramado,3->cancelado |
+### PROCEDIMIENTOS
 
-### ODONTOGRAMA: Detalle de cada diente
+| **COLUMNA**       | **TIPO**          | **DESCRIPCIÓN**                       |
+| ----------------- | ----------------- | ------------------------------------- |
+| `idprocedimiento` | **INT(PK)**       | Identificador único del procedimiento |
+| `procedimiento`   | **VARCHAR(100)**  | Nombre del procedimiento              |
+| `descripcion`     | **TEXT**          | Descripción del procedimiento         |
+| `precio`          | **DECIMAL(10,2)** | Precio del procedimiento              |
+| `iniciales`       | **VARCHAR(10)**   | Iniciales                             |
+| `feCreate`        | **DATETIME**      | Fecha de creación                     |
+| `color`           | **VARCHAR(50)**   | Color asignado (opcional)             |
 
-| **COLUMNA**       | **TIPO**         | **DESCRIPCION**                                                   |
+---
+
+### ODONTOGRAMA
+
+| **COLUMNA**       | **TIPO**         | **DESCRIPCIÓN**                                                   |
 | ----------------- | ---------------- | ----------------------------------------------------------------- |
-| `idodontograma`   | **INT(PK)**      | Identificador unico de la odontograma                             |
-| `idcliente`       | **INT(FK)**      | Relacion con la tabla `clientes`                                  |
-| `idprocedimiento` | **INT(FK)**      | Relacion con la tabla `procedimientos`                            |
-| `pieza`           | **TINYINT**      | Numero de la pieza                                                |
-| `imagen`          | **VARCHAR(400)** | Ruta de la imagen en el servidor                                  |
-| `observaciones`   | **TEXT**         | Algun mensaje en especifico sobre la pieza                        |
-| `estado`          | **TINYINT**      | Estado que se encuentra en el procedimiento, 1=>ZOE,2=>D+I,3=>DIR |
-| `condicion`       | **TINYINT**      | Condicion del diente, 1=>sano,2=>careado,3=>Ausente,4=>Restaurado |
-| `feCreate`        | **DATE**         | Fecha de creacion                                                 |
-| `feActualizacion` | **DATE**         | Fecha de Actualizacion                                            |
+| `idodontograma`   | **INT(PK)**      | Identificador único del odontograma                               |
+| `idcliente`       | **INT(FK)**      | Relación con la tabla `clientes`                                  |
+| `idprocedimiento` | **INT(FK)**      | Relación con la tabla `procedimientos`                            |
+| `pieza`           | **TINYINT**      | Número de pieza dental                                            |
+| `imagen`          | **VARCHAR(400)** | Ruta de la imagen asociada                                        |
+| `observaciones`   | **TEXT**         | Observaciones específicas                                         |
+| `estado`          | **TINYINT**      | Estado: 1 = ZOE, 2 = D+I, 3 = DIR                                 |
+| `condicion`       | **TINYINT**      | Condición: 1 = sano, 2 = careado, 3 = ausente, 4 = restaurado     |
+| `feCreate`        | **DATE**         | Fecha de creación                                                 |
+| `feActualizacion` | **DATE**         | Fecha de actualización                                            |
 
-### PRESUPUESTO_GENERAL:
+---
 
-| **COLUMNA**            | **TIPO**          | **DESCRIPCION**                                               |
+### PAGOS
+
+| **COLUMNA**       | **TIPO**          | **DESCRIPCIÓN**                        |
+| ----------------- | ----------------- | -------------------------------------- |
+| `idpago`          | **INT(PK)**       | Identificador único del pago           |
+| `idcliente`       | **INT(FK)**       | Relación con la tabla `clientes`       |
+| `idprocedimiento` | **INT(FK)**       | Relación con la tabla `procedimientos` |
+| `monto_pagado`    | **DECIMAL(10,2)** | Monto pagado                           |
+| `saldo_pendiente` | **DECIMAL(10,2)** | Saldo pendiente                        |
+| `igv`             | **DECIMAL(10,2)** | Impuesto IGV                           |
+| `total_pagar`     | **DECIMAL(10,2)** | Total a pagar                          |
+| `feCreate`        | **DATETIME**      | Fecha de creación                      |
+
+---
+
+### PAGO_DETALLES
+
+| **COLUMNA**     | **TIPO**          | **DESCRIPCIÓN**                         |
+| --------------- | ----------------- | --------------------------------------- |
+| `idpagodetalle` | **INT(PK)**       | Identificador único del detalle de pago |
+| `idpago`        | **INT(FK)**       | Relación con la tabla `pagos`           |
+| `idpersonal`    | **INT(FK)**       | Relación con la tabla `personal`        |
+| `monto`         | **DECIMAL(10,2)** | Monto pagado                            |
+| `concepto`      | **VARCHAR(100)**  | Concepto del pago                       |
+| `pieza`         | **VARCHAR(20)**   | Pieza o diente                          |
+| `fecha`         | **DATETIME**      | Fecha del pago                          |
+
+---
+
+### PRESUPUESTO_GENERAL
+
+| **COLUMNA**            | **TIPO**          | **DESCRIPCIÓN**                                               |
 | ---------------------- | ----------------- | ------------------------------------------------------------- |
-| `idpresupuestogeneral` | **INT(PK)**       | Identificador unico del presupuesto                           |
-| `idcliente`            | **INT(FK)**       | Relacion con la tabla `cliente`                               |
-| `monto_pagado`         | **DECIMAL(10,2)** | Pago total actual                                             |
+| `idpresupuestogeneral` | **INT(PK)**       | Identificador único del presupuesto                           |
+| `idcliente`            | **INT(FK)**       | Relación con la tabla `clientes`                              |
+| `monto_pagado`         | **DECIMAL(10,2)** | Monto pagado                                                  |
 | `deuda_pendiente`      | **DECIMAL(10,2)** | Deuda pendiente                                               |
-| `total_pagar`          | **DECIMAL(10,2)** | Total a pagar por el servicio                                 |
-| `estado`               | **TINYINT**       | Estado del procedimiento, 0=pendiente, 1=pagado completamente |
-| `feCreate`             | **DATETIME**      | Fecha de creacion del presupuesto                             |
+| `total_pagar`          | **DECIMAL(10,2)** | Total a pagar                                                 |
+| `estado`               | **TINYINT**       | Estado: 0 = pendiente, 1 = pagado                             |
+| `feCreate`             | **DATETIME**      | Fecha de creación                                             |
 
-### PRESUPUESTO_PROCEDIMIENTOS: cuantos procedimientos tiene en un solo presupuesto
+---
 
-| **COLUMNA**                  | **TIPO**          | **DESCRIPCION**                             |
+### PRESUPUESTO_PROCEDIMIENTOS
+
+| **COLUMNA**                  | **TIPO**          | **DESCRIPCIÓN**                             |
 | ---------------------------- | ----------------- | ------------------------------------------- |
-| `idpresupuestoprocedimiento` | **INT(PK)**       | Identificador unico del presupuesto         |
-| `idpresupuestogeneral`       | **INT(FK)**       | Relacion con la tabla `presupuesto_general` |
-| `idprocedimiento`            | **INT(FK)**       | Relacion con la tabla `procedimientos`      |
-| `pieza`                      | **VARCHAR(20)**   | Numero de Pieza(Diente)                     |
-| `precio`                     | **DECIMAL(10,2)** | Precio estimado del procedimiento           |
+| `idpresupuestoprocedimiento` | **INT(PK)**       | Identificador único del presupuesto         |
+| `idpresupuestogeneral`       | **INT(FK)**       | Relación con `presupuesto_general`          |
+| `idprocedimiento`            | **INT(FK)**       | Relación con `procedimientos`               |
+| `pieza`                      | **VARCHAR(20)**   | Pieza o diente                              |
+| `precio`                     | **DECIMAL(10,2)** | Precio del procedimiento                    |
+
+---
 
 ### PRESUPUESTO_PAGOS
 
-| **COLUMNA**            | **TIPO**          | **DESCRIPCION**                                |
+| **COLUMNA**            | **TIPO**          | **DESCRIPCIÓN**                                |
 | ---------------------- | ----------------- | ---------------------------------------------- |
-| `idpresupuestopago`    | **INT(PK)**       | Identificador unico del detalle de presupuesto |
-| `idpresupuestogeneral` | **INT(FK)**       | Relacion con la tabla `presupuesto`            |
+| `idpresupuestopago`    | **INT(PK)**       | Identificador único del pago de presupuesto    |
+| `idpresupuestogeneral` | **INT(FK)**       | Relación con `presupuesto_general`             |
 | `importe`              | **DECIMAL(10,2)** | Importe del pago                               |
-| `fecha`                | **DATE**          | Fecha que se realizo el presupuesto de pago    |
+| `fecha`                | **DATETIME**      | Fecha del pago                                 |
 
 
-### ------------------
-### PRESUPUESTOS
-
-| **COLUMNA**       | **TIPO**          | **DESCRIPCION**                        |
-| ----------------- | ----------------- | -------------------------------------- |
-| `idpresupuesto`   | **INT(PK)**       | Identificador unico del presupuesto    |
-| `idcliente`       | **INT(FK)**       | Relacion con la tabla `cliente`        |
-| `idprocedimiento` | **INT(FK)**       | Relacion con la tabla `procedimientos` |
-| `monto_pagado`    | **DECIMAL(10,2)** | Pago total actual                      |
-| `deuda_pendiente` | **DECIMAL(10,2)** | Deuda pendiente                        |
-| `total_pagar`     | **DECIMAL(10,2)** | Total a pagar por el servicio          |
-| `feCreate`        | **DATETIME**      | Fecha de creacion del presupuesto      |
-
-### PRESUPUESTO_DETALLES
-
-| **COLUMNA**            | **TIPO**          | **DESCRIPCION**                                |
-| ---------------------- | ----------------- | ---------------------------------------------- |
-| `idpresupuestodetalle` | **INT(PK)**       | Identificador unico del detalle de presupuesto |
-| `idpresupuesto`        | **INT(FK)**       | Relacion con la tabla `presupuesto`            |
-| `pieza`                | **DECIMAL(10,2)** | Monto que pago en el presupuesto               |
-| `importe`              | **VARCHAR(100)**  | Concepto del pago realizado                    |
-| `fecha`                | **DATE**          | Fecha que se realizo el presupuesto            |
 
 ## RELACIONES
 

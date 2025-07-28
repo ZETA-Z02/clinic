@@ -6,6 +6,8 @@ var url = `${protocol}://${host}/${proyect}`;
 $(document).ready(function(){
    modal();
 });
+
+
 function modal(){
     $(document).click(function(){
         $(".modal__message").css('display', 'none');

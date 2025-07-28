@@ -1,9 +1,9 @@
 /*M!999999\- enable the sandbox mode */ 
--- MariaDB dump 10.19-11.7.2-MariaDB, for Linux (x86_64)
+-- MariaDB dump 10.19-11.8.2-MariaDB, for Linux (x86_64)
 --
 -- Host: localhost    Database: clinic
 -- ------------------------------------------------------
--- Server version	11.7.2-MariaDB-log
+-- Server version	11.8.2-MariaDB-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -37,7 +37,7 @@ CREATE TABLE `citas` (
   PRIMARY KEY (`idcita`),
   KEY `idcliente` (`idcliente`),
   CONSTRAINT `citas_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,6 +46,7 @@ CREATE TABLE `citas` (
 
 LOCK TABLES `citas` WRITE;
 /*!40000 ALTER TABLE `citas` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `citas` VALUES
 (1,1,1,'JS-YOJAN-ORTO-1H-JS','','2025-01-29','07:00:00',1,'2025-01-29','07:30:00'),
 (2,1,1,'JS-YOJAN-ORTO-1H-JS','','2025-02-12','07:00:00',1,'2025-02-12','08:30:00'),
@@ -130,9 +131,13 @@ INSERT INTO `citas` VALUES
 (84,2,1,'JS-JERSSON-PPR-1H30M-JS','','2025-02-21','12:00:00',1,'2025-02-21','13:30:00'),
 (85,2,1,'JS-JERSSON-SELL-1H30M-JS','','2025-03-13','07:00:00',1,'2025-03-13','07:00:00'),
 (86,3,1,'JS-ENGERBETH-CON-1H-JS','','2025-03-13','07:00:00',1,'2025-03-13','07:00:00'),
-(87,1,1,'JS-YOJAN-CONS-30M-JS','','2025-03-14','08:00:00',1,'2025-03-14','08:30:00');
+(87,1,1,'JS-YOJAN-CONS-30M-JS','','2025-03-14','08:00:00',1,'2025-03-14','08:30:00'),
+(88,4,2,'AA-RENZO-ORTO-1H-AA','','2025-04-02','07:30:00',1,'2025-04-02','08:30:00'),
+(89,5,1,'JS-LAURA-ORTO-1H-JS','','2025-04-09','08:00:00',1,'2025-04-09','09:00:00'),
+(90,1,1,'JS-YOJAN-rest-1H30M-AA','','2025-06-04','08:30:00',1,'2025-06-04','10:00:00');
 /*!40000 ALTER TABLE `citas` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `clientes`
@@ -155,7 +160,7 @@ CREATE TABLE `clientes` (
   `feUpdate` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`idcliente`),
   UNIQUE KEY `dni` (`dni`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -164,14 +169,17 @@ CREATE TABLE `clientes` (
 
 LOCK TABLES `clientes` WRITE;
 /*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `clientes` VALUES
 (1,'YOJAN VICTOR','QUISPE APAZA',72535242,'988929723',NULL,NULL,NULL,'','2025-02-16 11:21:13','2025-02-16 11:21:13'),
 (2,'JERSSON PELAYO','QUISPE APAZA',72535244,'594643513',NULL,NULL,NULL,'','2025-02-21 12:51:16','2025-02-21 12:51:16'),
 (3,'ENGERBETH YERICO','CASTRO CHUQUINEIRA',75135464,'798794513',NULL,NULL,NULL,'9945641','2025-02-21 15:17:52','2025-02-21 15:17:52'),
 (4,'RENZO PELAYO','QUISPE SUBIA',1298506,'896546123','','','','','2025-02-21 20:31:44','2025-03-31 12:11:46'),
-(5,'LAURA YANE','SERIN YUPANQUI',72143123,'978923649','','','','no se','2025-03-11 18:39:54','2025-03-31 11:00:32');
+(5,'LAURA YANE','SERIN YUPANQUI',72143123,'978923649','','','','no se','2025-03-11 18:39:54','2025-04-04 09:27:25'),
+(6,'CARLOS DANIEL','SANTA CRUZ BAZAN',72546132,'945453151',NULL,NULL,NULL,'jr','2025-07-24 21:33:57','2025-07-24 21:33:57');
 /*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `clientes_condicion`
@@ -200,7 +208,7 @@ CREATE TABLE `clientes_condicion` (
   PRIMARY KEY (`idcondicion`),
   KEY `clientes_condicion_ibfk_1` (`idcliente`),
   CONSTRAINT `clientes_condicion_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,14 +217,17 @@ CREATE TABLE `clientes_condicion` (
 
 LOCK TABLES `clientes_condicion` WRITE;
 /*!40000 ALTER TABLE `clientes_condicion` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `clientes_condicion` VALUES
-(1,5,2,NULL,3,NULL,2,NULL,3,NULL,2,NULL,'covid','es intolorante a un medicamento','2025-03-11 18:39:54','2025-03-31'),
+(1,5,2,'nada',3,'nada1',2,'nada2',3,'nada3',2,'nada4','covid','es intolorante a un medicamento 123','2025-03-11 18:39:54','2025-04-04'),
 (2,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-03-11 18:40:58',NULL),
 (3,2,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-03-11 18:41:00',NULL),
 (4,3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-03-11 18:41:02',NULL),
-(5,4,1,'tiene algo',3,'no tiene nada',3,'algo tiene',3,'no es alergico',3,'si es propenso','una enfermedad','algo general','2025-03-11 18:41:06','2025-03-31');
+(5,4,1,'tiene algo',3,'no tiene nada',3,'algo tiene',3,'no es alergico',3,'si es propenso','una enfermedad','algo general','2025-03-11 18:41:06','2025-03-31'),
+(6,6,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'2025-07-24 21:33:57',NULL);
 /*!40000 ALTER TABLE `clientes_condicion` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `etiquetas`
@@ -242,11 +253,13 @@ CREATE TABLE `etiquetas` (
 
 LOCK TABLES `etiquetas` WRITE;
 /*!40000 ALTER TABLE `etiquetas` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `etiquetas` VALUES
 (1,2,'JJ','#c01c28'),
 (2,1,'AA','#c01c29');
 /*!40000 ALTER TABLE `etiquetas` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `login`
@@ -275,12 +288,14 @@ CREATE TABLE `login` (
 
 LOCK TABLES `login` WRITE;
 /*!40000 ALTER TABLE `login` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `login` VALUES
 (1,1,'admin','$2y$12$UztfH8hRe25EH3cFlC5h8.pe0DIsjwWraHsBvyw91lEsW6oxfmx7i',1,2),
 (2,2,'julio','$2y$12$jqfRtyNjPZSYkVWZx1eJcOZ/l3CXWhK1yQ8M0Hs3Gd1035P2ApuUq',1,1),
 (3,3,'renzo','$2y$12$iS4ZwgjZSznYiOhgCtg3S.oN/jBLaF5a5gwQ7DFL/Lj7VAII7.p9a',1,1);
 /*!40000 ALTER TABLE `login` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `odontograma`
@@ -314,6 +329,7 @@ CREATE TABLE `odontograma` (
 
 LOCK TABLES `odontograma` WRITE;
 /*!40000 ALTER TABLE `odontograma` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `odontograma` VALUES
 (1,4,3,18,'http://localhost/clinic/dumps/piezas/RENZO18/lm.png','hola 2',2,2,'2025-03-06',NULL),
 (2,4,2,17,'http://localhost/clinic/dumps/piezas/RENZO17/diente.png','diente prueba',1,2,'2025-03-06',NULL),
@@ -326,10 +342,11 @@ INSERT INTO `odontograma` VALUES
 (9,5,4,15,'http://localhost/clinic/dumps/piezas/LAURA15/lm.png','123',1,2,'2025-03-16',NULL),
 (10,5,17,14,'http://localhost/clinic/dumps/piezas/LAURA14/diente.png','123',2,2,'2025-03-16',NULL),
 (11,4,16,26,'http://localhost/clinic/dumps/piezas/RENZO26/icon.jpg','123',1,2,'2025-03-26',NULL),
-(12,4,10,27,'http://localhost/clinic/dumps/piezas/RENZO27/icon.jpg','456',2,1,'2025-03-26',NULL),
+(12,4,14,27,'1','456',2,1,'2025-03-26',NULL),
 (13,4,15,25,'http://localhost/clinic/dumps/piezas/RENZO25/icon.jpg','789',1,1,'2025-03-26',NULL);
 /*!40000 ALTER TABLE `odontograma` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `pago_detalles`
@@ -349,7 +366,7 @@ CREATE TABLE `pago_detalles` (
   PRIMARY KEY (`idpagodetalle`),
   KEY `idpago` (`idpago`),
   CONSTRAINT `pago_detalles_ibfk_1` FOREIGN KEY (`idpago`) REFERENCES `pagos` (`idpago`)
-) ENGINE=InnoDB AUTO_INCREMENT=237 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=239 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -358,6 +375,7 @@ CREATE TABLE `pago_detalles` (
 
 LOCK TABLES `pago_detalles` WRITE;
 /*!40000 ALTER TABLE `pago_detalles` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `pago_detalles` VALUES
 (1,1,2,10.00,NULL,'1.1','2025-02-16 11:24:04'),
 (2,1,2,40.00,NULL,'2.5','2025-02-16 11:24:12'),
@@ -577,9 +595,12 @@ INSERT INTO `pago_detalles` VALUES
 (230,34,2,100.00,NULL,'1.2','2025-02-24 16:08:52'),
 (232,35,1,100.00,NULL,'2.3','2025-03-07 15:59:23'),
 (233,36,2,10.00,NULL,'4.3','2025-03-12 11:37:21'),
-(236,36,2,10.00,NULL,'1.1','2025-03-12 11:41:06');
+(236,36,2,10.00,NULL,'1.1','2025-03-12 11:41:06'),
+(237,36,2,10.00,NULL,'2.6','2025-06-24 12:36:54'),
+(238,4,2,5.00,NULL,'2.4','2025-07-07 09:20:30');
 /*!40000 ALTER TABLE `pago_detalles` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `pagos`
@@ -611,11 +632,12 @@ CREATE TABLE `pagos` (
 
 LOCK TABLES `pagos` WRITE;
 /*!40000 ALTER TABLE `pagos` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `pagos` VALUES
 (1,1,1,50.00,0.00,7.63,50.00,'2025-02-16 11:24:04'),
 (2,1,17,60.00,0.00,9.15,60.00,'2025-02-16 11:24:26'),
 (3,1,22,750.00,250.00,152.54,1000.00,'2025-02-16 11:24:36'),
-(4,1,10,190.00,10.00,30.51,200.00,'2025-02-16 11:24:52'),
+(4,1,10,195.00,5.00,30.51,200.00,'2025-02-16 11:24:52'),
 (5,1,16,300.00,0.00,45.76,300.00,'2025-02-16 11:25:33'),
 (6,1,17,60.00,0.00,9.15,60.00,'2025-02-16 11:48:18'),
 (7,1,17,55.00,5.00,9.15,60.00,'2025-02-16 11:52:30'),
@@ -645,10 +667,11 @@ INSERT INTO `pagos` VALUES
 (33,3,16,250.00,50.00,45.76,300.00,'2025-02-21 22:26:36'),
 (34,4,29,100.00,400.00,76.27,500.00,'2025-02-24 16:08:52'),
 (35,4,23,100.00,900.00,152.54,1000.00,'2025-03-07 15:59:23'),
-(36,5,1,20.00,30.00,7.63,50.00,'2025-03-12 11:37:21'),
+(36,5,1,30.00,20.00,7.63,50.00,'2025-03-12 11:37:21'),
 (37,5,3,0.00,50.00,7.63,50.00,'2025-03-12 11:37:39');
 /*!40000 ALTER TABLE `pagos` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `personal`
@@ -680,81 +703,148 @@ CREATE TABLE `personal` (
 
 LOCK TABLES `personal` WRITE;
 /*!40000 ALTER TABLE `personal` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `personal` VALUES
 (1,'ADMINISTRADOR','ADMINISTRADOR',72535244,'998777712','MASCULINO','jersson.z032@gmail.com',NULL,'2024-12-05',NULL,'2024-12-05 00:00:00'),
 (2,'JULIO JHONATAN','SABINO VALDIVIA',72535243,'998777712',NULL,NULL,NULL,NULL,'2025-02-16 11:20:47','2025-02-16 11:20:47'),
 (3,'RENZO PELAYO','QUISPE SUBIA',1298506,'98151545',NULL,NULL,NULL,NULL,'2025-02-21 21:23:55','2025-02-21 21:23:55');
 /*!40000 ALTER TABLE `personal` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 
 --
--- Table structure for table `presupuesto_detalles`
+-- Table structure for table `presupuesto_general`
 --
 
-DROP TABLE IF EXISTS `presupuesto_detalles`;
+DROP TABLE IF EXISTS `presupuesto_general`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `presupuesto_detalles` (
-  `idpresupuestodetalle` int(11) NOT NULL AUTO_INCREMENT,
-  `idpresupuesto` int(11) NOT NULL,
-  `pieza` varchar(20) DEFAULT NULL,
-  `importe` decimal(10,2) NOT NULL,
-  `fecha` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`idpresupuestodetalle`),
-  KEY `idpresupuesto` (`idpresupuesto`),
-  CONSTRAINT `presupuesto_detalles_ibfk_1` FOREIGN KEY (`idpresupuesto`) REFERENCES `presupuestos` (`idpresupuesto`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `presupuesto_detalles`
---
-
-LOCK TABLES `presupuesto_detalles` WRITE;
-/*!40000 ALTER TABLE `presupuesto_detalles` DISABLE KEYS */;
-INSERT INTO `presupuesto_detalles` VALUES
-(3,2,'3.3',100.00,'2025-03-20 11:32:18'),
-(4,2,'2.5',50.00,'2025-03-20 11:32:24'),
-(7,3,'1.1',100.00,'2025-03-26 21:01:11'),
-(8,1,'1.1',20.00,'2025-03-13 10:10:10'),
-(9,1,'1.1',10.00,'2025-03-13 10:10:10'),
-(11,1,'1.1',7.00,'2025-03-13 10:10:10');
-/*!40000 ALTER TABLE `presupuesto_detalles` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `presupuestos`
---
-
-DROP TABLE IF EXISTS `presupuestos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `presupuestos` (
-  `idpresupuesto` int(11) NOT NULL AUTO_INCREMENT,
-  `idcliente` int(11) DEFAULT NULL,
-  `idprocedimiento` int(11) NOT NULL,
+CREATE TABLE `presupuesto_general` (
+  `idpresupuestogeneral` int(11) NOT NULL AUTO_INCREMENT,
+  `idcliente` int(11) NOT NULL,
   `monto_pagado` decimal(10,2) DEFAULT NULL,
   `deuda_pendiente` decimal(10,2) DEFAULT NULL,
   `total_pagar` decimal(10,2) DEFAULT NULL,
+  `estado` tinyint(4) DEFAULT 0,
   `feCreate` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`idpresupuesto`),
+  PRIMARY KEY (`idpresupuestogeneral`),
   KEY `idcliente` (`idcliente`),
-  CONSTRAINT `presupuesto_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `presupuesto_general_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `presupuestos`
+-- Dumping data for table `presupuesto_general`
 --
 
-LOCK TABLES `presupuestos` WRITE;
-/*!40000 ALTER TABLE `presupuestos` DISABLE KEYS */;
-INSERT INTO `presupuestos` VALUES
-(1,5,1,37.00,13.00,50.00,'2025-03-20 10:28:59'),
-(2,5,13,150.00,250.00,400.00,'2025-03-20 11:32:18'),
-(3,4,11,100.00,400.00,500.00,'2025-03-26 21:01:11');
-/*!40000 ALTER TABLE `presupuestos` ENABLE KEYS */;
+LOCK TABLES `presupuesto_general` WRITE;
+/*!40000 ALTER TABLE `presupuesto_general` DISABLE KEYS */;
+set autocommit=0;
+INSERT INTO `presupuesto_general` VALUES
+(6,1,390.00,1190.00,1580.00,0,'2025-06-29 12:22:57'),
+(8,2,0.00,0.00,350.00,0,'2025-06-30 09:37:56'),
+(9,2,0.00,0.00,380.00,0,'2025-06-30 09:38:29'),
+(10,3,0.00,0.00,850.00,0,'2025-06-30 09:42:23'),
+(11,5,110.00,150.00,260.00,0,'2025-07-21 10:36:20'),
+(12,6,200.00,510.00,710.00,0,'2025-07-24 21:34:11');
+/*!40000 ALTER TABLE `presupuesto_general` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
+
+--
+-- Table structure for table `presupuesto_pagos`
+--
+
+DROP TABLE IF EXISTS `presupuesto_pagos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `presupuesto_pagos` (
+  `idpresupuestopago` int(11) NOT NULL AUTO_INCREMENT,
+  `idpresupuestogeneral` int(11) NOT NULL,
+  `importe` decimal(10,2) DEFAULT NULL,
+  `fecha` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`idpresupuestopago`),
+  KEY `idpresupuestogeneral` (`idpresupuestogeneral`),
+  CONSTRAINT `presupuesto_pagos_ibfk_1` FOREIGN KEY (`idpresupuestogeneral`) REFERENCES `presupuesto_general` (`idpresupuestogeneral`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `presupuesto_pagos`
+--
+
+LOCK TABLES `presupuesto_pagos` WRITE;
+/*!40000 ALTER TABLE `presupuesto_pagos` DISABLE KEYS */;
+set autocommit=0;
+INSERT INTO `presupuesto_pagos` VALUES
+(1,6,100.00,'2025-06-30 10:05:56'),
+(8,6,150.00,'2025-06-30 10:29:45'),
+(9,6,50.00,'2025-07-02 16:27:17'),
+(10,6,12.00,'2025-07-07 08:57:35'),
+(11,6,1.00,'2025-07-07 08:58:30'),
+(12,6,1.00,'2025-07-07 08:59:13'),
+(13,6,20.00,'2025-07-07 09:01:51'),
+(14,6,6.00,'2025-07-07 09:08:44'),
+(15,6,10.00,'2025-07-07 09:10:56'),
+(16,6,10.00,'2025-07-07 09:22:41'),
+(17,6,10.00,'2025-07-07 09:23:13'),
+(18,6,10.00,'2025-07-07 09:24:11'),
+(19,6,10.00,'2025-07-07 09:52:49'),
+(20,11,100.00,'2025-07-21 10:36:30'),
+(21,11,10.00,'2025-07-21 10:37:10'),
+(22,12,100.00,'2025-07-24 21:34:18'),
+(23,12,50.00,'2025-07-24 21:34:28'),
+(24,12,50.00,'2025-07-28 08:58:27');
+/*!40000 ALTER TABLE `presupuesto_pagos` ENABLE KEYS */;
+UNLOCK TABLES;
+commit;
+
+--
+-- Table structure for table `presupuesto_procedimientos`
+--
+
+DROP TABLE IF EXISTS `presupuesto_procedimientos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `presupuesto_procedimientos` (
+  `idpresupuestoprocedimiento` int(11) NOT NULL AUTO_INCREMENT,
+  `idpresupuestogeneral` int(11) NOT NULL,
+  `idprocedimiento` int(11) NOT NULL,
+  `pieza` varchar(20) DEFAULT NULL,
+  `precio` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`idpresupuestoprocedimiento`),
+  KEY `idpresupuestogeneral` (`idpresupuestogeneral`),
+  KEY `idprocedimiento` (`idprocedimiento`),
+  CONSTRAINT `presupuesto_procedimientos_ibfk_1` FOREIGN KEY (`idpresupuestogeneral`) REFERENCES `presupuesto_general` (`idpresupuestogeneral`),
+  CONSTRAINT `presupuesto_procedimientos_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `presupuesto_procedimientos`
+--
+
+LOCK TABLES `presupuesto_procedimientos` WRITE;
+/*!40000 ALTER TABLE `presupuesto_procedimientos` DISABLE KEYS */;
+set autocommit=0;
+INSERT INTO `presupuesto_procedimientos` VALUES
+(5,6,21,'3.1',1500.00),
+(6,6,14,'2.7',80.00),
+(7,8,1,'1.2',50.00),
+(8,8,15,'2.5',300.00),
+(9,9,4,'1.2',80.00),
+(10,9,15,'2.6',300.00),
+(11,10,15,'2.6',300.00),
+(12,10,11,'1.6',500.00),
+(13,10,3,'1.6',50.00),
+(14,11,4,'1.4',80.00),
+(15,11,7,'1.1',180.00),
+(16,12,18,'3.1',300.00),
+(17,12,20,'2.1',350.00),
+(18,12,17,'1.8',60.00);
+/*!40000 ALTER TABLE `presupuesto_procedimientos` ENABLE KEYS */;
+UNLOCK TABLES;
+commit;
 
 --
 -- Table structure for table `procedimientos`
@@ -781,6 +871,7 @@ CREATE TABLE `procedimientos` (
 
 LOCK TABLES `procedimientos` WRITE;
 /*!40000 ALTER TABLE `procedimientos` DISABLE KEYS */;
+set autocommit=0;
 INSERT INTO `procedimientos` VALUES
 (1,'Consulta Dental','',50.00,'CONS','2024-12-01 21:01:40','#2D5F7D'),
 (2,'Ortodoncia','',3500.00,'ORTO','2024-12-01 21:40:58','#5679A6'),
@@ -813,6 +904,7 @@ INSERT INTO `procedimientos` VALUES
 (29,'otro','',500.00,'otro','2025-02-16 13:24:32','#1B2C34');
 /*!40000 ALTER TABLE `procedimientos` ENABLE KEYS */;
 UNLOCK TABLES;
+commit;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -823,4 +915,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2025-04-01  8:57:25
+-- Dump completed on 2025-07-28 14:58:59

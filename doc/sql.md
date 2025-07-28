@@ -1,50 +1,4 @@
-CREATE TABLE `personal` (
-  `idpersonal` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `apellido` varchar(100) NOT NULL,
-  `dni` int(11) NOT NULL,
-  `telefono` varchar(15) NOT NULL,
-  `sexo` varchar(15) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `foto` varchar(200) DEFAULT NULL,
-  `fechaNac` date DEFAULT NULL,
-  `feCreate` datetime DEFAULT current_timestamp(),
-  `feUpdate` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`idpersonal`),
-  UNIQUE KEY `dni` (`dni`)
-);
-CREATE TABLE `login` (
-  `idlogin` int(11) NOT NULL AUTO_INCREMENT,
-  `idpersonal` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(300) NOT NULL,
-  `estado` tinyint(4) DEFAULT 1,
-  `nivel` tinyint(4) DEFAULT 1,
-  PRIMARY KEY (`idlogin`),
-  UNIQUE KEY `username` (`username`),
-  KEY `idpersonal` (`idpersonal`),
-  CONSTRAINT `login_ibfk_1` FOREIGN KEY (`idpersonal`) REFERENCES `personal` (`idpersonal`)
-);
-CREATE TABLE `procedimientos` (
-  `idprocedimiento` int(11) NOT NULL AUTO_INCREMENT,
-  `procedimiento` varchar(100) NOT NULL,
-  `descripcion` text DEFAULT NULL,
-  `precio` decimal(10,2) DEFAULT NULL,
-  `iniciales` varchar(10) DEFAULT NULL,
-  `feCreate` datetime DEFAULT current_timestamp(),
-  `color` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`idprocedimiento`)
-);
-CREATE TABLE `etiquetas` (
-  `idetiqueta` int(11) NOT NULL AUTO_INCREMENT,
-  `idpersonal` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL,
-  `color` varchar(50) NOT NULL,
-  PRIMARY KEY (`idetiqueta`),
-  UNIQUE KEY `idpersonal` (`idpersonal`),
-  CONSTRAINT `etiquetas_ibfk_1` FOREIGN KEY (`idpersonal`) REFERENCES `personal` (`idpersonal`)
-);
-
+-- Base de datos Clinic PROYECT
 CREATE TABLE `clientes` (
   `idcliente` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(50) NOT NULL,
@@ -59,6 +13,59 @@ CREATE TABLE `clientes` (
   `feUpdate` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`idcliente`),
   UNIQUE KEY `dni` (`dni`)
+);
+CREATE TABLE `clientes_condicion` (
+  `idcondicion` int(11) NOT NULL AUTO_INCREMENT,
+  `idcliente` int(11) NOT NULL,
+  `antecedente_enfermedad` tinyint(4) DEFAULT NULL,
+  `antecedente_observacion` varchar(20) DEFAULT NULL,
+  `medicado` tinyint(4) DEFAULT NULL,
+  `medicado_observacion` varchar(20) DEFAULT NULL,
+  `complicacion_anestesia` tinyint(4) DEFAULT NULL,
+  `anestesia_observacion` varchar(20) DEFAULT NULL,
+  `alergia_medicamento` tinyint(4) DEFAULT NULL,
+  `alergiamedicamento_observacion` varchar(20) DEFAULT NULL,
+  `hemorragias` tinyint(4) DEFAULT NULL,
+  `hemorragias_observacion` varchar(20) DEFAULT NULL,
+  `enfermedad` varchar(100) DEFAULT NULL,
+  `observaciones` text DEFAULT NULL,
+  `feCreate` datetime DEFAULT current_timestamp(),
+  `feActualizacion` date DEFAULT NULL,
+  PRIMARY KEY (`idcondicion`),
+  KEY `clientes_condicion_ibfk_1` (`idcliente`),
+  CONSTRAINT `clientes_condicion_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
+);
+CREATE TABLE `citas` (
+  `idcita` int(11) NOT NULL AUTO_INCREMENT,
+  `idcliente` int(11) NOT NULL,
+  `idetiqueta` int(11) DEFAULT NULL,
+  `titulo` varchar(50) NOT NULL,
+  `mensaje` text DEFAULT NULL,
+  `fecha_ini` date NOT NULL,
+  `hora_ini` time NOT NULL,
+  `estado` tinyint(4) DEFAULT 1,
+  `fecha_fin` date NOT NULL,
+  `hora_fin` time NOT NULL,
+  PRIMARY KEY (`idcita`),
+  KEY `idcliente` (`idcliente`),
+  CONSTRAINT `citas_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
+);
+CREATE TABLE `odontograma` (
+  `idodontograma` int(11) NOT NULL AUTO_INCREMENT,
+  `idcliente` int(11) NOT NULL,
+  `idprocedimiento` int(11) NOT NULL,
+  `pieza` tinyint(4) NOT NULL,
+  `imagen` varchar(400) NOT NULL,
+  `observaciones` text DEFAULT NULL,
+  `estado` tinyint(4) NOT NULL,
+  `condicion` tinyint(4) DEFAULT NULL,
+  `feCreate` date DEFAULT current_timestamp(),
+  `feActualizacion` date DEFAULT NULL,
+  PRIMARY KEY (`idodontograma`),
+  KEY `odontograma_ibfk_1` (`idcliente`),
+  KEY `odontograma_ibfk_2` (`idprocedimiento`),
+  CONSTRAINT `odontograma_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
+  CONSTRAINT `odontograma_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
 );
 CREATE TABLE `pagos` (
   `idpago` int(11) NOT NULL AUTO_INCREMENT,
@@ -87,117 +94,86 @@ CREATE TABLE `pago_detalles` (
   KEY `idpago` (`idpago`),
   CONSTRAINT `pago_detalles_ibfk_1` FOREIGN KEY (`idpago`) REFERENCES `pagos` (`idpago`)
 );
-CREATE TABLE `citas` (
-  `idcita` int(11) NOT NULL AUTO_INCREMENT,
-  `idcliente` int(11) NOT NULL,
-  `idetiqueta` int(11) DEFAULT NULL,
-  `titulo` varchar(50) NOT NULL,
-  `mensaje` text DEFAULT NULL,
-  `fecha_ini` date NOT NULL,
-  `hora_ini` time NOT NULL,
-  `estado` tinyint(4) DEFAULT 1,
-  `fecha_fin` date NOT NULL,
-  `hora_fin` time NOT NULL,
-  PRIMARY KEY (`idcita`),
-  KEY `idcliente` (`idcliente`),
-  CONSTRAINT `citas_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
-);
-CREATE TABLE `odontograma` (
-  `idodontograma` int(11) NOT NULL AUTO_INCREMENT,
-  `idcliente` int(11) NOT NULL,
-  `idprocedimiento` int(11) NOT NULL,
-  `pieza` tinyint(4) NOT NULL,
-  `imagen` VARCHAR(400) NOT NULL,
-  `observaciones` text DEFAULT NULL,
-  `estado` tinyint(4) NOT NULL,
-  `condicion` tinyint(4) DEFAULT NULL,
-  `feCreate` datetime DEFAULT current_timestamp(),
-  `feActualizacion` date DEFAULT NULL,
-  PRIMARY KEY (`idodontograma`),
-  KEY `odontograma_ibfk_1` (`idcliente`),
-  KEY `odontograma_ibfk_2` (`idprocedimiento`),
-  CONSTRAINT `odontograma_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
-  CONSTRAINT `odontograma_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
-);
-
-CREATE TABLE `clientes_condicion` (
-  `idcondicion` int(11) NOT NULL AUTO_INCREMENT,
-  `idcliente` int(11) NOT NULL,
-  `antecedente_enfermedad` tinyint(4) DEFAULT NULL,
-  `antecedente_observacion` varchar(20) DEFAULT NULL,
-  `medicado` tinyint(4) DEFAULT NULL,
-  `medicado_observacion` varchar(20) DEFAULT NULL,
-  `complicacion_anestesia` tinyint(4) DEFAULT NULL,
-  `anestesia_observacion` varchar(20) DEFAULT NULL,
-  `alergia_medicamento` tinyint(4) DEFAULT NULL,
-  `alergiamedicamento_observacion` varchar(20) DEFAULT NULL,
-  `hemorragias` tinyint(4) DEFAULT NULL,
-  `hemorragias_observacion` varchar(20) DEFAULT NULL,
-  `enfermedad` varchar(100) DEFAULT NULL,
-  `observaciones` text DEFAULT NULL,
-  `feCreate` datetime DEFAULT current_timestamp(),
-  `feActualizacion` date DEFAULT NULL,
-  PRIMARY KEY (`idcondicion`),
-  KEY `clientes_condicion_ibfk_1` (`idcliente`),
-  CONSTRAINT `clientes_condicion_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
-);
-
 CREATE TABLE `presupuesto_general` (
-  `idpresupuestogeneral` INT PRIMARY KEY AUTO_INCREMENT,
-  `idcliente` INT NOT NULL,
-  `monto_pagado` DECIMAL(10,2) DEFAULT NULL,
-  `deuda_pendiente` DECIMAL(10,2) DEFAULT NULL,
-  `total_pagar` DECIMAL(10,2) DEFAULT NULL,
-  `estado` TINYINT,
-  `feCreate` DATETIME DEFAULT current_timestamp(),
-  FOREIGN KEY(`idcliente`) REFERENCES clientes(`idcliente`)
-);
-
-CREATE TABLE `presupuesto_procedimientos`(
-  `idpresupuestoprocedimiento` INT PRIMARY KEY AUTO_INCREMENT,
-  `idpresupuestogeneral` INT NOT NULL,
-  `idprocedimiento` INT NOT NULL,
-  `pieza` VARCHAR(20) DEFAULT NULL,
-  `precio` DECIMAL(10,2) DEFAULT NULL,
-  FOREIGN KEY(`idpresupuestogeneral`) REFERENCES presupuesto_general(`idpresupuestogeneral`),
-  FOREIGN KEY(`idprocedimiento`) REFERENCES procedimientos(`idprocedimiento`)
-);
-
-CREATE TABLE `presupuesto_pagos`(
-  `idpresupuestopago` INT PRIMARY KEY AUTO_INCREMENT,
-  `idpresupuestogeneral` INT NOT NULL,
-  `importe` DECIMAL(10,2),
-  `fecha` datetime DEFAULT current_timestamp(),
-  FOREIGN KEY(`idpresupuestogeneral`) REFERENCES presupuesto_general(`idpresupuestogeneral`)
-);
-
-CREATE TABLE `presupuestos` (
-  `idpresupuesto` int(11) NOT NULL AUTO_INCREMENT,
-  `idcliente` int(11) DEFAULT NULL,
-  `idprocedimiento` int(11) NOT NULL,
+  `idpresupuestogeneral` int(11) NOT NULL AUTO_INCREMENT,
+  `idcliente` int(11) NOT NULL,
   `monto_pagado` decimal(10,2) DEFAULT NULL,
   `deuda_pendiente` decimal(10,2) DEFAULT NULL,
   `total_pagar` decimal(10,2) DEFAULT NULL,
+  `estado` tinyint(4) DEFAULT 0,
   `feCreate` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`idpresupuesto`),
+  PRIMARY KEY (`idpresupuestogeneral`),
   KEY `idcliente` (`idcliente`),
-  CONSTRAINT `presupuesto_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
+  CONSTRAINT `presupuesto_general_ibfk_1` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`)
 );
-
-CREATE TABLE `presupuesto_detalles` (
-  `idpresupuestodetalle` int(11) NOT NULL AUTO_INCREMENT,
-  `idpresupuesto` int(11) NOT NULL,
-  `pieza` varchar(20) DEFAULT NULL,
-  `importe` decimal(10,2) NOT NULL,
+CREATE TABLE `presupuesto_pagos` (
+  `idpresupuestopago` int(11) NOT NULL AUTO_INCREMENT,
+  `idpresupuestogeneral` int(11) NOT NULL,
+  `importe` decimal(10,2) DEFAULT NULL,
   `fecha` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`idpresupuestodetalle`),
-  KEY `idpresupuesto` (`idpresupuesto`),
-  CONSTRAINT `presupuesto_detalles_ibfk_1` FOREIGN KEY (`idpresupuesto`) REFERENCES `presupuestos` (`idpresupuesto`)
+  PRIMARY KEY (`idpresupuestopago`),
+  KEY `idpresupuestogeneral` (`idpresupuestogeneral`),
+  CONSTRAINT `presupuesto_pagos_ibfk_1` FOREIGN KEY (`idpresupuestogeneral`) REFERENCES `presupuesto_general` (`idpresupuestogeneral`)
+);
+CREATE TABLE `presupuesto_procedimientos` (
+  `idpresupuestoprocedimiento` int(11) NOT NULL AUTO_INCREMENT,
+  `idpresupuestogeneral` int(11) NOT NULL,
+  `idprocedimiento` int(11) NOT NULL,
+  `pieza` varchar(20) DEFAULT NULL,
+  `precio` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`idpresupuestoprocedimiento`),
+  KEY `idpresupuestogeneral` (`idpresupuestogeneral`),
+  KEY `idprocedimiento` (`idprocedimiento`),
+  CONSTRAINT `presupuesto_procedimientos_ibfk_1` FOREIGN KEY (`idpresupuestogeneral`) REFERENCES `presupuesto_general` (`idpresupuestogeneral`),
+  CONSTRAINT `presupuesto_procedimientos_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
+);
+CREATE TABLE `procedimientos` (
+  `idprocedimiento` int(11) NOT NULL AUTO_INCREMENT,
+  `procedimiento` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `precio` decimal(10,2) DEFAULT NULL,
+  `iniciales` varchar(10) DEFAULT NULL,
+  `feCreate` datetime DEFAULT current_timestamp(),
+  `color` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`idprocedimiento`)
 );
 
-
-
-
+CREATE TABLE `personal` (
+  `idpersonal` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `apellido` varchar(100) NOT NULL,
+  `dni` int(11) NOT NULL,
+  `telefono` varchar(15) NOT NULL,
+  `sexo` varchar(15) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `foto` varchar(200) DEFAULT NULL,
+  `fechaNac` date DEFAULT NULL,
+  `feCreate` datetime DEFAULT current_timestamp(),
+  `feUpdate` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`idpersonal`),
+  UNIQUE KEY `dni` (`dni`)
+);
+CREATE TABLE `login` (
+  `idlogin` int(11) NOT NULL AUTO_INCREMENT,
+  `idpersonal` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(300) NOT NULL,
+  `estado` tinyint(4) DEFAULT 1,
+  `nivel` tinyint(4) DEFAULT 1,
+  PRIMARY KEY (`idlogin`),
+  UNIQUE KEY `username` (`username`),
+  KEY `idpersonal` (`idpersonal`),
+  CONSTRAINT `login_ibfk_1` FOREIGN KEY (`idpersonal`) REFERENCES `personal` (`idpersonal`)
+);
+CREATE TABLE `etiquetas` (
+  `idetiqueta` int(11) NOT NULL AUTO_INCREMENT,
+  `idpersonal` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `color` varchar(50) NOT NULL,
+  PRIMARY KEY (`idetiqueta`),
+  UNIQUE KEY `idpersonal` (`idpersonal`),
+  CONSTRAINT `etiquetas_ibfk_1` FOREIGN KEY (`idpersonal`) REFERENCES `personal` (`idpersonal`)
+);
 
 
 
@@ -207,26 +183,14 @@ for id in {1..10}; do
   echo "INSERT INTO clientes_condicion (idcliente) VALUES($id)";
 done
 
-# --------
-
-ALTER TABLE procedimientos ADD COLUMN color VARCHAR(50) DEFAULT NULL;
-# Condicion
-ALTER TABLE clientes_condicion ADD COLUMN antecedente_observacion VARCHAR(20) DEFAULT NULL AFTER antecedente_enfermedad;
-ALTER TABLE clientes_condicion ADD COLUMN medicado_observacion VARCHAR(20) DEFAULT NULL AFTER medicado;
-ALTER TABLE clientes_condicion ADD COLUMN anestesia_observacion VARCHAR(20) DEFAULT NULL AFTER complicacion_anestesia;
-ALTER TABLE clientes_condicion ADD COLUMN alergiamedicamento_observacion VARCHAR(20) DEFAULT NULL AFTER alergia_medicamento;
-ALTER TABLE clientes_condicion ADD COLUMN hemorragias_observacion VARCHAR(20) DEFAULT NULL AFTER hemorragias;
-
-# -------------------------------------
-
+-- Primer Personal
 INSERT INTO `personal` VALUES
 (1,'ADMINISTRADOR','ADMINISTRADOR',72535244,'998777712','MASCULINO','jersson.z032@gmail.com',NULL,'2024-12-05',NULL,'2024-12-05');
-
 INSERT INTO `login` VALUES
 (1,1,'admin','$2y$10$Yt3wiTd14EdTf4dGepP49.pWnboRhcwcO9YJN0wNX0ncCT.kALZXO',1,2);
-
-
 INSERT INTO etiquetas VALUES(null, 1, 'AA', '#ffffff');
+-- Primer Personal END
+
 INSERT INTO `procedimientos` VALUES
 (1,'Consulta Dental','',50.00,'CONS','2024-12-01 21:01:40','#2D5F7D'),
 (2,'Ortodoncia','',3500.00,'ORTO','2024-12-01 21:40:58','#5679A6'),

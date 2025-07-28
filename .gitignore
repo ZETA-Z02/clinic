@@ -8,5 +8,5 @@
 .vscode/
 .sass-cache/
 dumps/piezas/
-
+./boleta.pdf
 .codegpt2
