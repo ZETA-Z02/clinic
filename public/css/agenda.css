@@ -92,7 +92,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  max-width: 40rem;
+  max-width: 60rem;
   background-color: rgb(210, 226, 243);
   border-radius: 15px;
   padding: 15px;

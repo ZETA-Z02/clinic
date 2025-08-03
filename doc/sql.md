@@ -1,4 +1,50 @@
 -- Base de datos Clinic PROYECT
+CREATE TABLE `personal` (
+  `idpersonal` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `apellido` varchar(100) NOT NULL,
+  `dni` int(11) NOT NULL,
+  `telefono` varchar(15) NOT NULL,
+  `sexo` varchar(15) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `foto` varchar(200) DEFAULT NULL,
+  `fechaNac` date DEFAULT NULL,
+  `feCreate` datetime DEFAULT current_timestamp(),
+  `feUpdate` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`idpersonal`),
+  UNIQUE KEY `dni` (`dni`)
+);
+CREATE TABLE `login` (
+  `idlogin` int(11) NOT NULL AUTO_INCREMENT,
+  `idpersonal` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(300) NOT NULL,
+  `estado` tinyint(4) DEFAULT 1,
+  `nivel` tinyint(4) DEFAULT 1,
+  PRIMARY KEY (`idlogin`),
+  UNIQUE KEY `username` (`username`),
+  KEY `idpersonal` (`idpersonal`),
+  CONSTRAINT `login_ibfk_1` FOREIGN KEY (`idpersonal`) REFERENCES `personal` (`idpersonal`)
+);
+CREATE TABLE `etiquetas` (
+  `idetiqueta` int(11) NOT NULL AUTO_INCREMENT,
+  `idpersonal` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `color` varchar(50) NOT NULL,
+  PRIMARY KEY (`idetiqueta`),
+  UNIQUE KEY `idpersonal` (`idpersonal`),
+  CONSTRAINT `etiquetas_ibfk_1` FOREIGN KEY (`idpersonal`) REFERENCES `personal` (`idpersonal`)
+);
+CREATE TABLE `procedimientos` (
+  `idprocedimiento` int(11) NOT NULL AUTO_INCREMENT,
+  `procedimiento` varchar(100) NOT NULL,
+  `descripcion` text DEFAULT NULL,
+  `precio` decimal(10,2) DEFAULT NULL,
+  `iniciales` varchar(10) DEFAULT NULL,
+  `feCreate` datetime DEFAULT current_timestamp(),
+  `color` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`idprocedimiento`)
+);
 CREATE TABLE `clientes` (
   `idcliente` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(50) NOT NULL,
@@ -127,53 +173,8 @@ CREATE TABLE `presupuesto_procedimientos` (
   CONSTRAINT `presupuesto_procedimientos_ibfk_1` FOREIGN KEY (`idpresupuestogeneral`) REFERENCES `presupuesto_general` (`idpresupuestogeneral`),
   CONSTRAINT `presupuesto_procedimientos_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
 );
-CREATE TABLE `procedimientos` (
-  `idprocedimiento` int(11) NOT NULL AUTO_INCREMENT,
-  `procedimiento` varchar(100) NOT NULL,
-  `descripcion` text DEFAULT NULL,
-  `precio` decimal(10,2) DEFAULT NULL,
-  `iniciales` varchar(10) DEFAULT NULL,
-  `feCreate` datetime DEFAULT current_timestamp(),
-  `color` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`idprocedimiento`)
-);
 
-CREATE TABLE `personal` (
-  `idpersonal` int(11) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(100) NOT NULL,
-  `apellido` varchar(100) NOT NULL,
-  `dni` int(11) NOT NULL,
-  `telefono` varchar(15) NOT NULL,
-  `sexo` varchar(15) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `foto` varchar(200) DEFAULT NULL,
-  `fechaNac` date DEFAULT NULL,
-  `feCreate` datetime DEFAULT current_timestamp(),
-  `feUpdate` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`idpersonal`),
-  UNIQUE KEY `dni` (`dni`)
-);
-CREATE TABLE `login` (
-  `idlogin` int(11) NOT NULL AUTO_INCREMENT,
-  `idpersonal` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `password` varchar(300) NOT NULL,
-  `estado` tinyint(4) DEFAULT 1,
-  `nivel` tinyint(4) DEFAULT 1,
-  PRIMARY KEY (`idlogin`),
-  UNIQUE KEY `username` (`username`),
-  KEY `idpersonal` (`idpersonal`),
-  CONSTRAINT `login_ibfk_1` FOREIGN KEY (`idpersonal`) REFERENCES `personal` (`idpersonal`)
-);
-CREATE TABLE `etiquetas` (
-  `idetiqueta` int(11) NOT NULL AUTO_INCREMENT,
-  `idpersonal` int(11) NOT NULL,
-  `nombre` varchar(50) NOT NULL,
-  `color` varchar(50) NOT NULL,
-  PRIMARY KEY (`idetiqueta`),
-  UNIQUE KEY `idpersonal` (`idpersonal`),
-  CONSTRAINT `etiquetas_ibfk_1` FOREIGN KEY (`idpersonal`) REFERENCES `personal` (`idpersonal`)
-);
+
 
 
 

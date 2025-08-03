@@ -205,26 +205,6 @@ class Pagos extends Controller
     // PRESUPUESTO TOTAL OTRA TABLA DE TRATAMIENTOS Y PAGOS QUE SIGUE EL CLIENTE
     // Presupuesto total de un cliente, suma de todos sus procedimientos y del total de sus pagos
     // Tambien el total de su deuda y si tiene un saldo, si deja dinero extra
-    public function getPresupuestoTotal()
-    {
-        $this->disabledCache();
-        $idcliente = $_POST['id'];
-        $data = $this->model->GetPresupuestoTotal($idcliente);
-        while ($row = mysqli_fetch_assoc($data)) {
-            $json[] = array(
-                'idpresupuesto' => $row['idpresupuesto'],
-                'idpresupuestodetalle' => $row['idpresupuestodetalle'],
-                'total_pagar' => $row['total_pagar'],
-                'monto_pagado' => $row['monto_pagado'],
-                'importe' => $row['importe'],
-                'deuda_pendiente' => $row['deuda_pendiente'],
-                'fecha' => date("Y-m-d", strtotime($row['fecha'])),
-            );
-        }
-        echo json_encode($json);
-    }
-
-
     // Obtiene el presupuesto general de un cliente, mostrando los procedimientos y el total a pagar
     public function getPresupuestoGeneral()
     {
@@ -294,31 +274,30 @@ class Pagos extends Controller
         }
         echo json_encode($json);
     }
-    public function updatePresupuestoTotal()
+    // EDITAR PRESUPUESTO_PAGOS
+    public function updatePresupuestoPagos()
     {
         $idcliente = $_POST['idcliente'];
-        $idpresupuesto = $_POST['idpresupuesto'];
-        $idpresupuestodetalle = $_POST['idpresupuestodetalle'];
+        $idpresupuestogeneral = $_POST['idpresupuestogeneral'];
+        $idpresupuestopago = $_POST['idpresupuestopago'];
         $importeNuevo = $_POST['importe'];
-        $piezaNuevo = $_POST['pieza'];
-        $piezaNuevo = '1.1';
-
-        if ($this->model->UpdatePresupuestoTotal($idpresupuesto, $idpresupuestodetalle, $importeNuevo, $piezaNuevo)) {
+        if ($this->model->UpdatePresupuestoPagos($idpresupuestogeneral, $idpresupuestopago, $importeNuevo)) {
             echo "OK";
         } else {
-            throw new Exception("Error al actualizar el presupuesto Total");
+            throw new Exception("Error al actualizar el presupuesto pagos");
         }
     }
-    public function deletePresupuestoTotal()
+    // Eliminar PRESUPUESTO PAGOS
+    public function deletePresupuestoPagos()
     {
-        $idpresupuesto = $_POST['idpresupuesto'];
-        $idpresupuestodetalle = $_POST['idpresupuestodetalle'];
-        if ($this->model->DeletePresupuestoTotal($idpresupuesto, $idpresupuestodetalle)) {
+        $idpresupuestopago = $_POST['idpresupuestopago'];
+        if ($this->model->DeletePresupuestoPagos($idpresupuestopago)) {
             echo "OK";
         } else {
-            throw new Exception("Error al eliminar el presupuesto Total");
+            throw new Exception("Error al eliminar el presupuesto Pago");
         }
     }
+    // Mostrar informacion de los pagos
     public function mostrarInformacionPagos()
     {
         $idcliente = $_POST['id'];

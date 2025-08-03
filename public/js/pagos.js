@@ -15,7 +15,6 @@ $(document).ready(function () {
   // OBTENER PROCEDIMIENTOS
   getProcedimientos("general");
   getProcedimientos("ortodoncia");
-  getProcedimientos("otros");
   getProcedimientos("presupuesto");
 
   //EDIT
@@ -25,7 +24,6 @@ $(document).ready(function () {
 function generarTablas() {
   Presupuestos("general");
   Presupuestos("ortodoncia");
-  Presupuestos("otros");
 }
 function btnTablas() {
   $(".modal").hide();
@@ -45,11 +43,7 @@ async function Presupuestos(type) {
       deuda_mostrar = 0;
     // Obteniendo el id del cliente
     let idcliente = $("#idcliente").val();
-    const data = await getOne(
-      { id: idcliente, tipo: type },
-      "pagos",
-      "presupuestos"
-    ); //SOlicitud al servidor
+    const data = await getOne({ id: idcliente, tipo: type }, "pagos", "presupuestos"); //SOlicitud al servidor
     const tbody = $(`#tbody-${type}`); // ID de la tabla
     tbody.empty(); // Vaciamos la tabla
     let fechaActual = new Date().toISOString().slice(0, 10);
@@ -182,7 +176,7 @@ async function generarDoctores() {
     console.log("Error en obtener Doctores.." + error);
   }
 }
-// NUEVO PROCEDIMIENTO
+// NUEVO PROCEDIMIENTO -> Para Iniciar los pagos
 async function NuevoProcedimiento() {
   try {
     let timeout;
@@ -328,7 +322,6 @@ async function eliminarPago() {
     generarTablas();
   });
 }
-
 // OBTENER PROCEDIMIENTOS- se encargar de todo al seleccionar, mostrar precio de los procedimientos
 async function getProcedimientos(type) {
   if (type == "general") {
@@ -361,7 +354,7 @@ async function getProcedimientos(type) {
 function selectProcedimientos(type = null) {
   $(document).on("input change", `#procedimiento-${type}`, function () {
     let idprocedimiento = $(this).val();
-    //console.log(idprocedimiento);
+    console.log(idprocedimiento);
     procedimientoPrecio(idprocedimiento, type);
   });
   let fechaDate = new Date();
@@ -409,7 +402,6 @@ async function activarEdit() {
         input.prop("disabled", true);
         $(this).html("Editar");
         generarTablas();
-        PresupuestoTotal();
       }
     });
   } catch (error) {
@@ -454,7 +446,8 @@ async function actualizarFilaData() {
           // Validar si los campos están llenos
           if (Object.values(data).every((value) => value.trim() !== "")) {
             insert(data, "pagos", "updatePago");
-            console.log(data, "Enviando datos al servidor");
+            //console.log(data, "Enviando datos al servidor");
+            $(".btn-editar").html("Editar");
             generarTablas();
           }
         }, 2000); // Espera de 1 segundo
@@ -479,7 +472,7 @@ $(document).ready(function () {
   // Eliminar
   eliminarPresupuestoTotal();
   // MENSAJE
-  //mostrarInformacionPagos();
+  mostrarInformacionPagos();
   // BOLETA
   mostrarImpresion();
 
@@ -492,7 +485,6 @@ $(document).ready(function () {
 // -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // PRESUPUESTO GENERAL - TOTAL
 // FUNCIONA - tabla de pagos del presupuesto_pagos // falta habilitar edicion y eliminar, pero ya muestra la info
-
 function deudaPresupuestoTotal() {
   $("#tbody-presupuesto-total").on(
     "input change",
@@ -540,20 +532,14 @@ async function NuevoPagoPresupuestoGeneral() {
 }
 // ELIMINAR UN PRESUPUESTO TOTAL
 function eliminarPresupuestoTotal() {
-  $("#tbody-presupuesto-total").on(
-    "click",
-    ".btn-delete-row-presupuesto",
-    function () {
-      let idpresupuesto = $(this).data("idpresupuesto");
-      let idpresupuestodetalle = $(this).data("idpresupuestodetalle");
-      // console.log(idpresupuesto, idpresupuestodetalle);
+  $("#tbody-presupuesto-total").on("click", ".btn-delete-row-presupuesto", function () {
+      let idpresupuestopago = $(this).data("idpresupuestopago");
       const data = {
-        idpresupuesto: `${idpresupuesto}`,
-        idpresupuestodetalle: `${idpresupuestodetalle}`,
+        idpresupuestopago: `${idpresupuestopago}`,
       };
-      delet(data, "pagos", "deletePresupuestoTotal");
+      delet(data, "pagos", "deletePresupuestoPagos");
       generarTablas();
-      PresupuestoTotal();
+      getPresupuestoGeneral();
     }
   );
 }
@@ -565,25 +551,23 @@ async function actualizarFilaPresupuesto() {
       numberFloat(".importe-editar");
       clearTimeout(timeout);
       let trfila = $(this).closest("tr");
-      let idpresupuesto = trfila.data("idpresupuesto");
-      let idpresupuestodetalle = trfila.data("idpresupuestodetalle");
+      let idpresupuestogeneral = trfila.data("idpresupuestogeneral");
+      let idpresupuestopago = trfila.data("idpresupuestopago");
       let importeActualizado = trfila.find(".importe-editar");
-      let pieza = trfila.find(".pieza-tablas");
       timeout = setTimeout(() => {
         const data = {
           idcliente: $("#idcliente").val(),
-          idpresupuesto: `${idpresupuesto}`,
-          idpresupuestodetalle: `${idpresupuestodetalle}`,
+          idpresupuestogeneral: `${idpresupuestogeneral}`,
+          idpresupuestopago: `${idpresupuestopago}`,
           importe: `${importeActualizado.val()}`,
-          pieza: pieza.val(),
         };
-        //console.log(data);
         // Validar si los campos están llenos
         if (Object.values(data).every((value) => value.trim() !== "")) {
-          insert(data, "pagos", "updatePresupuestoTotal");
-          console.log(data, "Enviando datos al servidor");
+          insert(data, "pagos", "updatePresupuestoPagos");
+          //console.log(data, "Enviando datos al servidor");
+          $(".btn-editar").html("Editar");
           generarTablas();
-          PresupuestoTotal();
+          getPresupuestoGeneral();
         }
       }, 2000); // Espera de 1 segundo
     });
@@ -633,7 +617,7 @@ async function getPresupuestoGeneral() {
     const id = $("#idcliente").val();
     const fechaActual = new Date().toISOString().slice(0, 10);
     const data = await getOne({id,idpresupuestogeneral},"pagos","getPresupuestoPagos");
-    console.log(data);
+    //console.log(data);
     let html = "";
     let importe = 0;
     let total_index = parseFloat(data[0].total);
@@ -643,13 +627,13 @@ async function getPresupuestoGeneral() {
       importe += parseFloat(pago.importe);
       deuda = parseFloat(pago.total) - importe;
       html += `
-          <tr data-idpresupuestodetalle="${pago.idpresupuestopago}" data-idpresupuesto="${pago.idpresupuestopago}">
+          <tr data-idpresupuestopago="${pago.idpresupuestopago}" data-idpresupuestogeneral="${idpresupuestogeneral}">
             <td class="text-right">${total_index}</td>
             <td class="text-center"><input type="text" class="text-center importe-editar general-input-monto" value="${pago.importe}" disabled></td>
             <td>${deuda}</td>
             <td class="text-right">${pago.fecha}</td>
             <td class="row-trash" style="display:none;">
-              <button class="btn-delete-row-presupuesto" data-idpresupuestopago="${pago.idpresupuestopago}" data-idpresupuestogeneral="${pago.idpresupuestopago}debeir presupuesto general aqui">
+              <button class="btn-delete-row-presupuesto" data-idpresupuestopago="${pago.idpresupuestopago}">
                 <i class="fa-solid fa-trash"></i>
               </button>
             </td>
@@ -661,7 +645,7 @@ async function getPresupuestoGeneral() {
     $("#tbody-presupuesto-total").html(html);
   } catch (e) {
     $("#monto_pagar").val(deudaData);
-    console.log("Error en presupuesto total: ", e);
+    console.log("Error en: getPresupuestoGeneral; presupuesto pagos: ", e);
   }
 }
 // Agrega un procedimiento para el presupuesto y tambien lo elimina de la eleccion
@@ -735,36 +719,35 @@ async function guardarPresupuestoGeneral() {
 }
 // PRESUPUESTOS END *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 // Informacion de pagos sincronizados 
-// async function mostrarInformacionPagos() {
-//   try {
-//     const idcliente = $("#idcliente").val();
-//     const data = await getOne(idcliente, "pagos", "mostrarInformacionPagos");
-//     const presupuesto = data.presupuesto,
-//       general = data.general;
-//     const mensaje = $("#mensaje");
-//     const deuda = $("#deuda_total");
-//     const importe = $("#importe_total");
-//     const total = $("#total_total");
-//     deudaTotal =
-//       parseFloat(presupuesto.suma_total) - parseFloat(presupuesto.suma_importe);
-//     deuda.html(`S/. ${deudaTotal}`);
-//     importe.html(`S/. ${presupuesto.suma_importe}`);
-//     total.html(`S/. ${presupuesto.suma_total}`);
-//     if (general.suma_total != presupuesto.suma_total) {
-//       mensaje.html("El Presupuesto total no coincide con el General");
-//       mensaje.addClass("mensaje-rojo");
-//       return;
-//     }
-//     if (general.suma_monto < presupuesto.suma_importe) {
-//       mensaje.html("Los pagos estan desactualizados, actualice los pagos");
-//       mensaje.css("color: #ff0000");
-//       return;
-//     }
-//     mensaje.html("Datos Correctos");
-//   } catch (error) {
-//     console.log(error + "ERROR EN MOSTRAR INFORMACION DE PAGOS");
-//   }
-// }
+async function mostrarInformacionPagos() {
+  try {
+    const idcliente = $("#idcliente").val();
+    const data = await getOne(idcliente, "pagos", "mostrarInformacionPagos");
+    //console.log(data);
+    const presupuesto = data.presupuesto, general = data.general;
+    const mensaje = $("#mensaje");
+    const deuda = $("#deuda_total");
+    const importe = $("#importe_total");
+    const total = $("#total_total");
+    deudaTotal = parseFloat(presupuesto.suma_total) - parseFloat(presupuesto.suma_importe);
+    deuda.html(`S/. ${deudaTotal}`);
+    importe.html(`S/. ${presupuesto.suma_importe}`);
+    total.html(`S/. ${presupuesto.suma_total}`);
+    if (general.suma_total != presupuesto.suma_total) {
+      mensaje.html("El Presupuesto Total no coincide con el Presupuesto Detallado");
+      mensaje.addClass("mensaje-rojo");
+      return;
+    }
+    if (general.suma_monto < presupuesto.suma_importe) {
+      mensaje.html("Los pagos estan desactualizados, actualice los pagos");
+      mensaje.css("color: #ff0000");
+      return;
+    }
+    mensaje.html("Datos Correctos");
+  } catch (error) {
+    console.log(error + "ERROR EN MOSTRAR INFORMACION DE PAGOS");
+  }
+}
 // Informacion de pagos sincronizados END
 // Mostrar Boleta -> Mejorar 
 function mostrarImpresion() {

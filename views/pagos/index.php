@@ -348,6 +348,7 @@
                     class="fa fa-trash"></i></button>
         </div>
     </div>
+    <!-- ELIMINADO: POR DECIDIR END-->
     <!-- PRESUPUESTO TOTAL -> PRESUPUESTO DONDE SE VE PROCEDIMIENTOS Y SUS PAGOS DESCONTANDO DESDE EL TOTAL -->
     <div class="grid-x modal" id="tabla-presupuesto-total">
         <!-- tabla presupuesto total -->
@@ -460,6 +461,8 @@
             <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i
                     class="fa fa-trash"></i></button>
             <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda') ?>">Ir a Agenda</a>
+            <a id="irodontograma" class="irodontograma button btn-warning"
+                href="<?php getrute('odontograma/render/' . @$this->data['idcliente']) ?>">Ir a Odontograma</a>
             <button id="boletaprint" class="boleta button warning">Boleta Actual</button>
             <button id="boletaparaimprimir" class="boleta button warning">Boleta Todo</button>
         </div>

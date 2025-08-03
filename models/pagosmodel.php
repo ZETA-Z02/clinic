@@ -165,11 +165,6 @@ class PagosModel extends Model{
         $this->conn->conn->close();
     }
     // Presupuesto Total */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/**/*/*/*/*/*/*/*/*/*/*/*/* */
-    public function GetPresupuestoTotal($idcliente){
-        $sql = "SELECT ptd.idpresupuestodetalle,ptd.importe,ptd.fecha,p.idcliente,p.idpresupuesto,p.total_pagar,p.monto_pagado,p.deuda_pendiente FROM presupuestos p JOIN presupuesto_detalles ptd ON p.idpresupuesto=ptd.idpresupuesto JOIN procedimientos pro ON pro.idprocedimiento=p.idprocedimiento WHERE p.idcliente='$idcliente';";
-        $data = $this->conn->ConsultaCon($sql); 
-        return $data;
-    }
     // informacion del presupuesto general que tiene activo el cliente
     public function GetPresupuestoGeneralTotal($idcliente){
         $sql = "SELECT pg.idpresupuestogeneral,p.procedimiento,pg.total_pagar, pg.feCreate,pp.pieza,pp.precio FROM presupuesto_general pg JOIN presupuesto_procedimientos pp ON pg.idpresupuestogeneral = pp.idpresupuestogeneral JOIN procedimientos p ON pp.idprocedimiento = p.idprocedimiento WHERE pg.idcliente = '$idcliente' AND pg.estado = 0;";
@@ -202,12 +197,6 @@ class PagosModel extends Model{
             //error_log("Error en NuevoPresupuestoGeneral: ". print_r($data,true));
         }
         $this->conn->conn->close();
-    }
-    // Obtiene un presupuesto general de un cliente
-    public function GetOnePresupuestoGeneral($idcliente){
-        $sql = "SELECT idcliente, monto_pagado, deuda_pendiente, total_pagar, estado WHERE pg.idcliente = '$idcliente';";
-        $data = $this->conn->ConsultaArray($sql);
-        return $data;
     }
     // NUevo pago del presupuesto general 
     public function NuevoPagoPresupuestoGeneral($idcliente, $importe){
@@ -245,17 +234,17 @@ class PagosModel extends Model{
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
-    // Actualiza un pago de un presupuesto
-    public function UpdatePresupuestoTotal($idpresupuesto,$idpresupuestodetalle,$importeNuevo,$piezaNuevo){
+    // Actualiza un pago de un presupuesto_pagos, actualiza el monto pagado y la deuda pendiente del presupuesto general
+    public function UpdatePresupuestoPagos($idpresupuestogeneral, $idpresupuestopago, $importeNuevo){
         $this->conn->conn->begin_transaction();
         try{
-            $sqlCheckDetalles = "SELECT pieza, importe FROM presupuesto_detalles WHERE idpresupuestodetalle = '$idpresupuestodetalle' AND idpresupuesto='$idpresupuesto' FOR UPDATE;";
-            $resultcheckdetalles = $this->conn->ConsultaArray($sqlCheckDetalles);
-            if(!$resultcheckdetalles){
+            $sqlCheckPagos = "SELECT importe FROM presupuesto_pagos WHERE idpresupuestopago = '$idpresupuestopago' AND idpresupuestogeneral='$idpresupuestogeneral' FOR UPDATE;";
+            $resultcheckpagos = $this->conn->ConsultaArray($sqlCheckPagos);
+            if(!$resultcheckpagos){
                 throw new Exception("Error al obtener los datos del presupuesto para actualizar");
             }
             // Obtener el total a pagar y el monto ya pagado
-            $sqlCheckPresupuesto = "SELECT total_pagar, monto_pagado, deuda_pendiente FROM presupuestos WHERE idpresupuesto = '$idpresupuesto' FOR UPDATE;";
+            $sqlCheckPresupuesto = "SELECT total_pagar, monto_pagado, deuda_pendiente FROM presupuesto_general WHERE idpresupuestogeneral = '$idpresupuestogeneral' FOR UPDATE;";
             $resultCheckPresupuesto = $this->conn->ConsultaArray($sqlCheckPresupuesto);
             
             if (!$resultCheckPresupuesto) {
@@ -263,43 +252,46 @@ class PagosModel extends Model{
             }
             $total_pagar = $resultCheckPresupuesto['total_pagar'];
             $monto_pagado = $resultCheckPresupuesto['monto_pagado'];
-            $verify = $monto_pagado - $resultcheckdetalles['importe'];
+            $verify = $monto_pagado - $resultcheckpagos['importe'];
              // Verificar si el nuevo pago excede el total a pagar
             if (($verify + $importeNuevo) > $total_pagar) {
                 throw new Exception("El monto total pagado no puede exceder el total a pagar.");
             }
-            $sqlpresupuestodetalle = "UPDATE presupuesto_detalles SET pieza='$piezaNuevo', importe='$importeNuevo' WHERE idpresupuestodetalle = '$idpresupuestodetalle' AND idpresupuesto = '$idpresupuesto';";
-            $resultdetalle = $this->conn->ConsultaSin($sqlpresupuestodetalle);
+            $sqlpresupuestopagos = "UPDATE presupuesto_pagos SET importe='$importeNuevo' WHERE idpresupuestopago = '$idpresupuestopago' AND idpresupuestogeneral = '$idpresupuestogeneral';";
+            $resultpagos = $this->conn->ConsultaSin($sqlpresupuestopagos);
 
-            $sqlpresupuesto = "UPDATE presupuestos 
-                            SET monto_pagado = (SELECT SUM(importe) FROM presupuesto_detalles WHERE idpresupuesto = '$idpresupuesto'), 
-                            deuda_pendiente = $total_pagar - (SELECT SUM(importe) FROM presupuesto_detalles WHERE idpresupuesto = '$idpresupuesto')
-                            WHERE idpresupuesto = '$idpresupuesto';";
+            $sqlpresupuesto = "UPDATE presupuesto_general
+                            SET monto_pagado = (SELECT SUM(importe) FROM presupuesto_pagos WHERE idpresupuestogeneral = '$idpresupuestogeneral'), 
+                            deuda_pendiente = $total_pagar - (SELECT SUM(importe) FROM presupuesto_pagos WHERE idpresupuestogeneral = '$idpresupuestogeneral')
+                            WHERE idpresupuestogeneral = '$idpresupuestogeneral';";
             $resultpresupuesto = $this->conn->ConsultaSin($sqlpresupuesto);
-
             $this->conn->conn->commit();
-            $result = $resultpresupuesto && $resultdetalle;
+            $result = $resultpresupuesto && $resultpagos;
             return $result;
         }catch(Exception $e){
             $this->conn->conn->rollback();
             echo "Error: " . $e->getMessage();
         }        
     }
-    public function DeletePresupuestoTotal($idpresupuesto, $idpresupuestodetalle){
+    // Eliminar un pago de un presupuesto_pagos, actualiza el monto pagado y la deuda pendiente del presupuesto general
+    public function DeletePresupuestoPagos($idpresupuestopago){
         $this->conn->conn->begin_transaction();
         try{
-            $sql = "DELETE FROM presupuesto_detalles WHERE idpresupuestodetalle = '$idpresupuestodetalle';";
-            $result = $this->conn->ConsultaSin($sql);
-            $sqlcheck =  "SELECT total_pagar, monto_pagado, deuda_pendiente FROM presupuestos WHERE idpresupuesto = '$idpresupuesto' FOR UPDATE;";
+            $sqlidpresupuestogeneral = "SELECT idpresupuestogeneral FROM presupuesto_pagos WHERE idpresupuestopago = '$idpresupuestopago';";
+            $idpresupuestogeneral = $this->conn->ConsultaArray($sqlidpresupuestogeneral);
+            $idpresupuestogeneral = $idpresupuestogeneral['idpresupuestogeneral'];
+            $sqlcheck =  "SELECT monto_pagado,deuda_pendiente,total_pagar FROM presupuesto_general WHERE idpresupuestogeneral = '$idpresupuestogeneral' FOR UPDATE;";
             $resultCheck = $this->conn->ConsultaArray($sqlcheck);
+            $sql = "DELETE FROM presupuesto_pagos WHERE idpresupuestopago = '$idpresupuestopago' AND idpresupuestogeneral = '$idpresupuestogeneral';";
+            $result = $this->conn->ConsultaSin($sql);
             if(!$resultCheck){
-                throw new Exception("Error al obtener los datos del presupuesto");
+                throw new Exception("Error al obtener los datos del presupuesto general para actualizar");
             }
             $total_pagar = $resultCheck['total_pagar'];
-            $sqlpresupuesto = "UPDATE presupuestos 
-                            SET monto_pagado = (SELECT SUM(importe) FROM presupuesto_detalles WHERE idpresupuesto = '$idpresupuesto'), 
-                            deuda_pendiente = $total_pagar - (SELECT SUM(importe) FROM presupuesto_detalles WHERE idpresupuesto = '$idpresupuesto')
-                            WHERE idpresupuesto = '$idpresupuesto';";
+            $sqlpresupuesto = "UPDATE presupuesto_general
+                            SET monto_pagado = (SELECT SUM(importe) FROM presupuesto_pagos WHERE idpresupuestogeneral = '$idpresupuestogeneral'), 
+                            deuda_pendiente = $total_pagar - (SELECT SUM(importe) FROM presupuesto_pagos WHERE idpresupuestogeneral = '$idpresupuestogeneral')
+                            WHERE idpresupuestogeneral = '$idpresupuestogeneral';";
             $resultpresupuesto = $this->conn->ConsultaSin($sqlpresupuesto);
             $this->conn->conn->commit();
             return $result && $resultpresupuesto;
@@ -310,7 +302,7 @@ class PagosModel extends Model{
     }
     public function MostrarInformacionPagos($idcliente){
         // Obtiene los presupuestos de un cliente
-        $sqlpresupuestos = "SELECT (SELECT SUM(pdt.importe) FROM presupuestos p JOIN presupuesto_detalles pdt ON p.idpresupuesto=pdt.idpresupuesto WHERE p.idcliente='$idcliente') AS suma_importe, (SELECT SUM(total_pagar) FROM presupuestos WHERE idcliente='$idcliente') AS suma_total;";
+        $sqlpresupuestos = "SELECT (SELECT SUM(pg.importe) FROM presupuesto_pagos pg JOIN presupuesto_general pp ON pg.idpresupuestogeneral=pp.idpresupuestogeneral WHERE pp.idcliente='$idcliente') as suma_importe, (SELECT sum(total_pagar) FROM presupuesto_general WHERE idcliente='$idcliente') as suma_total;";
         $datapresupuesto = $this->conn->ConsultaArray($sqlpresupuestos);
         // Obtiene los pagos de un cliente escepto ortodoncia
         $sqlgeneral = "SELECT (SELECT SUM(pdt.monto) FROM pago_detalles pdt JOIN pagos p ON pdt.idpago=p.idpago WHERE p.idcliente='$idcliente' AND p.idprocedimiento!=2) AS suma_monto, (SELECT SUM(DISTINCT p.total_pagar) FROM pagos p JOIN pago_detalles pdt ON p.idpago = pdt.idpago WHERE p.idcliente = '$idcliente' AND p.idprocedimiento!=2) AS suma_total;";
