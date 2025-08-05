@@ -32,6 +32,11 @@ class OdontogramaModel extends Model{
         $data = $this->conn->ConsultaArray($sql);
         return $data;
     }
+    public function Leyenda(){
+        $sql = "SELECT color,procedimiento FROM procedimientos;";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
+    }
 }
 
 ?>

@@ -22,32 +22,36 @@ function modalNuevoCLiente() {
         $("#btn-guardar").show();
         $("#btn-siguiente").hide();
         $("#nuevopersonal").hide();
+        // Nombre de la etiqueta
+        let nombre = $("#nombre").val();
+        let apellido =$("#apellido").val();
+        let nombreEtiqueta = nombre[0]+apellido[0];
+        $("#nombre_etiqueta").val(nombreEtiqueta);
+        //console.log(nombre[0], apellido[0]);
     });
   }
-function getpersonal(){
-    (async () => {
-        try{
-            const data = await get('personal','get');
-            //console.log(data);
-            let html = '';
-            data.forEach((element) => {
-                html += `
-                    <tr>
-                        <td>${element.nombre}</td>
-                        <td>${element.apellido}</td>
-                        <td>${element.dni}</td>
-                        <td>${element.telefono}</td>
-                        <td><a href="${url}/personal/detalles/${element.id}" class="button btn-info">Detalles</a></td>
-                        <td><a href="${url}/personal/login/${element.id}" class="button btn-success">Login</a></td>
-                    </tr>
-                `;
-            });
-            $("#data-personal").html(html);
-            initPaginador(5, "data-personal", "paginador");
-        } catch (error){
-            console.error("ERROR en obtener personal",error);
-        }
-    })();
+async function getpersonal(){
+    try{
+        const data = await get('personal','get');
+        //console.log(data);
+        let html = '';
+        data.forEach((element) => {
+            html += `
+                <tr>
+                    <td>${element.nombre}</td>
+                    <td>${element.apellido}</td>
+                    <td>${element.dni}</td>
+                    <td>${element.telefono}</td>
+                    <td><a href="${url}/personal/detalles/${element.id}" class="button btn-info">Detalles</a></td>
+                    <td><a href="${url}/personal/login/${element.id}" class="button btn-success">Login</a></td>
+                </tr>
+            `;
+        });
+        $("#data-personal").html(html);
+        initPaginador(5, "data-personal", "paginador");
+    } catch (error){
+        console.error("ERROR en obtener personal",error);
+    }
 }
 function nuevopersonal(){
     $("#form-nuevopersonal").submit(function(e){

@@ -19,8 +19,9 @@ $(document).ready(function(){
     InfoPieza();
     getProcedimientos();
     ColorPieza();
+    // Leyenda
+    mostrarLeyenda();
 });
-
 function InfoPieza(){
     $(".btn-pieza").on("click",async function(){
         $("#info-diente").show();
@@ -99,16 +100,48 @@ async function ColorPieza() {
             const data = await getOne({ idcliente: idcliente, pieza: pieza }, 'odontograma', 'colorPieza');
             //console.log(data);
             if (data !== 0) {
-                $(element).attr("style", `stroke: ${data.color} !important;`);
+                $(element).attr("style", `fill: ${data.color}99 !important;`);
                 $(element).hover(
                     function(){
-                    $(this).css(`fill`, `${data.color}99`)
-                },function(){
                     $(this).css(`fill`, ``)
+                },function(){
+                    $(this).css(`fill`,`${data.color}99`)
                 })
             }
         } catch (e) {
             console.log("ERROR obtener colores", e);
         }
+    }
+}
+
+// Leyenda
+async function mostrarLeyenda(){
+    let leyenda = $("#leyenda");
+    try{
+        const data = await get('odontograma','leyenda');
+        console.log(data);
+        let html = "";
+        let comunes = ["sellantes","restauracion de niños", "restauracion simple rfs","endodoncia anteriores","endodoncia posteriores","poste de seguridad","corona porcelanato","corona ivocron","provisional coronas","exodoncia"];
+        let inicioLista = data.filter(element => comunes.includes(element.procedimiento.toLowerCase()));
+        inicioLista.forEach((element) => {
+            html += `
+            <li style="color: ${element.color};font-size: 1.4rem;"><i class="fa-solid fa-tooth" style="color: ${element.color};"></i>${element.procedimiento}</li>
+            `;
+        })
+        let finLista = data.filter(element => !comunes.includes(element.procedimiento.toLowerCase()));
+        finLista = finLista.filter(element => element.procedimiento.toLowerCase() != "ortodoncia")
+        finLista.forEach((element) => {
+            html += `
+            <li style="color: ${element.color};font-size: 1.4rem;"><i class="fa-solid fa-tooth" style="color: ${element.color};"></i>${element.procedimiento}</li>
+            `;
+        })
+        // data.forEach((element) => {
+        //     html += `
+        //     <li style="color: ${element.color};font-size: 1.4rem;"><i class="fa-solid fa-tooth" style="color: ${element.color};"></i>${element.procedimiento}</li>
+        //     `;
+        // })
+        $("#leyenda-data").html(html);
+    }catch(e){
+        console.log("ERROR EN LEYENDA ODONTOGRAMA",e);
     }
 }

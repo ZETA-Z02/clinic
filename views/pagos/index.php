@@ -469,7 +469,7 @@
     </div>
 </div>
 <!-- <button id="boletaprint" class="boleta button warning">Boleta</button> -->
-<div id="contenidoticket"></div>
+<div id="contenidoticket" class="cell"></div>
 <!-- <iframe src="<?php getrute('boleta.pdf') ?>" frameborder="0" id="pdfFrame"></iframe> -->
 <script src="<?php js('pagos'); ?>"></script>
 <?php require('views/footer.php'); ?>

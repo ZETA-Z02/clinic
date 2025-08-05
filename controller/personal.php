@@ -41,10 +41,12 @@ class Personal extends Controller
 		$telefono = $_POST['telefono'];
 		$nombre = $_POST['nombre'];
 		$apellido = $_POST['apellido'];
+		$etiqueta = $_POST['nombre_etiqueta'];
+		$color = $_POST['color'];
 		$username = $_POST['username'];
 		$password = $_POST['password'];
 		$password = password_hash($password, PASSWORD_DEFAULT);
-		if($this->model->NuevoPersonal($dni,$telefono,$nombre,$apellido,$username,$password)){
+		if($this->model->NuevoPersonal($dni,$telefono,$nombre,$apellido,$username,$password,$etiqueta,$color)){
 			echo "ok";
 		}else{
 			//echo "Error al crear el personal";

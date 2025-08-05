@@ -18,7 +18,7 @@ class PersonalModel extends Model{
         $data = $this->conn->ConsultaArray($sql);
         return $data;
     }
-    public function NuevoPersonal($dni,$telefono,$nombre,$apellido,$username,$password){
+    public function NuevoPersonal($dni,$telefono,$nombre,$apellido,$username,$password,$etiqueta,$color){
         $this->conn->conn->begin_transaction();
         try{
             $sqlpersonal = "INSERT INTO personal (nombre,apellido,dni,telefono) VALUES ('$nombre','$apellido','$dni','$telefono');";
@@ -26,8 +26,10 @@ class PersonalModel extends Model{
             $idpersonal = $this->conn->conn->insert_id;
             $sqllogin = "INSERT INTO login (idpersonal,username,password) VALUES ('$idpersonal','$username','$password');";
             $resultlogin = $this->conn->ConsultaSin($sqllogin);
+            $sqletiqueta = "INSERT INTO etiquetas (idpersonal, color, nombre) VALUES ('$idpersonal','$color','$etiqueta');";
+            $resultetiqueta = $this->conn->ConsultaSin($sqletiqueta);
             $this->conn->conn->commit();
-            $result = $resultpersonal && $resultlogin;
+            $result = $resultpersonal && $resultlogin && $resultetiqueta;
             return $result;
         }catch(Exception $e){
             echo "Error al crear personal" .$e;

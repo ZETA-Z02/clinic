@@ -748,7 +748,8 @@ async function mostrarInformacionPagos() {
     console.log(error + "ERROR EN MOSTRAR INFORMACION DE PAGOS");
   }
 }
-// Informacion de pagos sincronizados END
+// Informacion de pagos sincronizados END 
+
 // Mostrar Boleta -> Mejorar 
 function mostrarImpresion() {
   $("#boletaparaimprimir").on("click", async function () {

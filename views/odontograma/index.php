@@ -89,7 +89,7 @@
                                 title="4.5">
                                 <title>4.5</title>
                             </polygon>
-                            <polygon
+                            <polygon class="btn-pieza" data-pieza="44"
                                 points="147,321 154,320 160,319 167,319 173,321 178,328 178,338 178,346 178,356 172,363 165,370 157,368 151,363 143,359 139,353 135,345 136,335 140,326 144,323"
                                 title="4.4">
                                 <title>4.4</title>
@@ -213,5 +213,13 @@
         </div>
     </div>
 </div>
+<details class="leyenda" id="leyenda">
+    <summary id="leyenda-titulo">Leyenda</summary>
+    <ul id="leyenda-data">
+        <li><i class="fa-solid fa-tooth"></i>Lorem ipsum dolor sit amet consectetur</li>
+        <li><i class="fa-solid fa-tooth"></i>Lorem ipsum dolor sit amet consectetur</li>
+        <li><i class="fa-solid fa-tooth"></i>Lorem ipsum dolor sit amet consectetur</li>
+    </ul>
+</details>
 <script src="<?php js('odontograma'); ?>"></script>
 <?php require('views/footer.php'); ?>

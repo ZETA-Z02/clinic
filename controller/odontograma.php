@@ -82,6 +82,16 @@ class Odontograma extends Controller{
             echo 0;
         }
     }
+    public function leyenda(){
+        $data = $this->model->Leyenda();
+        while($row=mysqli_fetch_assoc($data)){
+            $json[] = array(
+                'color' => $row['color'],
+                'procedimiento' => $row['procedimiento'],
+            );
+        }
+        echo json_encode($json);
+    }
 
 }
 ?>

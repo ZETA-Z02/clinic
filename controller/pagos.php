@@ -396,17 +396,10 @@ class Boleta extends FPDF
 {
     function Header()
     {
-        $this->SetFont('Arial', 'B', 10);
+        $this->SetFont('Courier', '', 9);
         $this->Cell(70, 6, 'CHIC CONSULTORIO DENTAL', 0, 1, 'C');
         $this->SetFont('Arial', '', 9);
-        $this->Cell(
-            70,
-            4,
-            'Jr. Lambayeque 123, Puno',
-            0,
-            1,
-            'C'
-        );
+        $this->Cell(70,4,'Jr. Lambayeque 123, Puno',0,1,'C');
         $this->Cell(70, 4, 'RUC: 12345678901', 0, 1, 'C');
         $this->Cell(70, 4, 'Tel: 951781807', 0, 1, 'C');
         $this->Ln(2);
