@@ -174,10 +174,6 @@ CREATE TABLE `presupuesto_procedimientos` (
   CONSTRAINT `presupuesto_procedimientos_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
 );
 
-
-
-
-
 para la condicion de cada cliente ----><- ->
 #!/bin/bash 
 for id in {1..10}; do 
@@ -193,33 +189,33 @@ INSERT INTO etiquetas VALUES(null, 1, 'AA', '#ffffff');
 -- Primer Personal END
 
 INSERT INTO `procedimientos` VALUES
-(1,'Consulta Dental','',50.00,'CONS','2024-12-01 21:01:40','#2D5F7D'),
-(2,'Ortodoncia','',3500.00,'ORTO','2024-12-01 21:40:58','#5679A6'),
-(3,'Sellantes','',50.00,'SELLA','2024-12-01 21:46:42','#A7BBCF'),
-(4,'Restauracion de niños','',80.00,'rest','2024-12-01 21:46:42','#009AA6'),
-(5,'Restauracion Simple RFS','',120.00,'RFS','2025-02-05 11:40:28','#74C2C3'),
-(6,'Restauracion compueta RFC','',180.00,'RFC','2025-02-05 11:39:50','#9BAF47'),
-(7,'Restauracion Angular RFA','',180.00,'RFA','2025-01-19 19:31:36','#1E582A'),
-(8,'Endodoncia Posteriores','',300.00,'ENDO','2025-02-05 11:42:07','#788B50'),
-(9,'Endodoncia Anteriores','',180.00,'ENAT','2025-02-05 11:43:16','#A0A97A'),
-(10,'Poste de Seguridad','',200.00,'POST','2025-02-05 11:43:33','#5D6B49'),
-(11,'Corona Porcelanato','',500.00,'CORO','2025-02-05 11:44:22','#C1663B'),
-(12,'Corona Ivocron','',300.00,'CIVO','2025-02-05 11:44:49','#D8A578'),
-(13,'Provisional PPR','',400.00,'PPR','2025-02-05 11:45:20','#F4C6C0'),
-(14,'Provisional Coronas','',80.00,'PROC','2025-02-05 11:45:48','#F8E3BB'),
-(15,'Profilaxis + Fluorizacion','',300.00,'PROF','2025-02-05 11:46:11','#F4DFC5'),
-(16,'Blanqueamiento Dental','',300.00,'BLAN','2025-02-05 11:46:26','#C6C3B5'),
-(17,'Exodoncia','',60.00,'EXOD','2025-02-05 11:47:01','#C0B6A3'),
-(18,'Tercer Molar','',300.00,'TMOL','2025-02-05 11:47:21','#7D5233'),
-(19,'Cirugia Gingivoplastia. ENCIA POR DIENTE','',100.00,'GENG','2025-02-05 11:47:21','#B58E68'),
-(20,'Cirugia Gingivoplastia. OSEA POR DIENTE','',350.00,'GOSD','2025-02-05 11:47:21','#5A4632'),
-(21,'Cirugia Gingivoplastia. OSEA + ENCIA','',1500.00,'GOEN','2025-02-05 11:47:21','#6F5A4D'),
-(22,'Protesis Parcial Removible','',1000.00,'PPR','2025-02-05 11:50:23','#B0A9A1'),
-(23,'Protesis Total Removible','',1000.00,'PTR','2025-02-05 11:50:46','#A4B5C5'),
-(24,'Endodoncia + Poste de SEG. + Resina POSTERIORES','',550.00,'EPPR','2025-02-05 11:50:46','#8D9095'),
-(25,'Endodoncia + Poste de SEG. + Resina ANTERIORES','',350.00,'EPRA','2025-02-05 11:50:46','#5F7B86'),
-(26,'Endodoncia + Poste de SEG. + Corona POSTERIORES','',930.00,'EPCP','2025-02-05 11:50:46','#4D6570'),
-(27,'Endodoncia + Poste de SEG. + Corona ANTERIORES','',830.00,'EPCA','2025-02-05 11:50:46','#3B4F58'),
+(1,'Consulta Dental','',50.00,'CONS','2025-01-01 00:00:00','#a0a4ab'),
+(2,'Ortodoncia','',3500.00,'ORTO','2025-01-01 00:00:00','#5679A6'),
+(3,'Sellantes','',50.00,'SELLA','2025-01-01 00:00:00','#d9b929'),
+(4,'Restauracion de niños','',80.00,'rest','2025-01-01 00:00:00','#ec121f'),
+(5,'Restauracion Simple RFS','',120.00,'RFS','2025-01-01 00:00:00','#5498a9'),
+(6,'Restauracion compueta RFC','',180.00,'RFC','2025-01-01 00:00:00','#9BAF47'),
+(7,'Restauracion Angular RFA','',180.00,'RFA','2025-01-01 00:00:00','#00243f'),
+(8,'Endodoncia Posteriores','',300.00,'ENDO','2025-01-01 00:00:00','#7b6e4c'),
+(9,'Endodoncia Anteriores','',180.00,'ENAT','2025-01-01 00:00:00','#2d5f7d'),
+(10,'Poste de Seguridad','',200.00,'POST','2025-01-01 00:00:00','#44b09e'),
+(11,'Corona Porcelanato','',500.00,'CORO','2025-01-01 00:00:00','#C1663B'),
+(12,'Corona Ivocron','',300.00,'CIVO','2025-01-01 00:00:00','#D8A578'),
+(13,'Provisional PPR','',400.00,'PPR','2025-01-01 00:00:00','#9aa8a8'),
+(14,'Provisional Coronas','',80.00,'PROC','2025-01-01 00:00:00','#b00002'),
+(15,'Profilaxis + Fluorizacion','',300.00,'PROF','2025-01-01 00:00:00','#645045'),
+(16,'Blanqueamiento Dental','',300.00,'BLAN','2025-01-01 00:00:00','#C6C3B5'),
+(17,'Exodoncia','',60.00,'EXOD','2025-01-01 00:00:00','#1e582a'),
+(18,'Tercer Molar','',300.00,'TMOL','2025-01-01 00:00:00','#b9848c'),
+(19,'Cirugia Gingivoplastia. ENCIA POR DIENTE','',100.00,'GENG','2025-01-01 00:00:00','#806491'),
+(20,'Cirugia Gingivoplastia. OSEA POR DIENTE','',350.00,'GOSD','2025-01-01 00:00:00','#c3de00'),
+(21,'Cirugia Gingivoplastia. OSEA + ENCIA','',1500.00,'GOEN','2025-01-01 00:00:00','#344c11'),
+(22,'Protesis Parcial Removible','',1000.00,'PPR','2025-01-01 00:00:00','#686461'),
+(23,'Protesis Total Removible','',1000.00,'PTR','2025-01-01 00:00:00','#854277'),
+(24,'Endodoncia + Poste de SEG. + Resina POSTERIORES','',550.00,'EPPR','2025-01-01 00:00:00','#4d3474'),
+(25,'Endodoncia + Poste de SEG. + Resina ANTERIORES','',350.00,'EPRA','2025-01-01 00:00:00','#5F7B86'),
+(26,'Endodoncia + Poste de SEG. + Corona POSTERIORES','',930.00,'EPCP','2025-01-01 00:00:00','#4D6570'),
+(27,'Endodoncia + Poste de SEG. + Corona ANTERIORES','',830.00,'EPCA','2025-01-01 00:00:00','#3B4F58'),
 (28,'RX','',20.00,'RX','2025-02-05 11:51:04','#2A3D46'),
 (29,'otro','',500.00,'otro','2025-02-16 13:24:32','#1B2C34');
 
