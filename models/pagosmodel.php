@@ -193,10 +193,11 @@ class PagosModel extends Model{
             return $result && $resultprocedimiento;
         }catch(Exception $e){
             $this->conn->conn->rollback();
-            echo "Error: " . $e->getMessage();
-            //error_log("Error en NuevoPresupuestoGeneral: ". print_r($data,true));
+            error_log("Error Model: " . $e->getMessage());
+            throw $e;
+        } finally {
+            $this->conn->conn->close();
         }
-        $this->conn->conn->close();
     }
     // NUevo pago del presupuesto general 
     public function NuevoPagoPresupuestoGeneral($idcliente, $importe){
@@ -298,6 +299,76 @@ class PagosModel extends Model{
         }catch(Exception $e){
             $this->conn->conn->rollback();
             echo "Error: " . $e->getMessage();
+        }
+    }
+    // MUESTRA DATOS DEL PRESUPUESTO GENERAL PARA MODIFICAR
+    public function MostrarModificarPresupuestoGeneral($idcliente){
+        $sql = "SELECT pg.idpresupuestogeneral,pp.idpresupuestoprocedimiento,p.procedimiento,pg.total_pagar, pg.feCreate,pp.pieza,pp.precio FROM presupuesto_general pg JOIN presupuesto_procedimientos pp ON pg.idpresupuestogeneral = pp.idpresupuestogeneral JOIN procedimientos p ON pp.idprocedimiento = p.idprocedimiento WHERE pg.idcliente = '$idcliente' AND pg.estado = 0;";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
+    }
+    // ACTUALIZA EL PRESUPUESTO GENERAL, AUMENTO O QUITA PROCEDIMIENTOS
+    public function ActualizarPresupuestoGeneral($idcliente, $idpresupuestogeneral, $procedimientosNuevos, $procedimientosEliminados){
+        try{
+            $this->conn->conn->begin_transaction();
+            $sqlcheck = "SELECT monto_pagado, deuda_pendiente, total_pagar from presupuesto_general WHERE idpresupuestogeneral = '$idpresupuestogeneral' and idcliente = '$idcliente' FOR UPDATE;";
+            $resultCheck = $this->conn->ConsultaArray($sqlcheck);
+            foreach($procedimientosEliminados as $row){
+                $sqldelete = "DELETE FROM presupuesto_procedimientos WHERE idpresupuestogeneral = '$idpresupuestogeneral' AND idpresupuestoprocedimiento = '$row';";
+                $resultDelete = $this->conn->ConsultaSin($sqldelete);
+            }
+            foreach($procedimientosNuevos as $row1){
+                $idprocedimiento = $row1['idprocedimiento'];
+                $pieza = $row1['pieza'];
+                $precioprocedimiento = $row1['precio'];
+                $sql = "INSERT INTO presupuesto_procedimientos(idpresupuestogeneral,idprocedimiento,pieza,precio) VALUES ($idpresupuestogeneral,$idprocedimiento,'$pieza',$precioprocedimiento);";
+                $resultprocedimiento = $this->conn->ConsultaSin($sql);
+            }
+            $sqlcheck2 = "SELECT SUM(precio) as preciototal FROM presupuesto_procedimientos WHERE idpresupuestogeneral = '$idpresupuestogeneral';";
+            $resultCheck2 = $this->conn->ConsultaArray($sqlcheck2);
+            $sqlcheckpagos = "SELECT SUM(importe) as pagototal FROM presupuesto_pagos WHERE idpresupuestogeneral = '$idpresupuestogeneral';";
+            $resultCheckPagos = $this->conn->ConsultaArray($sqlcheckpagos);
+            if($resultCheckPagos['pagototal'] > $resultCheck2['preciototal']){
+                throw new Exception("El monto total pagado no puede exceder el total a pagar.");
+            }
+            $total_pagar_nuevo = $resultCheck2['preciototal'];
+            $sqlupdate = "UPDATE presupuesto_general SET total_pagar = '$total_pagar_nuevo' WHERE idpresupuestogeneral = '$idpresupuestogeneral';";
+            $resultupdate = $this->conn->ConsultaSin($sqlupdate);
+            $this->conn->conn->commit();
+            return $resultupdate;
+        }catch(Exception $e){
+            $this->conn->conn->rollback();
+            error_log("ERROR ACTUALIZAR PRESUPUESTO GENERAL: " . $e->getMessage());
+            throw $e;
+        }finally{
+            $this->conn->conn->close();
+        }
+    }
+    // MARCA EL PRESUPUESTO COMO PAGADO
+    public function MarcarPresupuestoPagado($idcliente, $idpresupuestogeneral){
+        try{
+            $this->conn->conn->begin_transaction();
+            $sqlcheck = "SELECT monto_pagado, deuda_pendiente, total_pagar, estado from presupuesto_general WHERE idpresupuestogeneral = '$idpresupuestogeneral' and idcliente = '$idcliente' FOR UPDATE;";
+            $resultCheck = $this->conn->ConsultaArray($sqlcheck);
+            $sqltotalpagos = "SELECT SUM(importe) as totalpagos FROM presupuesto_pagos WHERE idpresupuestogeneral = '$idpresupuestogeneral';";
+            $resultotalpagos = $this->conn->ConsultaArray($sqltotalpagos);
+            if(intval($resultCheck['estado']) == 1){
+                throw new Exception("El presupuesto ya está pagado.");
+            }
+            if(intval($resultotalpagos['totalpagos']) != intval($resultCheck['total_pagar'])){
+                throw new Exception("El presupuesto no ha sido completamente pagado.");
+                return false;
+            }
+            $sqlupdate = "UPDATE presupuesto_general SET estado = '1' WHERE idpresupuestogeneral = '$idpresupuestogeneral';";
+            $resultupdate = $this->conn->ConsultaSin($sqlupdate);
+            $this->conn->conn->commit();
+            return $resultupdate;
+        }catch(Exception $e){
+            $this->conn->conn->rollback();
+            error_log("ERROR MARCAR PRESUPUESTO COMO PAGADO: " . $e->getMessage());
+            throw $e;
+        }finally{
+            $this->conn->conn->close();
         }
     }
     public function MostrarInformacionPagos($idcliente){

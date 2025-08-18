@@ -264,63 +264,6 @@ cookies = if you want to use cookies to remember which page the user is on, true
             : Math.min(options.nav_items, number_of_pages);
         return { start: start, end: end };
       }
-
-      // handle click on pagination
-      // ANTIGUO --------------------------------------------------------------------
-      //   $(".goto" + options.basenumerador).live("click", function (e) {
-      //     e.preventDefault();
-      //     showPage($(this).attr("title"));
-      //     set_cookie(options.namecookies, $(this).attr("title"));
-      //     $("#" + options.basenumerador + "_").remove();
-      //     createPagination($(this).attr("title"));
-      //   });
-      //   $(".goto_inicial" + options.basenumerador).live("click", function (e) {
-      //     e.preventDefault();
-      //     var act = "." + options.active;
-      //     var newcurr = 1;
-      //     set_cookie(options.namecookies, newcurr);
-      //     showPage(newcurr);
-      //     $("#" + options.basenumerador + "_").remove();
-      //     createPagination(newcurr);
-      //   });
-      //   $(".goto_next" + options.basenumerador).live("click", function (e) {
-      //     e.preventDefault();
-      //     var act = "." + options.active;
-      //     var newcurr =
-      //       parseInt(
-      //         $("#" + options.basenumerador + "_")
-      //           .find(".active")
-      //           .attr("title")
-      //       ) + 1;
-      //     set_cookie(options.namecookies, newcurr);
-      //     showPage(newcurr);
-      //     $("#" + options.basenumerador + "_").remove();
-      //     createPagination(newcurr);
-      //   });
-      //   $(".goto_previous" + options.basenumerador).live("click", function (e) {
-      //     e.preventDefault();
-      //     var act = "." + options.active;
-      //     var newcurr =
-      //       parseInt(
-      //         $("#" + options.basenumerador + "_")
-      //           .find(".active")
-      //           .attr("title")
-      //       ) - 1;
-      //     set_cookie(options.namecookies, newcurr);
-      //     showPage(newcurr);
-      //     $("#" + options.basenumerador + "_").remove();
-      //     createPagination(newcurr);
-      //   });
-      //   $(".goto_final" + options.basenumerador).live("click", function (e) {
-      //     e.preventDefault();
-      //     var act = "." + options.active;
-      //     var newcurr = number_of_pages;
-      //     set_cookie(options.namecookies, newcurr);
-      //     showPage(newcurr);
-      //     $("#" + options.basenumerador + "_").remove();
-      //     createPagination(newcurr);
-      //   });
-      // ANTIGUO END --------------------------------------------------------------------
       // ACTUALIZADO *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
       $(document).on("click", ".goto" + options.basenumerador, function (e) {
         e.preventDefault();

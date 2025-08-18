@@ -25,8 +25,8 @@ function getclientes() {
         html += `                    
                     <tr>
                         <td><a class="button btn-success" href='${url}/pagos/render/${element.id}'>Nuevo Pago</a></td>
-                        <td>${element.nombre}</td>
                         <td>${element.apellido}</td>
+                        <td>${element.nombre}</td>
                         <td>${element.dni}</td>
                         <td>${element.telefono}</td>
                         <td><a class="button btn-primary" id-data='${element.id}' href='${url}/clientes/citas/${element.id}'>Citas</a></td>

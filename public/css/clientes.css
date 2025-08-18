@@ -7,7 +7,10 @@
 .button i{
     color: inherit;
 }
-
+.btn-success{
+    color: #fff !important;
+    background-color: var(--azul-oscuro) !important;
+}
 /* MODAL NUEVO CLIENTE --------*/
 .nuevocliente{
     position: fixed;

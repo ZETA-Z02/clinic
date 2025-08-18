@@ -18,6 +18,8 @@ class Controller
             $this->model = new $modelName();
         }
     }
+    // Deshabilita el cache del navegador para devolver datos actualizados(FRESCOS)
+    // No usar en insert o update
     protected function disabledCache()
     {
         header("Cache-Control: no-store, no-cache, must-revalidate");

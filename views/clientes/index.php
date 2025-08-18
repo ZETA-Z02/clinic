@@ -21,8 +21,8 @@
                 <thead>
                     <tr>
                         <th>Info</th>
-                        <th>Nombre</th>
                         <th>Apellido</th>
+                        <th>Nombre</th>
                         <th>DNI</th>
                         <th>Celular</th>
                         <th colspan="3">Acciones</th>

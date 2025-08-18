@@ -480,6 +480,10 @@ $(document).ready(function () {
   getPresupuestoGeneral();
   agregarPresupuestoGeneral();
   guardarPresupuestoGeneral();
+  // MODIFICAR PRESUPUESTO GENERAL
+  mostrarModificarPresupuestoGeneral();
+  marcarPresupuestoPagado();
+
 });
 
 // -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
@@ -520,7 +524,7 @@ async function NuevoPagoPresupuestoGeneral() {
           //console.log(data, "Enviando datos al servidor");
           importe.val("");
           getPresupuestoGeneral();
-          PresupuestoGeneralPagos();
+          //PresupuestoGeneralPagos();
           generarTablas();
         }
       }, 2000); // Espera de 2 segundo
@@ -585,8 +589,10 @@ async function getPresupuestoGeneral() {
   try {
     const id = $("#idcliente").val();
     const data = await getOne(id, "pagos", "getPresupuestoGeneral");
+    console.log(data);
     let html = "";
-    if (data.response === false) {
+    if (data.response === false) {2
+      $("#tfoot-modificar-presupuesto-general").hide();
       return false;
     }
     tfoot.hide();
@@ -600,7 +606,7 @@ async function getPresupuestoGeneral() {
     });
     html += `<tr style="border-top: 1px solid black">
                 <td>${data[0].fecha.split(" ")[0]}</td>
-                <td></td>
+                <td id="idpresupuestogeneral" data-idpresupuestogeneral="${data[0].idpresupuestogeneral}"></td>
                 <td>Total: </td> 
                 <td>${data[0].total}</td>
             </tr>`;
@@ -612,12 +618,13 @@ async function getPresupuestoGeneral() {
   } catch (e) {
     console.log("Error en getPresupuestoGeneral", e);
   }
+
   // PRESUPUESTO PAGOS GENERAL
   try {
     const id = $("#idcliente").val();
     const fechaActual = new Date().toISOString().slice(0, 10);
     const data = await getOne({id,idpresupuestogeneral},"pagos","getPresupuestoPagos");
-    //console.log(data);
+    console.log(data);
     let html = "";
     let importe = 0;
     let total_index = parseFloat(data[0].total);
@@ -666,7 +673,7 @@ function agregarPresupuestoGeneral() {
                   <td class="mostrar-fecha"></td>
                   <td>${pieza}</td>
                   <td>${procedimiento}</td>
-                  <td>${precio}</td>
+                  <td class="precio-procedimiento-presupuesto">${precio}</td>
                   <td class="row-trash">
                     <button class="button btn-danger" id="echar-eleccion">
                       <i class="fa-solid fa-trash"></i>
@@ -675,46 +682,166 @@ function agregarPresupuestoGeneral() {
                 </tr>`;
       tbody.append(html);
       $("#pieza-presupuesto,#procedimiento-presupuesto").val("");
-      $("#mostrar-total-presupuesto").html(precio_total);
+      actualizarTotalPagar()
     }
   });
   // ELiminar la eleccion
   $(document).on("click", "#echar-eleccion", function () {
     const tr = $(this).closest("tr");
     tr.remove();
+    actualizarTotalPagar()
   });
 }
+// actualiza el total a pagar del presupuesto que se esta realizando, cambio frontnend
+function actualizarTotalPagar(){
+  const tbody = $("#tbody-presupuesto-general");
+  let total = 0;
+  tbody.find("tr").each(function () {
+    const precio = $(this).find(".precio-procedimiento-presupuesto").text();
+    total += parseFloat(precio);
+  });
+  $("#mostrar-total-presupuesto").html(total);
+  $("#modificar-mostrar-total-presupuesto").html(total);
+}
 // guarda en el presupuesto general con los procedimientos seleccionados
-async function guardarPresupuestoGeneral() {
-  try {
-    $("#guardar-presupuesto-general").on("click", function () {
+function guardarPresupuestoGeneral() {
+  $("#guardar-presupuesto-general").on("click", async function () {
+    try{
       const tbody = $("#tbody-presupuesto-general");
       const idcliente = $("#idcliente").val();
-      const data = [{ idcliente: idcliente }, []];
+      const data = {
+        idcliente: idcliente,
+        procedimientos: [],
+      };
       tbody.find("tr").each(function () {
         const idprocedimiento = $(this).data("idprocedimiento");
         const pieza = $(this).data("pieza");
         const precio = $(this).data("precio");
         if (validar(idprocedimiento) && validar(pieza) && validar(precio)) {
-          data[1].push({
+          data.procedimientos.push({
             idprocedimiento: idprocedimiento,
             pieza: pieza,
             precio: precio,
           });
         }
       });
-      if (data.length > 0) {
+      if (data.procedimientos.length > 0) {
         console.log("data", data);
-        insert({ data: data }, "pagos", "nuevoPresupuestoGeneral");
+        await insertFetch({ data: data }, "pagos", "nuevoPresupuestoGeneral","guardar-presupuesto-general");
         getPresupuestoGeneral();
-        PresupuestoGeneralPagos();
       } else {
         console.log("No hay datos para guardar");
       }
       tbody.empty(); // Limpiar la tabla después de guardar
+    } catch (error) {
+      console.log("Error al guardar el presupuesto general: ", error);
+    }
+  });
+}
+// Funcion para mostrar una tabla para modificar el presupuesto general
+function mostrarModificarPresupuestoGeneral() {
+  let editing = false;
+  $("#mostrar-modifica-presupuesto").on("click", async function () {
+    if(!editing){
+      editing = true;
+      const tbody = $("#tbody-presupuesto-general");
+      const tfoot = $("#total-presupuesto");
+      const idpresupuestogeneral = $("#idpresupuestogeneral").data("idpresupuestogeneral");
+      const id = $("#idcliente").val();
+      const data = await getOne(id,"pagos","mostrarModificarPresupuestoGeneral");
+      //console.log(data);
+      console.log(idpresupuestogeneral, id);
+      tfoot.find("#tfoot-guardar-presupuesto-general").hide();
+      tfoot.show();
+      tbody.empty();
+      let html = "";
+      let idprocedimientos = [];
+      data.forEach((element) => {
+        html += `<tr data-idpresupuestoprocedimiento="${element.idpresupuestoprocedimiento}" data-pieza="${element.pieza}" data-precio="${element.precio}">
+                    <td class="mostrar-fecha"></td>
+                    <td>${element.pieza}</td>
+                    <td>${element.procedimiento}</td>
+                    <td class="precio-procedimiento-presupuesto">${element.precio}</td>
+                    <td class="row-trash">
+                      <button class="button btn-danger" id="echar-eleccion">
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>`;
+        idprocedimientos.push(parseInt(element.idpresupuestoprocedimiento));
+      });
+      $("#monto-pagar-presupuesto").val("");
+      $("#modificar-mostrar-total-presupuesto").html(data[0].totalpagar);
+      tbody.html(html);
+      actulizarPresupuestoGeneral(idpresupuestogeneral,idprocedimientos);
+    }else{
+      editing = false;
+      getPresupuestoGeneral(); 
+      mostrarInformacionPagos();
+    }
+  });
+}
+function actulizarPresupuestoGeneral(idpresupuestogeneral,idprocedimientos){
+  $("#modificar-presupuesto-general").on("click", async function(){
+    try{  
+      const tbody = $("#tbody-presupuesto-general");
+      const idgeneral = idpresupuestogeneral;
+      let idpresupuestoprocedimientos = idprocedimientos;
+      // Procedimientos nuevos: toda la data, procedimientos eliminados solo su id
+      let data = {
+        idcliente: $("#idcliente").val(),
+        idpresupuestogeneral: idgeneral,
+        procedimientosnuevos: [],
+        procedimientoseliminados: [],
+      }
+      tbody.find("tr").each(function () {
+        const idpresupuestoprocedimiento = $(this).data("idpresupuestoprocedimiento");
+        const idprocedimiento = $(this).data("idprocedimiento");
+        const pieza = $(this).data("pieza");
+        const precio = $(this).data("precio");
+        if (validar(idprocedimiento) && validar(pieza) && validar(precio)) {
+          data.procedimientosnuevos.push({
+            idprocedimiento: idprocedimiento,
+            pieza: pieza,
+            precio: precio,
+          });
+        }
+        console.log(idpresupuestoprocedimiento, idpresupuestoprocedimientos.includes(idpresupuestoprocedimiento));
+        if(idpresupuestoprocedimientos.includes(idpresupuestoprocedimiento)){
+          idpresupuestoprocedimientos = idpresupuestoprocedimientos.filter(element => element != idpresupuestoprocedimiento);
+        }
+      });
+      data.procedimientoseliminados = idpresupuestoprocedimientos;
+      if (data.procedimientosnuevos.length > 0 || data.procedimientoseliminados.length > 0) {
+        console.log("Actulizare data con: ", data);
+        await insertFetch({ data: data }, "pagos", "actualizarPresupuestoGeneral","modificar-presupuesto-general");
+      } else {
+        console.log("No hay datos para Actualizar");
+      }
+    } catch(error){
+      console.log("ERROR EN ACTUALIZAR EL PRESUPUESTO GENERAL", error);
+    } finally{
+      getPresupuestoGeneral();
+      mostrarInformacionPagos();
+    }
+  });
+}
+// Marcar presupuesto como pagado y mostrar otro formulario para el cliente, Marca el estado del presupuesto en 1 si los pagos igualan al total a pagar, si falta pagar no lo cambia a 1
+async function marcarPresupuestoPagado() {
+  try {
+    $("#nuevo-presupuesto").on("click", async function(){
+      console.log("Marcar presupuesto como pagado")
+      const idpresupuestogeneral = $("#idpresupuestogeneral").data("idpresupuestogeneral");
+      const idcliente = $("#idcliente").val();
+      console.log(idpresupuestogeneral, idcliente);
+      const result = await insertFetch({ idpresupuestogeneral: idpresupuestogeneral, idcliente: idcliente }, "pagos", "marcarPresupuestoPagado");
+      //console.log(result);
     });
   } catch (error) {
-    console.log("Error al guardar el presupuesto general: ", error);
+    console.log("ERROR EN MARCAR PRESUPUESTO PAGADO", error);
+  }finally{
+    await getPresupuestoGeneral();
+    await mostrarInformacionPagos();
   }
 }
 // PRESUPUESTOS END *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-

@@ -353,6 +353,7 @@
     <div class="grid-x modal" id="tabla-presupuesto-total">
         <!-- tabla presupuesto total -->
         <div class="cell grid-x grid-margin-x">
+            <!-- PRESUPUESTO TOTAL GENERAL -->
             <div class="cell large-6">
                 <table>
                     <thead>
@@ -415,7 +416,7 @@
                             </td>
                             <td><button id="confirmar-procedimiento" class="button btn-success">✔</button></td>
                         </tr>
-                        <tr>
+                        <tr id="tfoot-guardar-presupuesto-general">
                             <td></td>
                             <td><button id="guardar-presupuesto-general" class="button btn-success">Guardar</button>
                             </td>
@@ -423,9 +424,18 @@
                             <td class="text-right">s/. </td>
                             <td class="text-right" id="mostrar-total-presupuesto"></td>
                         </tr>
+                        <tr id="tfoot-modificar-presupuesto-general">
+                            <td></td>
+                            <td><button id="modificar-presupuesto-general" class="button btn-success">Guardar</button>
+                            </td>
+                            <td class="text-right">Total: </td>
+                            <td class="text-right">s/. </td>
+                            <td class="text-right" id="modificar-mostrar-total-presupuesto"></td>
+                        </tr>
                     </tfoot>
                 </table>
             </div>
+            <!-- PRESUPUESTO PAGOS -->
             <div class="cell large-6">
                 <table>
                     <thead>
@@ -457,14 +467,20 @@
             </div>
         </div>
         <div class="cell grid-x align-spaced botones-tabla-general margin-1">
-            <button class="button btn-edit btn-editar" id="btn-editar">Editar</button>
-            <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i
-                    class="fa fa-trash"></i></button>
-            <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda') ?>">Ir a Agenda</a>
-            <a id="irodontograma" class="irodontograma button btn-warning"
-                href="<?php getrute('odontograma/render/' . @$this->data['idcliente']) ?>">Ir a Odontograma</a>
-            <button id="boletaprint" class="boleta button warning">Boleta Actual</button>
-            <button id="boletaparaimprimir" class="boleta button warning">Boleta Todo</button>
+            <div class="cell grid-x align-spaced">
+                <!-- <button class="button btn-edit btn-editar" id="btn-editar">Editar Procedimientos</button>
+                <button class="button btn-edit btn-editar" id="btn-editar">Editar Pagos</button> -->
+                <button class="button" id="mostrar-modifica-presupuesto">Modificar Presupuestos</button>
+                <button class="button btn-eliminar btn-editar" id="modificar-pagos">Modificar Pagos</button>
+                <!-- <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i class="fa fa-trash"></i></button> -->
+            
+                <button class="button" id="nuevo-presupuesto">Nuevo Presupuesto</button>
+                <a id="irodontograma" class="irodontograma button btn-warning" href="<?php getrute('odontograma/render/' . @$this->data['idcliente']) ?>">Ir a Odontograma</a>
+            </div>
+            <div class="cell grid-x align-spaced">
+                <button id="boletaprint" class="boleta button warning">Boleta Actual</button>
+                <button id="boletaparaimprimir" class="boleta button warning">Boleta Todo</button>
+            </div>
         </div>
     </div>
 </div>

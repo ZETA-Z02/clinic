@@ -206,6 +206,7 @@ class Pagos extends Controller
     // Presupuesto total de un cliente, suma de todos sus procedimientos y del total de sus pagos
     // Tambien el total de su deuda y si tiene un saldo, si deja dinero extra
     // Obtiene el presupuesto general de un cliente, mostrando los procedimientos y el total a pagar
+
     public function getPresupuestoGeneral()
     {
         $this->disabledCache();
@@ -230,18 +231,28 @@ class Pagos extends Controller
     // Crea el presupuesto general, con informacion de los procedimientos y el total a pagar
     public function nuevoPresupuestoGeneral()
     {
-        $this->disabledCache();
-        $data = $_POST['data'];
-        $idcliente = $data[0]["idcliente"];
-        $datos = $data[1];
-        if (empty($idcliente)) {
-            throw new Exception("Error al obtener los datos del pago.");
-        }
-        // echo json_encode($data);
-        if ($this->model->NuevoPresupuestoGeneral($idcliente, $datos)) {
-            echo 'ok';
-        } else {
-            throw new Exception('Error al crear el presupuesto general');
+        try{
+            $data = json_decode(file_get_contents('php://input'), true);
+            //echo json_encode($data['data']);
+            $data = $data['data'];
+            $idcliente = $data["idcliente"];
+            $datos = $data["procedimientos"];
+            if (empty($idcliente)) {
+                throw new Exception("Datos incompletos", 400);
+            }
+            $result = $this->model->NuevoPresupuestoGeneral($idcliente, $datos);
+            echo json_encode([
+                "success" => true,
+                "message" => "Presupuesto general creado correctamente",
+                "data" => $result,
+                "error" => false
+            ]);
+        }catch(Exception $e) {
+            http_response_code($e->getCode() ?: 500);
+            echo json_encode([
+                "success" => false,
+                "error" => $e->getMessage()
+            ]);
         }
     }
     // NUevo pago de un presupuesto general 
@@ -295,6 +306,83 @@ class Pagos extends Controller
             echo "OK";
         } else {
             throw new Exception("Error al eliminar el presupuesto Pago");
+        }
+    }
+    // MOSTRAR PRESUPUESTO GENERAL PARA MODIFICAR
+    public function mostrarModificarPresupuestoGeneral(){
+        $this->disabledCache();
+        $idcliente = $_POST['id'];
+        $data = $this->model->MostrarModificarPresupuestoGeneral($idcliente);
+        if (mysqli_num_rows($data) === 0) {
+            echo json_encode(array("response" => false));
+        } else {
+            while ($row = mysqli_fetch_assoc($data)) {
+                $json[] = array(
+                    'idpresupuestogeneral' => $row['idpresupuestogeneral'],
+                    'idpresupuestoprocedimiento' => $row['idpresupuestoprocedimiento'],
+                    'procedimiento' => $row['procedimiento'],
+                    'pieza' => $row['pieza'],
+                    'precio' => $row['precio'],
+                    'totalpagar' => $row['total_pagar'],
+                    'fecha' => date("Y-m-d", strtotime($row['feCreate']))
+                );
+            }
+            echo json_encode($json);
+        }
+    }
+    public function actualizarPresupuestoGeneral(){
+        try{
+            $data = json_decode(file_get_contents('php://input'), true);
+            //echo json_encode($data['data']);
+            $data = $data['data'];
+            $idcliente = $data["idcliente"];
+            $idpresupuestogeneral = $data["idpresupuestogeneral"];
+            $procedimientosNuevos = $data["procedimientosnuevos"];
+            $procedimientosEliminados = $data["procedimientoseliminados"];
+            if (empty($idcliente) || empty($idpresupuestogeneral)) {
+                throw new Exception("Datos incompletos", 400);
+            }
+            $result = $this->model->ActualizarPresupuestoGeneral($idcliente, $idpresupuestogeneral, $procedimientosNuevos, $procedimientosEliminados);
+            echo json_encode([
+                "success" => true,
+                "message" => "Presupuesto general Actualizado correctamente",
+                "data" => $result,
+                "error" => false
+            ]);
+        }catch(Exception $e) {
+            http_response_code($e->getCode() ?: 500);
+            echo json_encode([
+                "success" => false,
+                "error" => $e->getMessage()
+            ]);
+        }
+    }
+    // Marca el presupuesto como pagado si cumple los criterios
+    public function marcarPresupuestoPagado(){
+        try{
+            $data = json_decode(file_get_contents('php://input'), true);
+            //echo json_encode($data);
+            $idcliente = $data["idcliente"];
+            $idpresupuestogeneral = $data["idpresupuestogeneral"];
+            if (empty($idcliente) || empty($idpresupuestogeneral)) {
+                throw new Exception("Datos incompletos", 400);
+            }
+            $result = $this->model->MarcarPresupuestoPagado($idcliente, $idpresupuestogeneral);
+            if(!$result){
+                $result = "Warning: El presupuesto no ha sido pagado completamente, no se puede marcar como pagado.";
+            }
+            echo json_encode([
+                "success" => true,
+                "message" => "Presupuesto general Actualizado correctamente",
+                "data" => $result,
+                "error" => false
+            ]);
+        }catch(Exception $e) {
+            http_response_code($e->getCode() ?: 500);
+            echo json_encode([
+                "success" => false,
+                "error" => $e->getMessage()
+            ]);
         }
     }
     // Mostrar informacion de los pagos

@@ -13,12 +13,10 @@ class ClientesModel extends Model{
     public function Condicion($id){
         $sql = "SELECT antecedente_enfermedad, antecedente_observacion, medicado, medicado_observacion, complicacion_anestesia, anestesia_observacion, alergia_medicamento, alergiamedicamento_observacion, hemorragias, hemorragias_observacion, enfermedad, observaciones FROM clientes_condicion WHERE idcliente = '$id';";
         $data = $this->conn->ConsultaArray($sql);
-        return $data;
-        
+        return $data;   
     }
-
     public function Get(){
-        $sql = "SELECT * FROM clientes ORDER BY idcliente DESC;";
+        $sql = "SELECT * FROM clientes ORDER BY apellido;";
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
