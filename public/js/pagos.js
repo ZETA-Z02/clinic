@@ -591,7 +591,10 @@ async function getPresupuestoGeneral() {
     const data = await getOne(id, "pagos", "getPresupuestoGeneral");
     console.log(data);
     let html = "";
-    if (data.response === false) {2
+    if (data.response === false) {
+      $("#tbody-presupuesto-total").empty();
+      tbody.empty();
+      tfoot.show();
       $("#tfoot-modificar-presupuesto-general").hide();
       return false;
     }
@@ -836,12 +839,12 @@ async function marcarPresupuestoPagado() {
       console.log(idpresupuestogeneral, idcliente);
       const result = await insertFetch({ idpresupuestogeneral: idpresupuestogeneral, idcliente: idcliente }, "pagos", "marcarPresupuestoPagado");
       //console.log(result);
+      await getPresupuestoGeneral();
+      await mostrarInformacionPagos();
+      //location.reload();
     });
   } catch (error) {
     console.log("ERROR EN MARCAR PRESUPUESTO PAGADO", error);
-  }finally{
-    await getPresupuestoGeneral();
-    await mostrarInformacionPagos();
   }
 }
 // PRESUPUESTOS END *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
