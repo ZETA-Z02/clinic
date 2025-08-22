@@ -210,7 +210,8 @@ class Pagos extends Controller
     public function getPresupuestoGeneral()
     {
         $this->disabledCache();
-        $idcliente = $_POST['id'];
+        $post = json_decode(file_get_contents('php://input'), true);
+        $idcliente = $post['id'];
         $data = $this->model->GetPresupuestoGeneralTotal($idcliente);
         if (mysqli_num_rows($data)===0) {
             echo json_encode(array("response" => false));

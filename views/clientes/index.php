@@ -1,5 +1,5 @@
 <?php require 'views/navbar.php'; ?>
-<link rel="stylesheet" href="<?php getrute('public/plugins/paginador/jpaginate.css') ?>">
+<link rel="stylesheet" href="<?php getrute('public/js/plugins/jpaginate.css') ?>">
 <link rel="stylesheet" href="<?php css('clientes') ?>">
 
 <div class="grid-container" id="clientes-main">
@@ -46,8 +46,7 @@
     </div>
 </div>
 <?PHP require 'nuevocliente.php';?>
-<!-- <?PHP //require 'nuevopago.php';?> -->
 <!-- scripts -->
-<script src="<?php plugin('paginador/jpaginate');?>"></script>
-<script src="<?php js('clientes') ?>"></script>
+<script src="<?php plugin('jpaginate');?>"></script>
+<script type="module" src="<?php src('clientes') ?>"></script>
 <?php require 'views/footer.php'; ?>

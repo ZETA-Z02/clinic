@@ -123,6 +123,5 @@
 	</div>	
 </form>
 <!-- partial -->
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js'></script>
-</script><script  src="./script.js"></script>
-<script src="<?php js('login');?>"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js'></script>
+<script src="<?php src('login');?>"></script>

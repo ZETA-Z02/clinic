@@ -15,9 +15,12 @@ function js($name):void{
     echo constant('URL'). "public/js/" . $name . '.js';
 }
 function plugin($name):void{
-    echo constant('URL'). "public/plugins/" . $name . '.js';
+    echo constant('URL'). "public/js/plugins/" . $name . '.js';
 }
-function test($name){
-    echo "<script src=".constant('URL'). "public/plugins/" . $name . '.js'."></script>";
+function src($name, $archivo=null){
+    if($archivo == null){
+        $archivo = $name;
+    }
+    echo constant('URL'). "src/" . $name . '/'. $archivo .'.js';
 }
 ?>

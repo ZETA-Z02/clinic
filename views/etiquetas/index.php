@@ -64,6 +64,6 @@
         </div>
     </div>
 </div>
-<script src="<?php js('etiquetas');?>"></script>
-<script src="<?php plugin('paginador/jpaginate');?>"></script>
+<script type="module" src="<?php src('etiquetas');?>"></script>
+<script src="<?php plugin('jpaginate');?>"></script>
 <?php require 'views/footer.php';?>

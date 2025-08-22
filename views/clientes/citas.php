@@ -1,4 +1,6 @@
 <?php require 'views/navbar.php'; ?>
+<link rel="stylesheet" href="<?php getrute('public/js/plugins/jpaginate.css') ?>">
+<script src="<?php echo constant('URL') ?>node_modules/fullcalendar/index.global.min.js"></script>
 <div class="grid-container" id="clientes-detalles">
   <div class="cell">
             <h2>Citas de <?php echo $this->data['nombre'].' '.$this->data['apellido'] ?></h2>
@@ -31,13 +33,14 @@
           <tr></tr>
         </tbody>
       </table>
+      <div id="paginador-citas"></div>
     </div>
   </div>
 </div>
 <div class="grid-container full" id="clientes-detalles">
   <details class="calendario-details">
-    <summary>
-      CALENDARIO
+    <summary class="titulo-calendario">
+      <h3>CALENDARIO DEL CLIENTE</h3>
     </summary>  
     <div class="grid-x">
       <div class="cell calendario-container" id="calendario">
@@ -67,8 +70,16 @@ thead th {
 .footer-katari {
   display: none;
 }
+.titulo-calendario{
+  border: 1px solid #19c8ecff;
+  text-align: center;
+}
+.titulo-calendario:hover {
+  border: 3px solid #240be1ff;
+}
 
 </style>
 <!-- scripts -->
-<script src="<?php js('citas') ?>"></script>
+<script src="<?php plugin('jpaginate');?>"></script>
+<script type="module" src="<?php src('clientes','citas') ?>"></script>
 <?php require 'views/footer.php'; ?>

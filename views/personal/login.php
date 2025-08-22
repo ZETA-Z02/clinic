@@ -39,5 +39,4 @@
     </div>
     </form>
 </div>
-<script src="<?php js('personal');?>"></script>
 <?php require 'views/footerSidebar.php';?>

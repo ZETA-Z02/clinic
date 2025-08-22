@@ -6,7 +6,8 @@
             <h1>Cliente: <?php echo @$this->data['nombre'].' '.@$this->data['apellido'] ?></h1>
         </div>
     </div>
-    <form action="<?php getrute('clientes/actualizarCliente');?>" method="POST" id="form-cliente">
+     <!-- action="<?php getrute('clientes/actualizarCliente');?>" -->
+    <form  method="POST" id="form-cliente">
     <div class="grid-x grid-margin-x">
         <div class="grid-x grid-margin-x cell large-6">
             <div class="cell large-6">
@@ -92,9 +93,9 @@
                         </tr>
                         <tr>
                             <td>¿Es alergico a algun medicamento?</td>
-                            <td><input type="radio" name="alergiamedicamento" id="medicamento" value="1" <?php echo ($this->response['alergia_medicamento'] == 1) ? 'checked' : '';?>></td>
-                            <td><input type="radio" name="alergiamedicamento" id="medicamento" value="2" <?php echo ($this->response['alergia_medicamento'] == 2) ? 'checked' : '';?>></td>
-                            <td><input type="radio" name="alergiamedicamento" id="medicamento" value="3" <?php echo ($this->response['alergia_medicamento'] == 3) ? 'checked' : '';?>></td>
+                            <td><input type="radio" name="alergiamedicamento" id="alergia_medicamento" value="1" <?php echo ($this->response['alergia_medicamento'] == 1) ? 'checked' : '';?>></td>
+                            <td><input type="radio" name="alergiamedicamento" id="alergia_medicamento" value="2" <?php echo ($this->response['alergia_medicamento'] == 2) ? 'checked' : '';?>></td>
+                            <td><input type="radio" name="alergiamedicamento" id="alergia_medicamento" value="3" <?php echo ($this->response['alergia_medicamento'] == 3) ? 'checked' : '';?>></td>
                             <td>
                                 <input type="text" name="alergiamedicamento_observacion" id="alergiamedicamento_observacion" value="<?php echo $this->response['alergiamedicamento_observacion']?>">
                             </td>
@@ -124,14 +125,13 @@
     <div class="grid-x buttons">
         <div class="cell text-center">
             <input type="hidden" name="idcliente" id="idcliente" value="<?php echo $this->data['idcliente']?>">
-            <button class="button btn-success" type="submit">Actualizar</button>
+            <button class="button btn-success" type="button" id="btn-actualizar-detalles">Actualizar</button>
             <a class="button btn" type="button" href="<?php getrute('pagos/render/'.@$this->data['idcliente'])?>">Ir a Pagos</a>
         </div>
     </div>
     </form>
 </div>
 
-
 <!-- scripts -->
-<script src="<?php js('clientesDetalles') ?>"></script>
+<script type="module" src="<?php src('clientes','clienteDetalles') ?>"></script>
 <?php require 'views/footer.php'; ?>

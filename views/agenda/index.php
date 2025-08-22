@@ -1,4 +1,5 @@
 <?php require('views/navbar.php'); ?>
+<script src="<?php echo constant('URL') ?>node_modules/fullcalendar/index.global.min.js"></script>
 <link rel="stylesheet" href="<?php css('agenda'); ?>">
 <div class="grid-container full">
   <div class="grid-x">
@@ -110,7 +111,7 @@
                 <option value="19:30">07:30 PM</option>
                 <option value="20:00">08:00 PM</option>
               </select> -->
-              <input type="date" class="input-date" name="fecha-fin" id="fecha-inicio" required>
+              <input type="date" class="input-date" name="fecha-fin" id="fecha-fin" required>
             </div>
           </div>
           <div class="cell cld__box">
@@ -234,5 +235,5 @@
   </div>
   <button class="button btn-danger" id="btn-cerrar-modal">Cerrar</button>
 </div>
-<script src="<?php js('agenda'); ?>"></script>
+<script type="module" src="<?php src('agenda'); ?>"></script>
 <?php require('views/footer.php'); ?>

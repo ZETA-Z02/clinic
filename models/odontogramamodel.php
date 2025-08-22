@@ -19,7 +19,8 @@ class OdontogramaModel extends Model{
         return $result;
     }
     public function Update($idcliente,$idprocedimiento,$pieza,$observaciones,$estado,$condicion,$imagen){
-        $sql = "UPDATE odontograma SET idprocedimiento='$idprocedimiento',observaciones='$observaciones',estado='$estado',condicion='$condicion'";
+        $fecha = date("Y-m-d");
+        $sql = "UPDATE odontograma SET idprocedimiento='$idprocedimiento',observaciones='$observaciones',estado='$estado',condicion='$condicion', feActualizacion='$fecha'";
         if(!empty($imagen)){
             $sql .= ",imagen='$imagen'";
         }

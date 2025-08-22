@@ -45,5 +45,5 @@
     </div>
     <!-- CARDS END -->
 </div>
-<script src="<?php js('estadisticas') ?>"></script>
+<script type="module" src="<?php src('estadisticas') ?>"></script>
 <?php require 'views/footer.php'; ?>

@@ -7,7 +7,7 @@
     <form action="<?php getrute('personal/actualizarPersonal');?>" method="POST" id="form-detallespersonal" enctype="multipart/form-data">
     <div class="grid-x grid-margin-x">
         <div class="cell large-12 callout text-center">
-            <img src="" alt="fotopersonal">
+            <img src="<?php echo $this->data['foto'];?>" alt="fotopersonal" width="400">
             <label for="foto">Foto</label>
             <input type="file" name="foto" id="foto">
             <input type="hidden" name="idpersonal" id="idpersonal" value="<?php echo $this->data['idpersonal'];?>">
@@ -52,5 +52,5 @@
     </div>
     </form>
 </div>
-<script src="<?php js('personal');?>"></script>
+
 <?php require 'views/footerSidebar.php';?>
