@@ -40,13 +40,13 @@ class PagosModel extends Model{
         return $data;
     }
     // PRESUPUESTO GENERAL
-    public function GetPresupuestoGeneral($id){
+    public function GetPresupuestoDetallado($id){
         $sql = "SELECT p.idpago,pro.procedimiento,p.monto_pagado,p.saldo_pendiente,p.total_pagar,pd.idpagodetalle,pd.monto,pd.concepto,pd.pieza,pd.fecha, pd.idpersonal,e.nombre AS etiqueta
                 FROM pagos p 
                 JOIN pago_detalles pd ON p.idpago = pd.idpago 
                 JOIN procedimientos pro ON p.idprocedimiento = pro.idprocedimiento 
                 JOIN etiquetas e ON e.idpersonal = pd.idpersonal
-                WHERE p.idcliente = '$id' AND pro.procedimiento != 'ortodoncia' AND pro.idprocedimiento <= 28 ORDER BY p.idpago ASC, pd.fecha ASC;";
+                WHERE p.idcliente = '$id' AND pro.procedimiento != 'ortodoncia' ORDER BY p.idpago ASC, pd.fecha ASC;";
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
@@ -60,20 +60,9 @@ class PagosModel extends Model{
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
-    public function GetPresupuestoOtros($id){
-        $sql = "SELECT p.idpago,pro.procedimiento,p.monto_pagado,p.saldo_pendiente,p.total_pagar,pd.idpagodetalle,pd.monto,pd.concepto,pd.pieza,pd.fecha, pd.idpersonal,e.nombre AS etiqueta
-                FROM pagos p 
-                JOIN pago_detalles pd ON p.idpago = pd.idpago 
-                JOIN procedimientos pro ON p.idprocedimiento = pro.idprocedimiento 
-                JOIN etiquetas e ON e.idpersonal = pd.idpersonal
-                WHERE p.idcliente = '$id' AND pro.idprocedimiento > 28 ORDER BY p.idpago ASC, pd.fecha ASC;";
-        $data = $this->conn->ConsultaCon($sql);
-        return $data;
-    }
-    // 
     public function NuevoProcedimientoPago($idcliente, $idprocedimiento, $monto, $pieza, $idpersonal,$total){
-        $this->conn->conn->begin_transaction();
         try{
+            $this->conn->conn->begin_transaction();
             /* INSERTAR PAGOS HACIENDO CALCULOS */
             //$precioProcedimiento = $this->GetOneProcedimiento($idprocedimiento);
             if($total < $monto){
@@ -93,14 +82,16 @@ class PagosModel extends Model{
             return $result;
         }catch(Exception $e){
             $this->conn->conn->rollback();
-            echo "Error: " . $e->getMessage();
+            error_log("Error: " . $e->getMessage());
+            throw $e;
+        }finally{
+            $this->conn->conn->close();
         }
-        $this->conn->conn->close();
     }
     // Nuevo PAgo de un procedimiento ya creado
     public function NuevoPago($idpago, $idcliente, $idpersonal,$monto,$pieza){
-        $this->conn->conn->begin_transaction();
         try{
+            $this->conn->conn->begin_transaction();
             // Obtener el total a pagar y el monto ya pagado
             $sqlCheck = "SELECT total_pagar, monto_pagado FROM pagos WHERE idpago = '$idpago' AND idcliente = '$idcliente' FOR UPDATE;";
             $resultCheck = $this->conn->ConsultaArray($sqlCheck);
@@ -124,17 +115,18 @@ class PagosModel extends Model{
             $resultUpdate = $this->conn->ConsultaSin($sqlUpdatePago);
 
             $this->conn->conn->commit();
-            $result = $resultNuevo && $resultUpdate;
-            return $result;
+            return $resultNuevo && $resultUpdate;
         }catch(Exception $e){
             $this->conn->conn->rollback();
-            echo "Error: " . $e->getMessage();
+            error_log("Error: " . $e->getMessage());
+            throw $e;
+        }finally{
+            $this->conn->conn->close();
         }
-        $this->conn->conn->close();
     }
     public function UpdatePago($idpago,$idcliente,$idpagodetalle,$idpersonal,$importeActualizado,$pieza,$nuevoMontoTotal,$nuevaDeudaTotal){
-        $this->conn->conn->begin_transaction();
         try{
+            $this->conn->conn->begin_transaction();
             $sqlActualizar = "UPDATE pago_detalles SET idpersonal = '$idpersonal', monto = '$importeActualizado', pieza = '$pieza' WHERE idpagodetalle = '$idpagodetalle' AND idpago = '$idpago';";
             $resultNuevo = $this->conn->ConsultaSin($sqlActualizar);
             $sqlUpdatePago = "UPDATE pagos SET monto_pagado = '$nuevoMontoTotal', saldo_pendiente = '$nuevaDeudaTotal' WHERE idpago = '$idpago' AND idcliente = '$idcliente';";
@@ -144,30 +136,34 @@ class PagosModel extends Model{
             return $result;
         }catch(Exception $e){
             $this->conn->conn->rollback();
-            echo "Error: " . $e->getMessage();
+            error_log("Error: " . $e->getMessage());
+            throw $e;
+        }finally{
+            $this->conn->conn->close();
         }
-        $this->conn->conn->close();
+        
     }
     public function DeletePagoGeneral($idpago,$idpagodetalle,$nuevoMontoTotal,$nuevoDeuda){
-        $this->conn->conn->begin_transaction();
         try{
+            $this->conn->conn->begin_transaction();
             $sqlDelet = "DELETE FROM pago_detalles WHERE idpagodetalle = '$idpagodetalle';";
             $resultNuevo = $this->conn->ConsultaSin($sqlDelet);
             $sqlUpdatePago = "UPDATE pagos SET monto_pagado = '$nuevoMontoTotal', saldo_pendiente = '$nuevoDeuda' WHERE idpago = '$idpago';";
             $resultUpdate = $this->conn->ConsultaSin($sqlUpdatePago);
             $this->conn->conn->commit();
-            $result = $resultNuevo && $resultUpdate;
-            return $result;
+            return $resultNuevo && $resultUpdate;
         }catch(Exception $e){
             $this->conn->conn->rollback();
-            echo "Error: " . $e->getMessage();
+            error_log("Error: " . $e->getMessage());
+            throw $e;
+        }finally{
+            $this->conn->conn->close();
         }
-        $this->conn->conn->close();
     }
     // Presupuesto Total */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/**/*/*/*/*/*/*/*/*/*/*/*/* */
     // informacion del presupuesto general que tiene activo el cliente
     public function GetPresupuestoGeneralTotal($idcliente){
-        $sql = "SELECT pg.idpresupuestogeneral,p.procedimiento,pg.total_pagar, pg.feCreate,pp.pieza,pp.precio FROM presupuesto_general pg JOIN presupuesto_procedimientos pp ON pg.idpresupuestogeneral = pp.idpresupuestogeneral JOIN procedimientos p ON pp.idprocedimiento = p.idprocedimiento WHERE pg.idcliente = '$idcliente' AND pg.estado = 0;";
+        $sql = "SELECT pg.idpresupuestogeneral,pg.deuda_pendiente,p.procedimiento,pg.total_pagar, pg.feCreate,pp.pieza,pp.precio FROM presupuesto_general pg JOIN presupuesto_procedimientos pp ON pg.idpresupuestogeneral = pp.idpresupuestogeneral JOIN procedimientos p ON pp.idprocedimiento = p.idprocedimiento WHERE pg.idcliente = '$idcliente' AND pg.estado = 0;";
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
@@ -201,8 +197,8 @@ class PagosModel extends Model{
     }
     // NUevo pago del presupuesto general 
     public function NuevoPagoPresupuestoGeneral($idcliente, $importe){
-        $this->conn->conn->begin_transaction();
         try{
+            $this->conn->conn->begin_transaction();
             // Obtener el total a pagar y el monto ya pagado
             $sqlCheckPresupuesto = "SELECT idpresupuestogeneral,total_pagar, monto_pagado, deuda_pendiente FROM presupuesto_general WHERE idcliente = '$idcliente' AND estado = 0 FOR UPDATE;";
             $resultCheckPresupuesto = $this->conn->ConsultaArray($sqlCheckPresupuesto);
@@ -225,9 +221,11 @@ class PagosModel extends Model{
             return $result && $resultUpdate;
         }catch(Exception $e){
             $this->conn->conn->rollback();
-            echo "Error: " . $e->getMessage();
+            error_log("Error: " . $e->getMessage());
+            throw $e;
+        }finally{
+            $this->conn->conn->close();
         }
-        $this->conn->conn->close();
     }
     // Obtiene datos de los pagos de un presupuesto activo
     public function GetPresupuestoPagos($idcliente,$idpresupuestogeneral){
@@ -237,8 +235,8 @@ class PagosModel extends Model{
     }
     // Actualiza un pago de un presupuesto_pagos, actualiza el monto pagado y la deuda pendiente del presupuesto general
     public function UpdatePresupuestoPagos($idpresupuestogeneral, $idpresupuestopago, $importeNuevo){
-        $this->conn->conn->begin_transaction();
         try{
+            $this->conn->conn->begin_transaction();
             $sqlCheckPagos = "SELECT importe FROM presupuesto_pagos WHERE idpresupuestopago = '$idpresupuestopago' AND idpresupuestogeneral='$idpresupuestogeneral' FOR UPDATE;";
             $resultcheckpagos = $this->conn->ConsultaArray($sqlCheckPagos);
             if(!$resultcheckpagos){
@@ -271,13 +269,16 @@ class PagosModel extends Model{
             return $result;
         }catch(Exception $e){
             $this->conn->conn->rollback();
-            echo "Error: " . $e->getMessage();
-        }        
+            error_log("Error: " . $e->getMessage());
+            throw $e;
+        }finally{
+            $this->conn->conn->close();
+        }
     }
     // Eliminar un pago de un presupuesto_pagos, actualiza el monto pagado y la deuda pendiente del presupuesto general
     public function DeletePresupuestoPagos($idpresupuestopago){
-        $this->conn->conn->begin_transaction();
         try{
+            $this->conn->conn->begin_transaction();
             $sqlidpresupuestogeneral = "SELECT idpresupuestogeneral FROM presupuesto_pagos WHERE idpresupuestopago = '$idpresupuestopago';";
             $idpresupuestogeneral = $this->conn->ConsultaArray($sqlidpresupuestogeneral);
             $idpresupuestogeneral = $idpresupuestogeneral['idpresupuestogeneral'];
@@ -298,7 +299,10 @@ class PagosModel extends Model{
             return $result && $resultpresupuesto;
         }catch(Exception $e){
             $this->conn->conn->rollback();
-            echo "Error: " . $e->getMessage();
+            error_log("Error: " . $e->getMessage());
+            throw $e;
+        }finally{
+            $this->conn->conn->close();
         }
     }
     // MUESTRA DATOS DEL PRESUPUESTO GENERAL PARA MODIFICAR

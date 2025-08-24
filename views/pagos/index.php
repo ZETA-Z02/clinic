@@ -84,9 +84,9 @@
                             </td>
                             <td>
                                 <input type="text" placeholder="Monto a Pagar" name="monto-pagar"
-                                    id="monto-pagar-presupuesto" class="monto-a-pagar" value="50">
+                                    id="monto-pagar-presupuesto" class="monto-a-pagar">
                             </td>
-                            <td><button id="confirmar-procedimiento" class="button btn-success">✔</button></td>
+                            <td><button class="button btn-success" id="confirmar-procedimiento">✔</button></td>
                         </tr>
                         <tr id="tfoot-guardar-presupuesto-general">
                             <td></td>
@@ -96,7 +96,7 @@
                             <td class="text-right">s/. </td>
                             <td class="text-right" id="mostrar-total-presupuesto"></td>
                         </tr>
-                        <tr id="tfoot-modificar-presupuesto-general">
+                        <tr id="tr-modificar-presupuesto">
                             <td></td>
                             <td><button id="modificar-presupuesto-general" class="button btn-success">Guardar</button>
                             </td>
@@ -121,15 +121,13 @@
                     <tbody id="tbody-presupuesto-total">
 
                     </tbody>
-                    <tfoot>
+                    <tfoot id="tfoot-agregar-pago-presupuesto">
                         <tr>
                             <td>
-                                <input type="text" name="monto-pagar"
-                                    id="monto_pagar" class="text-right" disabled>
+                                <input type="text" name="monto-pagar" id="monto_pagar" class="text-right" disabled>
                             </td>
                             <td>
-                                <input type="text" placeholder="Importe" name="importe" id="importe-presupuesto"
-                                    class="importe">
+                                <input type="text" placeholder="Importe" name="importe" id="importe-presupuesto" class="importe">
                             </td>
                             <td id="mostrar-deuda-presupuesto" class="mostrar-deuda">-</td>
                             <td class="mostrar-fecha"></td>
@@ -143,7 +141,7 @@
                 <!-- <button class="button btn-edit btn-editar" id="btn-editar">Editar Procedimientos</button>
                 <button class="button btn-edit btn-editar" id="btn-editar">Editar Pagos</button> -->
                 <button class="button" id="mostrar-modifica-presupuesto">Modificar Presupuestos</button>
-                <button class="button btn-eliminar btn-editar" id="modificar-pagos">Modificar Pagos</button>
+                <button class="button" id="modificar-pagos">Modificar Pagos</button>
                 <!-- <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i class="fa fa-trash"></i></button> -->
             
                 <button class="button" id="nuevo-presupuesto">Nuevo Presupuesto</button>
@@ -170,7 +168,7 @@
                         <th>Doctor</th>
                     </tr>
                 </thead>
-                <tbody id="tbody-general">
+                <tbody id="tbody-detallado">
                 </tbody>
                 <tfoot>
                     <tr>
@@ -212,16 +210,16 @@
                             </select>
                         </td>
                         <td>
-                            <select name="procedimiento" id="procedimiento-general" class="procedimiento"></select>
+                            <select name="procedimiento" id="procedimiento-detallado" class="procedimiento"></select>
                         </td>
                         <td>
-                            <input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-general"
-                                class="monto-a-pagar" value="50">
+                            <input type="text" placeholder="Monto a Pagar" name="monto-pagar" id="monto-pagar-detallado"
+                                class="monto-a-pagar">
                         </td>
                         <td>
-                            <input type="text" placeholder="Importe" name="importe" id="importe" class="importe">
+                            <input type="text" placeholder="Importe" name="importe" id="importe-detallado" class="importe">
                         </td>
-                        <td id="mostrar-deuda-general" class="mostrar-deuda">-</td>
+                        <td id="mostrar-deuda-detallado" class="mostrar-deuda">-</td>
                         <td><select name="doctor" id="doctor" class="doctor"></select></td>
                     </tr>
                 </tfoot>
@@ -232,11 +230,11 @@
                 <tbody>
                     <tr>
                         <td>Total: </td>
-                        <td id="general-total">-</td>
+                        <td id="detallado-total">-</td>
                         <td>Pagado: </td>
-                        <td id="general-pagado">-</td>
+                        <td id="detallado-pagado">-</td>
                         <td>Deuda: </td>
-                        <td id="general-deuda">-</td>
+                        <td id="detallado-deuda">-</td>
                         <td>-</td>
                     </tr>
                 </tbody>
@@ -244,12 +242,14 @@
         </div>
         <hr>
         <div class="cell grid-x align-spaced botones-tabla-general margin-1">
-            <button class="button btn-edit btn-editar" id="btn-editar">Editar</button>
+            <!-- <button class="button btn-edit btn-editar" id="btn-editar">Editar</button>
+            <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i
+                    class="fa fa-trash"></i></button> -->
+            <button class="button btn-danger" id="btn-modificar-detallado">Modificar</button>
             <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda') ?>">Ir a Agenda</a>
             <a id="irodontograma" class="irodontograma button btn-warning"
                 href="<?php getrute('odontograma/render/' . @$this->data['idcliente']) ?>">Ir a Odontograma</a>
-            <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i
-                    class="fa fa-trash"></i></button>
+            
         </div>
     </div>
     <!-- PRESUPUESTO: PAGOS ORTODONCIA -->
@@ -348,12 +348,12 @@
         </div>
         <hr>
         <div class="cell grid-x align-spaced margin-1">
-            <button class="button btn-edit btn-editar" id="btn-editar-ortodoncia">Editar</button>
+            <!-- <button class="button btn-edit btn-editar" id="btn-editar-ortodoncia">Editar</button> -->
+             <!-- <button class="button btn-danger btn-eliminar" id="btn-eliminar-ortodoncia">Eliminar <i class="fa fa-trash"></i></button> -->
+            <button class="button btn-danger" id="btn-modificar-ortodoncia">Modificar</button>
             <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda') ?>">Ir a Agenda</a>
             <a id="irodontograma" class="irodontograma button btn-warning"
                 href="<?php getrute('odontograma/render/' . @$this->data['idcliente']) ?>">Ir a Odontograma</a>
-            <button class="button btn-danger btn-eliminar" id="btn-eliminar-ortodoncia">Eliminar <i
-                    class="fa fa-trash"></i></button>
         </div>
     </div>
 </div>
