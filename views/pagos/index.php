@@ -145,7 +145,7 @@
                 <!-- <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i class="fa fa-trash"></i></button> -->
             
                 <button class="button" id="nuevo-presupuesto">Nuevo Presupuesto</button>
-                <a id="irodontograma" class="irodontograma button btn-warning" href="<?php getrute('odontograma/render/' . @$this->data['idcliente']) ?>">Ir a Odontograma</a>
+                <a id="irodontograma" class="irodontograma button" href="<?php getrute('odontograma/render/' . @$this->data['idcliente']) ?>">Ir a Odontograma</a>
             </div>
             <div class="cell grid-x align-spaced">
                 <button id="boletaprint" class="boleta button warning">Boleta Actual</button>
@@ -246,8 +246,8 @@
             <button class="button btn-danger btn-eliminar" id="btn-eliminar">Eliminar <i
                     class="fa fa-trash"></i></button> -->
             <button class="button btn-danger" id="btn-modificar-detallado">Modificar</button>
-            <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda') ?>">Ir a Agenda</a>
-            <a id="irodontograma" class="irodontograma button btn-warning"
+            <!-- <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda') ?>">Ir a Agenda</a> -->
+            <a id="irodontograma" class="irodontograma button"
                 href="<?php getrute('odontograma/render/' . @$this->data['idcliente']) ?>">Ir a Odontograma</a>
             
         </div>
@@ -351,8 +351,8 @@
             <!-- <button class="button btn-edit btn-editar" id="btn-editar-ortodoncia">Editar</button> -->
              <!-- <button class="button btn-danger btn-eliminar" id="btn-eliminar-ortodoncia">Eliminar <i class="fa fa-trash"></i></button> -->
             <button class="button btn-danger" id="btn-modificar-ortodoncia">Modificar</button>
-            <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda') ?>">Ir a Agenda</a>
-            <a id="irodontograma" class="irodontograma button btn-warning"
+            <!-- <a id="iragenda" class="iragenda button btn-success" href="<?php getrute('agenda') ?>">Ir a Agenda</a> -->
+            <a id="irodontograma" class="irodontograma button"
                 href="<?php getrute('odontograma/render/' . @$this->data['idcliente']) ?>">Ir a Odontograma</a>
         </div>
     </div>
