@@ -13,7 +13,7 @@ class Conexion
     $this->conn = new mysqli($host, $user, $pass, $db);
 
     if ($this->conn->connect_errno) {
-      echo "Error al contenctar a MySQL: (" . $this->conn->connect_errno . ") " . $this->conn->connect_error;
+      // echo "Error al contenctar a MySQL: (" . $this->conn->connect_errno . ") " . $this->conn->connect_error;
       exit();
     }
 
@@ -26,6 +26,7 @@ class Conexion
     # Sirve para: INSERT, UPDATE, DELETE
     //echo $sql;
     if (!$this->conn->query($sql)) {
+      error_log("Error: " . mysqli_error($this->conn));
       echo "Error. " . mysqli_error($this->conn);
       // throw new Exception(mysqli_error($this->conn));
       exit();
@@ -39,6 +40,7 @@ class Conexion
     # Sirve para: SELECT
 
     if (!$result = $this->conn->query($sql)) {
+      error_log("Error: " . mysqli_error($this->conn));
       echo "Error: " . mysqli_error($this->conn);
       return false;
       exit();
@@ -54,6 +56,7 @@ class Conexion
     #echo $sql;
 
     if (!$result = $this->conn->query($sql)) {
+      error_log("Error: " . mysqli_error($this->conn));
       echo "Error. " . mysqli_error($this->conn);
       return false;
     }

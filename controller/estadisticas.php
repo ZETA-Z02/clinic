@@ -16,12 +16,14 @@ class Estadisticas extends Controller
 		echo json_encode($data);
 	}
 	public function getLine(){
-		$fecha = $_POST['fecha'];
+		$post = json_decode(file_get_contents('php://input'), true);
+		$fecha = $post['fecha'];
 		$data = $this->model->GetLine($fecha);
 		echo json_encode($data);
 	}
 	public function getBarras(){
-		$fecha = $_POST['fecha'];
+		$post = json_decode(file_get_contents('php://input'), true);
+		$fecha = $post['fecha'];
 		$data = $this->model->GetBarras($fecha);
 		echo json_encode($data);
 	}

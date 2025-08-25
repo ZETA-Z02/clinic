@@ -75,6 +75,6 @@
         </div>
     </div>
 </div>
-<script src="<?php plugin('paginador/jpaginate');?>"></script>
-<script src="<?php js('procedimientos');?>"></script>
+<script src="<?php plugin('jpaginate');?>"></script>
+<script type="module" src="<?php src('procedimientos');?>"></script>
 <?php require 'views/footer.php';?>

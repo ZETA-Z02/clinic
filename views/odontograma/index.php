@@ -221,5 +221,5 @@
         <li><i class="fa-solid fa-tooth"></i>Lorem ipsum dolor sit amet consectetur</li>
     </ul>
 </details>
-<script src="<?php js('odontograma'); ?>"></script>
+<script type="module" src="<?php src('odontograma'); ?>"></script>
 <?php require('views/footer.php'); ?>

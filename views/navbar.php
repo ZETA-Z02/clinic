@@ -7,9 +7,10 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <!-- Titulo de la pagina -->
   <title>CHIC | Welcome</title>
-  <link rel="shortcut icon" href="<?php echo constant('URL') ?>icon.png" type="image/x-icon">
+  <link rel="shortcut icon" href="<?php getrute('icon.png');?>" type="image/x-icon">
   <!-- CHARTJS-GRAFICOS
   <script src="<?php getrute('node_modules/chart.js/dist/chart.umd.js')?>"></script> -->
+  
   <!-- ICONOS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
@@ -24,13 +25,6 @@
    <script src="<?php getrute('utils/foundation/js/jquery.min.js'); ?>"></script>
   <!-- css and js-->
    <link rel="stylesheet" href="<?php css('app')?>">
-   <script src="<?php js('app');?>"></script>
-    <!-- PLUGINS A UTILIZAR JS -->
-    <script src="<?php plugin('ajax/crud');?>"></script>
-    <script src="<?php plugin('helpers/validation');?>"></script>
-    <script src="<?php plugin('dni/dni');?>"></script>
-    <script src="<?php plugin('helpers/search');?>"></script>
-    <script src="<?php echo constant('URL') ?>node_modules/fullcalendar/index.global.min.js"></script>
 </head>
 <body>
     <nav class="nav">

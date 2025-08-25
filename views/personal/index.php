@@ -1,5 +1,5 @@
 <?php require 'views/sidebar.php';?>
-<link rel="stylesheet" href="<?php getrute('public/plugins/paginador/jpaginate.css') ?>">
+<link rel="stylesheet" href="<?php getrute('public/js/plugins/jpaginate.css') ?>">
 <link rel="stylesheet" href="<?php css('personal') ?>">
 <div class="grid-container">
     <div class="grid-x align-center">
@@ -45,6 +45,7 @@
         </div>
     </div>
 </div>
+<!-- MODALES PARA REGISTRAR UN NUEVO PERSONAL -->
 <div class="overlay"></div>
 <div class="grid-container nuevopersonal">
     <div class="grid-x align-center">
@@ -101,7 +102,6 @@
     </div>
     </form>
 </div>
-
-<script src="<?php js('personal');?>"></script>
-<script src="<?php plugin('paginador/jpaginate');?>"></script>
+<script type="module" src="<?php src("personal")?>"></script>
+<script src="<?php plugin('jpaginate');?>"></script>
 <?php require 'views/footerSidebar.php';?>

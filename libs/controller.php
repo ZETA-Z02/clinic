@@ -32,10 +32,10 @@ class Controller
     //NOMBRE=> nombre del archivo, puede ser nombre del usuario o apellido lo que mejor convenga
     //ID=> un Identificador unico, Id de la base de datos o un numero especial
 
-    protected function File($file, $nombre, $identificador)
+    protected function File($file, $nombre, $identificador): bool | string
     {
         $temporal = $file['tmp_name'];
-        $rutaCarpeta = "dumps/excel/Cot.:" . $nombre . $identificador;
+        $rutaCarpeta = "dumps/personal/" . $nombre . $identificador;
         $fileExistente = file_exists($rutaCarpeta);
         //TAMAÑO Y TIPOS DE ARCHIVOS
         $tamanoMaximo = 4 * 1024 * 1024;
@@ -54,8 +54,8 @@ class Controller
             }
         } else {
             if (!empty($file) && $file['error'] == 0 && $resultadoExtension && $tamanoMaximo >= $file['size']) {
-                $result = mkdir('Cot.:' . $nombre . $identificador, 0777);
-                $resultRename = rename('Cot.:' . $nombre . $identificador, "dumps/excel/Cot.:" . $nombre . $identificador);
+                $result = mkdir($nombre . $identificador, 0777);
+                $resultRename = rename( $nombre . $identificador, "dumps/personal/" . $nombre . $identificador);
                 $rutaFile = $rutaCarpeta . "/" . $file['name'];
                 $fileSubido = move_uploaded_file($temporal, $rutaFile);
                 if ($result && $resultRename && $fileSubido) {
@@ -71,10 +71,10 @@ class Controller
             }
         }
     }
-    protected function Foto($file, $nombre, $identificador)
+    protected function Foto($file, $nombre, $identificador): bool | string 
     {
         $temporal = $file['tmp_name'];
-        $rutaCarpeta = "dumps/piezas/" . $nombre . $identificador;
+        $rutaCarpeta = "dumps/piezas/" . $nombre;
         $fileExistente = file_exists($rutaCarpeta);
         //TAMAÑO Y TIPOS DE ARCHIVOS
         $tamanoMaximo = 4 * 1024 * 1024;
@@ -82,7 +82,7 @@ class Controller
         $extensionArchivo = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         $resultadoExtension = in_array($extensionArchivo, $archivosPermitidos);
         if ($fileExistente && !empty($file) && $file['error'] == 0 && $resultadoExtension && $tamanoMaximo >= $file['size']) {
-            $rutaFile = $rutaCarpeta . "/" . $file['name'];
+            $rutaFile = $rutaCarpeta . "/" . $file['name']."-pieza:".$identificador;
             $fileSubido = move_uploaded_file($temporal, $rutaFile);
             if ($fileSubido) {
                 $rutaCompleto = constant('URL') . $rutaFile;

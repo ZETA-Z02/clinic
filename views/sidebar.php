@@ -28,12 +28,6 @@
   <script src="<?php getrute('utils/foundation/js/jquery.min.js'); ?>"></script>
   <link rel="stylesheet" href="<?php css('app'); ?>">
   <link rel="stylesheet" href="<?php css('sidebar'); ?>">
-  <!-- SCRIPTS -->
-  <script src="<?php js('app'); ?>"></script>
-  <script src="<?php plugin('ajax/crud'); ?>"></script>
-  <script src="<?php plugin('dni/dni'); ?>"></script>
-  <script src="<?php plugin('helpers/search'); ?>"></script>
-  <script src="<?php plugin('helpers/validation'); ?>"></script>
 </head>
 
 <body>

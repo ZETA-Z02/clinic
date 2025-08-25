@@ -34,7 +34,8 @@ class Agenda extends Controller
         echo json_encode($json);
 	}
 	public function searchCustomers(){
-		$query = $_POST['query'];
+		$post = json_decode(file_get_contents('php://input'), true);
+		$query = $post['query'];
 		$data = $this->model->SearchCustomers($query);
 		while($row = mysqli_fetch_assoc($data)){
 			$ini = explode(" ", $row['apellido']);
@@ -49,58 +50,96 @@ class Agenda extends Controller
 		echo json_encode($json);
 	}
 	public function guardarCita(){
-		$this->disabledCache();
-		$idcliente = $_POST['idcliente'];
-		$clientePost = $_POST['cliente'];
-		$personalProcedimiento = $_POST['personal-procedimiento'];
-		$procedimiento = $_POST['procedimientos'];
-		$duracion = $_POST['duracion'];
-		$personalCreador = $_POST['personal-creador'];
-		$fechaInicio = $_POST['fecha-inicio'];
-		$horaInicio = $_POST['hora-inicio'];
-		$fechaFin = $_POST['fecha-fin'];
-		$horaFin = $_POST['hora-fin'];
-		$idetiqueta = $_POST['idetiqueta'];
-		$mensaje = $_POST['mensaje'];
-		$cliente = explode(' ', $clientePost)[0];
-		$titulo = $personalProcedimiento.'-'.$cliente.'-'.$procedimiento.'-'.$duracion.'-'.$personalCreador;
-		//echo json_encode($titulo);
-		// echo json_encode(array("idcliente"=>$idcliente,"titulo"=>$titulo,"fechaInicio"=>$fechaInicio,"horaInicio"=>$horaInicio,"fechaFin"=>$fechaFin,"horaFin"=>$horaFin,"etiqueta"=>$etiqueta,"mensaje"=>$mensaje));
+		try {
+			$post = json_decode(file_get_contents('php://input'), true);
+			$idcliente = $post['idcliente'];
+			$clientePost = $post['cliente'];
+			$personalProcedimiento = $post['personal_procedimiento'];
+			$procedimiento = $post['procedimientos'];
+			$duracion = $post['duracion'];
+			$personalCreador = $post['personal_creador'];
+			$fechaInicio = $post['fecha_inicio'];
+			$horaInicio = $post['hora_inicio'];
+			$fechaFin = $post['fecha_fin'];
+			$horaFin = $post['hora_fin'];
+			$idetiqueta = $post['idetiqueta'];
+			$mensaje = $post['mensaje'];
+			$cliente = explode(' ', $clientePost)[0];
+			$titulo = $personalProcedimiento.'-'.$cliente.'-'.$procedimiento.'-'.$duracion.'-'.$personalCreador;
 
-		if($this->model->GuardarCita($idcliente,$idetiqueta,$titulo,$fechaInicio,$horaInicio,$fechaFin,$horaFin,$mensaje)){
-			echo "ok";
-		}else{
-			throw new Exception("Error al crear la cita");
+			if($result = $this->model->GuardarCita($idcliente,$idetiqueta,$titulo,$fechaInicio,$horaInicio,$fechaFin,$horaFin,$mensaje)){
+				echo json_encode([
+					"success" => true,
+					"message" => "Cita creado correctamente",
+					"data" => $result,
+					"error" => false
+				]);
+			}else{
+				throw new Exception("Error al crear la cita");
+			}
+		} catch (Exception $e) {
+			http_response_code($e->getCode() ?: 500);
+			echo json_encode([
+				"success" => false,
+				"error" => $e->getMessage()
+			]);
 		}
 	}
 	public function duplicarCita(){
-		$idcliente = $_POST["idcliente"];
-		$idetiqueta = $_POST["idetiqueta"];
-		$titulo = $_POST['titulo'];
-		$fechaInicio = $_POST['fecha_inicio'];
-		$horaInicio = $_POST['hora_inicio'];
-		$fechaFin = $_POST['fecha_fin'];
-		$horaFin = $_POST['hora_fin'];
-		$mensaje = '';
-
-		if($this->model->GuardarCita($idcliente,$idetiqueta,$titulo,$fechaInicio,$horaInicio,$fechaFin,$horaFin,$mensaje)){
-			echo "ok";
-		}else{
-			throw new Exception("Error al crear la cita");
+		try {
+			$post = json_decode(file_get_contents('php://input'), true);
+			$idcliente = $post["idcliente"];
+			$idetiqueta = $post["idetiqueta"];
+			$titulo = $post['titulo'];
+			$fechaInicio = $post['fecha_inicio'];
+			$horaInicio = $post['hora_inicio'];
+			$fechaFin = $post['fecha_fin'];
+			$horaFin = $post['hora_fin'];
+			$mensaje = '';
+			if($result = $this->model->GuardarCita($idcliente,$idetiqueta,$titulo,$fechaInicio,$horaInicio,$fechaFin,$horaFin,$mensaje)){
+				echo json_encode([
+					"success" => true,
+					"message" => "Cita duplicado correctamente",
+					"data" => $result,
+					"error" => false
+				]);
+			}else{
+				throw new Exception("Error al duplicar la cita");
+			}
+		} catch (Exception $e) {
+			http_response_code($e->getCode() ?: 500);
+			echo json_encode([
+				"success" => false,
+				"error" => $e->getMessage()
+			]);
 		}
 	}
 	public function infoCita(){
-		$idcita = $_POST['id'];
+		$post = json_decode(file_get_contents('php://input'), true);
+		$idcita = $post['id'];
 		$data = $this->model->InfoCita($idcita);
 		echo json_encode($data);
 	}
 	public function delete(){
-		$idcita = $_POST['id'];
-		if($this->model->Delete($idcita)){
-			echo "ok";
-		}else{
-			//throw new Exception("Error al eliminar la cita");
-			echo "Orror";
+		try {
+			$post = json_decode(file_get_contents("php://input"), true);
+			$idcita = $post['id'];
+			if($result = $this->model->Delete($idcita)){
+				echo json_encode([
+					"success" => true,
+					"message" => "Cita creado correctamente",
+					"data" => $result,
+					"error" => false
+				]);
+			}else{
+				throw new Exception("Error al eliminar la cita");
+			}
+		} catch (Exception $e) {
+			http_response_code($e->getCode() ?: 500);
+			echo json_encode([
+				"success" => false,
+				"error" => $e->getMessage()
+			]);
 		}
 	}
 	public function getPersonal(){
@@ -131,6 +170,7 @@ class Agenda extends Controller
 		echo json_encode($json);
 	}
 	public function getClientes(){
+		$this->disabledCache();
 		$data = $this->model->GetClientes();
 		while($row=mysqli_fetch_array($data)){
 			$json[] = array(
@@ -142,7 +182,8 @@ class Agenda extends Controller
 	}
 	public function getHoras(){
 		$this->disabledCache();
-        $day = $_POST['fecha'];
+		$post = json_decode(file_get_contents('php://input'), true);
+        $day = $post['fecha'];
         $data = $this->model->GetHoras($day);
 		$horasOcupadas = [];
 		while($row = mysqli_fetch_array($data)){
@@ -164,18 +205,31 @@ class Agenda extends Controller
 				 $horasDisponibles[] = $horaStr;
 			 }
 		 }
- 
 		 echo json_encode($horasDisponibles);
 	}
 	public function editarCita(){
-		$idcita = $_POST['idcita'];
-		$titulo = $_POST['titulo'];
-		$horaInicio = $_POST['horaini'];
-		$horaFin = $_POST['horafin'];
-		if($this->model->EditarCita($idcita,$titulo,$horaInicio,$horaFin)){
-			
-		}else{
-			throw new Exception("Error al editar la cita");
+		try {
+			$post = json_decode(file_get_contents('php://input'), true);
+			$idcita = $post['idcita'];
+			$titulo = $post['titulo'];
+			$horaInicio = $post['horaini'];
+			$horaFin = $post['horafin'];
+			if($result = $this->model->EditarCita($idcita,$titulo,$horaInicio,$horaFin)){
+				echo json_encode([
+					"success" => true,
+					"message" => "Cita editada correctamente",
+					"data" => $result,
+					"error" => false
+				]);	
+			}else{
+				throw new Exception("Error al editar la cita");
+			}
+		} catch (Exception $e) {
+			http_response_code($e->getCode() ?: 500);
+			echo json_encode([
+				"success" => false,
+				"error" => $e->getMessage()
+			]);
 		}
 	}
 }

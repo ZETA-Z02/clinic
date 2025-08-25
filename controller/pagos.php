@@ -32,14 +32,13 @@ class Pagos extends Controller
     public function presupuestos()
     {
         $this->disabledCache();
-        $id = $_POST['id'];
-        $type = $_POST['tipo'];
-        if ($type == 'general') {
-            $data = $this->model->GetPresupuestoGeneral($id);
+        $post = json_decode(file_get_contents('php://input'), true);
+        $id = $post['id'];
+        $type = $post['tipo'];
+        if ($type == 'detallado') {
+            $data = $this->model->GetPresupuestoDetallado($id);
         } else if ($type == 'ortodoncia') {
             $data = $this->model->GetPresupuestoOrtodoncia($id);
-        } else if ($type == 'otros') {
-            $data = $this->model->GetPresupuestoOtros($id);
         }
         while ($row = mysqli_fetch_assoc($data)) {
             $json[] = array(
@@ -61,99 +60,154 @@ class Pagos extends Controller
     }
     public function nuevoProcedimientoPago()
     {
-        $idcliente = $_POST['idcliente'];
-        $idprocedimiento = $_POST['idprocedimiento'];
-        $total = $_POST['total_pagar'];
-        $monto = $_POST['importe'];
-        $pieza = $_POST['pieza'];
-        $idpersonal = $_POST['doctor'];
-        if ($this->model->NuevoProcedimientoPago($idcliente, $idprocedimiento, $monto, $pieza, $idpersonal, $total)) {
-            echo 'ok';
-        } else {
-            throw new Exception('Error al crear el pago');
+        try{
+            $post = json_decode(file_get_contents('php://input'), true);
+            $idcliente = $post['idcliente'];
+            $idprocedimiento = $post['idprocedimiento'];
+            $total = $post['total_pagar'];
+            $monto = $post['importe'];
+            $pieza = $post['pieza'];
+            $idpersonal = $post['doctor'];
+            if ($result = $this->model->NuevoProcedimientoPago($idcliente, $idprocedimiento, $monto, $pieza, $idpersonal, $total)) {
+                echo json_encode([
+                    "success" => true,
+                    "message" => "Pago creado correctamente",
+                    "data" => $result,  
+                    "error" => false
+                ]);
+            } else {
+                throw new Exception('Error al crear el pago');
+            }
+        }catch(Exception $e){
+            http_response_code($e->getCode() ?: 500);
+            echo json_encode([
+                "success" => false,
+                "error" => $e->getMessage()
+            ]);
         }
     }
     public function nuevoPago()
     {
-        $this->disabledCache();
-        $idpago = $_POST['idpago'];
-        $idcliente = $_POST['idcliente'];
-        $idpersonal = $_POST['doctor'];
-        $pieza = $_POST['pieza'];
-        $monto = $_POST['importe'];
-        //$pagomonto = $_POST['monto'];
-        $pagodeuda = $_POST['deuda'];
+        try{
+            $this->disabledCache();
+        $post = json_decode(file_get_contents('php://input'), true);
+        $idpago = $post['idpago'];
+        $idcliente = $post['idcliente'];
+        $idpersonal = $post['doctor'];
+        $pieza = $post['pieza'];
+        $monto = $post['importe'];
+        //$pagomonto = $post['monto'];
+        $pagodeuda = $post['deuda'];
         if ($monto > $pagodeuda) {
             throw new Exception("El monto pagado es mayor al pago acumulado");
         }
-        if ($this->model->NuevoPago($idpago, $idcliente, $idpersonal, $monto, $pieza)) {
-            echo "ok";
+        if ($result = $this->model->NuevoPago($idpago, $idcliente, $idpersonal, $monto, $pieza)) {
+            echo json_encode([
+                "success" => true,
+                "message" => "Pago creado correctamente",
+                "data" => $result,
+                "error" => false
+            ]);
         } else {
             throw new Exception("Error al crear el pago");
+        }
+        }catch(Exception $e){
+            http_response_code($e->getCode() ?: 500);
+            echo json_encode([
+                "success" => false,
+                "error" => $e->getMessage()
+            ]);
         }
     }
     public function updatePago()
     {
-        $idpago = $_POST["idpago"];
-        $idpagodetalle = $_POST["idpagodetalle"];
-        $pieza = $_POST["pieza"];
-        $idpersonal = $_POST["doctor"];
-        $idcliente = $_POST["idcliente"];
-        $importeActual = $_POST["importeActual"];
-        $importeActualizado = $_POST["importeActualizado"];
-        $total = $_POST["total"];
-        $deuda = $_POST["deuda"];
-        $montoPagado = $_POST["montoPagado"];
+        try{
+            $post = json_decode(file_get_contents('php://input'), true);
+            $idpago = $post["idpago"];
+            $idpagodetalle = $post["idpagodetalle"];
+            $pieza = $post["pieza"];
+            $idpersonal = $post["doctor"];
+            $idcliente = $post["idcliente"];
+            $importeActual = $post["importeActual"];
+            $importeActualizado = $post["importeActualizado"];
+            $total = $post["total"];
+            $deuda = $post["deuda"];
+            $montoPagado = $post["montoPagado"];
 
-        if ($importeActualizado > $importeActual) {
-            $diferencia = $importeActualizado - $importeActual;
-            $nuevoMontoTotal = $montoPagado + $diferencia;
-            $nuevaDeudaTotal = $deuda - $diferencia;
-            if ($diferencia > $deuda && $nuevaDeudaTotal <= 0) {
+            if ($importeActualizado > $importeActual) {
+                $diferencia = $importeActualizado - $importeActual;
+                $nuevoMontoTotal = $montoPagado + $diferencia;
+                $nuevaDeudaTotal = $deuda - $diferencia;
+                if ($diferencia > $deuda && $nuevaDeudaTotal <= 0) {
+                    throw new Exception("Error al actualizar, el importe actualizado tiene inconvenientes");
+                }
+            }
+            if ($importeActualizado < $importeActual) {
+                $diferencia = $importeActual - $importeActualizado;
+                $nuevoMontoTotal = $montoPagado - $diferencia;
+                $nuevaDeudaTotal = $deuda + $diferencia;
+                if ($nuevaDeudaTotal <= 0) {
+                    throw new Exception("Error al actualizar, el importe actualizado tiene inconvenientes");
+                }
+            }
+            if ($importeActualizado == $importeActual) {
+                $diferencia = 0;
+                $nuevoMontoTotal = $montoPagado;
+                $nuevaDeudaTotal = $deuda;
+            }
+            if ($importeActualizado <= 0) {
                 throw new Exception("Error al actualizar, el importe actualizado tiene inconvenientes");
             }
-        }
-        if ($importeActualizado < $importeActual) {
-            $diferencia = $importeActual - $importeActualizado;
-            $nuevoMontoTotal = $montoPagado - $diferencia;
-            $nuevaDeudaTotal = $deuda + $diferencia;
-            if ($nuevaDeudaTotal <= 0) {
-                throw new Exception("Error al actualizar, el importe actualizado tiene inconvenientes");
-            }
-        }
-        if ($importeActualizado == $importeActual) {
-            $diferencia = 0;
-            $nuevoMontoTotal = $montoPagado;
-            $nuevaDeudaTotal = $deuda;
-        }
-        if ($importeActualizado <= 0) {
-            throw new Exception("Error al actualizar, el importe actualizado tiene inconvenientes");
-        }
 
-        if ($this->model->UpdatePago($idpago, $idcliente, $idpagodetalle, $idpersonal, $importeActualizado, $pieza, $nuevoMontoTotal, $nuevaDeudaTotal)) {
-            echo "ok";
-        } else {
-            throw new Exception("Error al actualizar el pago");
+            if ($result = $this->model->UpdatePago($idpago, $idcliente, $idpagodetalle, $idpersonal, $importeActualizado, $pieza, $nuevoMontoTotal, $nuevaDeudaTotal)) {
+                echo json_encode([
+                    "success" => true,
+                    "message" => "Pago actualizado correctamente",
+                    "data" => $result,
+                    "error" => false
+                ]);
+            } else {
+                throw new Exception("Error al actualizar el pago");
+            }
+        }catch(Exception $e){
+            http_response_code($e->getCode() ?: 500);
+            echo json_encode([
+                "success" => false,
+                "error" => $e->getMessage()
+            ]);
         }
     }
     public function deletePago()
     {
-        $idpago = $_POST['idpago'];
-        $idpagodetalle = $_POST['idpagodetalle'];
-        $monto = $_POST['monto'];
-        $deuda = $_POST['deuda'];
-        $total = $_POST['total'];
-        $importeActual = $_POST['importeActual'];
-        $nuevoMontoTotal = $monto - $importeActual;
-        $nuevoDeuda = $deuda + $importeActual;
-
-        if ($this->model->DeletePagoGeneral($idpago, $idpagodetalle, $nuevoMontoTotal, $nuevoDeuda)) {
-            echo "ok";
-        } else {
-            throw new Exception("Error al eliminar el pago");
+        try{
+            $post = json_decode(file_get_contents('php://input'), true);
+            $idpago = $post['idpago'];
+            $idpagodetalle = $post['idpagodetalle'];
+            $monto = $post['monto'];
+            $deuda = $post['deuda'];
+            $total = $post['total'];
+            $importeActual = $post['importeActual'];
+            $nuevoMontoTotal = $monto - $importeActual;
+            $nuevoDeuda = $deuda + $importeActual;
+            if ($result = $this->model->DeletePagoGeneral($idpago, $idpagodetalle, $nuevoMontoTotal, $nuevoDeuda)) {
+                echo json_encode([
+                    "success" => true,
+                    "message" => "Pago eliminado correctamente",
+                    "data" => $result,
+                    "error" => false
+                ]);
+            } else {
+                throw new Exception("Error al eliminar el pago");
+            }
+        }catch(Exception $e){
+            http_response_code($e->getCode() ?: 500);
+            echo json_encode([
+                "success" => false,
+                "error" => $e->getMessage()
+            ]);
         }
     }
-    public function getProcedimientosGeneral()
+    public function getProcedimientosDetallado()
     {
         $data = $this->model->GetProcedimientos();
         while ($row = mysqli_fetch_assoc($data)) {
@@ -168,18 +222,6 @@ class Pagos extends Controller
     public function getProcedimientosOrtodoncia()
     {
         $data = $this->model->GetProcedimientos('ortodoncia');
-        while ($row = mysqli_fetch_assoc($data)) {
-            $json[] = array(
-                'idprocedimiento' => $row['idprocedimiento'],
-                'procedimiento' => $row['procedimiento'],
-                'precio' => $row['precio'],
-            );
-        }
-        echo json_encode($json);
-    }
-    public function getProcedimientosOtros()
-    {
-        $data = $this->model->GetProcedimientos('otros');
         while ($row = mysqli_fetch_assoc($data)) {
             $json[] = array(
                 'idprocedimiento' => $row['idprocedimiento'],
@@ -210,7 +252,8 @@ class Pagos extends Controller
     public function getPresupuestoGeneral()
     {
         $this->disabledCache();
-        $idcliente = $_POST['id'];
+        $post = json_decode(file_get_contents('php://input'), true);
+        $idcliente = $post['id'];
         $data = $this->model->GetPresupuestoGeneralTotal($idcliente);
         if (mysqli_num_rows($data)===0) {
             echo json_encode(array("response" => false));
@@ -222,11 +265,31 @@ class Pagos extends Controller
                     "procedimiento" => $row['procedimiento'],
                     "precio" => $row['precio'],
                     "total" => $row['total_pagar'],
+                    "deuda" => $row['deuda_pendiente'],
                     "fecha" => $row['feCreate'],
                 );
             }
             echo json_encode($json);
         }
+    }
+        // Obtiene datos de los pagos de un presupuesto activo
+    public function getPresupuestoPagos()
+    {
+        $this->disabledCache();
+        $post = json_decode(file_get_contents('php://input'), true);
+        $idcliente = $post['id'];
+        $idpresupuestogeneral = $post['idpresupuestogeneral'];
+        $data = $this->model->GetPresupuestoPagos($idcliente, $idpresupuestogeneral);
+        while ($row = mysqli_fetch_assoc($data)) {
+            $json[] = array(
+                'idpresupuestopago' => $row['idpresupuestopago'],
+                'importe' => $row['importe'],
+                'monto_pagado' => $row['monto_pagado'],
+                'total' => $row['total_pagar'],
+                'fecha' => date("Y-m-d", strtotime($row['fecha'])),
+            );
+        }
+        echo json_encode($json);
     }
     // Crea el presupuesto general, con informacion de los procedimientos y el total a pagar
     public function nuevoPresupuestoGeneral()
@@ -258,60 +321,84 @@ class Pagos extends Controller
     // NUevo pago de un presupuesto general 
     public function nuevoPagoPresupuestoGeneral()
     {
-        $this->disabledCache();
-        $idcliente = $_POST['idcliente'];
-        $importe = $_POST['importe'];
-        if ($this->model->NuevoPagoPresupuestoGeneral($idcliente, $importe)) {
-            echo "ok";
-        } else {
-            //throw new Exception("Error al crear el pago del presupuesto");
+        try{
+            $post = json_decode(file_get_contents('php://input'), true);
+            $idcliente = $post['idcliente'];
+            $importe = $post['importe'];
+            if ($result = $this->model->NuevoPagoPresupuestoGeneral($idcliente, $importe)) {
+                echo json_encode([
+                    "success" => true,
+                    "message" => "Pago creado correctamente",
+                    "data" => $result,
+                    "error" => false
+                ]);        
+            } else {
+                throw new Exception("Error al crear el pago del presupuesto");
+            }
+        }catch(Exception $e) {
+            http_response_code($e->getCode() ?: 500);
+            echo json_encode([
+                "success" => false,
+                "error" => $e->getMessage()
+            ]);
         }
-    }
-    // Obtiene datos de los pagos de un presupuesto activo
-    public function getPresupuestoPagos()
-    {
-        $this->disabledCache();
-        $idcliente = $_POST['id'];
-        $idpresupuestogeneral = $_POST['idpresupuestogeneral'];
-        $data = $this->model->GetPresupuestoPagos($idcliente, $idpresupuestogeneral);
-        while ($row = mysqli_fetch_assoc($data)) {
-            $json[] = array(
-                'idpresupuestopago' => $row['idpresupuestopago'],
-                'importe' => $row['importe'],
-                'monto_pagado' => $row['monto_pagado'],
-                'total' => $row['total_pagar'],
-                'fecha' => date("Y-m-d", strtotime($row['fecha'])),
-            );
-        }
-        echo json_encode($json);
     }
     // EDITAR PRESUPUESTO_PAGOS
     public function updatePresupuestoPagos()
     {
-        $idcliente = $_POST['idcliente'];
-        $idpresupuestogeneral = $_POST['idpresupuestogeneral'];
-        $idpresupuestopago = $_POST['idpresupuestopago'];
-        $importeNuevo = $_POST['importe'];
-        if ($this->model->UpdatePresupuestoPagos($idpresupuestogeneral, $idpresupuestopago, $importeNuevo)) {
-            echo "OK";
-        } else {
-            throw new Exception("Error al actualizar el presupuesto pagos");
+        try{
+            $post = json_decode(file_get_contents('php://input'), true);
+            $idcliente = $post['idcliente'];
+            $idpresupuestogeneral = $post['idpresupuestogeneral'];
+            $idpresupuestopago = $post['idpresupuestopago'];
+            $importeNuevo = $post['importe'];
+            if ($result = $this->model->UpdatePresupuestoPagos($idpresupuestogeneral, $idpresupuestopago, $importeNuevo)) {
+                echo json_encode([
+                    "success" => true,
+                    "message" => "Presupuesto Pago actualizado correctamente",
+                    "data" => $result,
+                    "error" => false
+                ]);       
+            } else {
+                throw new Exception("Error al actualizar el presupuesto pagos");
+            }
+        }catch(Exception $e) {
+            http_response_code($e->getCode() ?: 500);
+            echo json_encode([
+                "success" => false,
+                "error" => $e->getMessage()
+            ]);
         }
     }
     // Eliminar PRESUPUESTO PAGOS
     public function deletePresupuestoPagos()
     {
-        $idpresupuestopago = $_POST['idpresupuestopago'];
-        if ($this->model->DeletePresupuestoPagos($idpresupuestopago)) {
-            echo "OK";
-        } else {
-            throw new Exception("Error al eliminar el presupuesto Pago");
+        try{
+            $post = json_decode(file_get_contents('php://input'), true);
+            $idpresupuestopago = $post['idpresupuestopago'];
+            if ($result = $this->model->DeletePresupuestoPagos($idpresupuestopago)) {
+                echo json_encode([
+                    "success" => true,
+                    "message" => "Presupuesto Pago eliminado correctamente",
+                    "data" => $result,
+                    "error" => false
+                ]);    
+            } else {
+                throw new Exception("Error al eliminar el presupuesto Pago");
+            }
+        }catch(Exception $e) {
+            http_response_code($e->getCode() ?: 500);
+            echo json_encode([
+                "success" => false,
+                "error" => $e->getMessage()
+            ]);
         }
     }
     // MOSTRAR PRESUPUESTO GENERAL PARA MODIFICAR
     public function mostrarModificarPresupuestoGeneral(){
         $this->disabledCache();
-        $idcliente = $_POST['id'];
+        $post = json_decode(file_get_contents('php://input'), true);
+        $idcliente = $post['id'];
         $data = $this->model->MostrarModificarPresupuestoGeneral($idcliente);
         if (mysqli_num_rows($data) === 0) {
             echo json_encode(array("response" => false));
