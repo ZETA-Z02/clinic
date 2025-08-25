@@ -364,24 +364,23 @@ export default class PresupuestoGeneral extends ApiService {
                 const tfootModificar = this.$contenedor.find("#tr-modificar-presupuesto-general");
                 tfootModificar.hide();
                 this.idpresupuestoprocedimientos = [];
-                await this.getPresupuestoGeneral();
-                await this.getPresupuestoPagos();                
+                await this.init();          
             }
         });
     }
     // Marcar presupuesto como pagado y mostrar otro formulario para el cliente, Marca el estado del presupuesto en 1 si los pagos igualan al total a pagar, si falta pagar no lo cambia a 1
     marcarPresupuestoPagado() {
-        $("#nuevo-presupuesto").on("click", async () => {
+        this.$contenedor.off("click", "#nuevo-presupuesto");
+        this.$contenedor.on("click","#nuevo-presupuesto", async () => {
             try{
                 await this.create({idpresupuestogeneral: this.idpresupuestogeneral,idcliente: this.idcliente},this.controller,"marcarPresupuestoPagado");
                 this.idpresupuestogeneral = null;
-
-                await this.getPresupuestoGeneral();
-                await this.getPresupuestoPagos();
-                const tfootPago = this.$contenedor.find("#tfoot-agregar-pago-presupuesto");
-                tfootPago.show();
             }catch (error) {
                 console.log("ERROR EN MARCAR PRESUPUESTO PAGADO", error);
+            }finally{
+                await this.init();
+                const tfootPago = this.$contenedor.find("#tfoot-agregar-pago-presupuesto");
+                tfootPago.show();
             }
         });
     }
