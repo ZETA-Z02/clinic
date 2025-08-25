@@ -35,6 +35,7 @@ export default class PresupuestoGeneral extends ApiService {
         // MAS
         this.formatearFecha();
         $("#guardar-presupuesto-general").show();
+        $("#modificar-presupuesto-general").show();
     }
     // OBTIENE EL PRESUPUESTO GENERAL DE UN CLIENTE -> EN ESTADO 0-> no pagado
     async getPresupuestoGeneral() {
@@ -315,6 +316,7 @@ export default class PresupuestoGeneral extends ApiService {
     actulizarPresupuestoGeneral() {
         this.$contenedor.off("click", "#modificar-presupuesto-general");
         this.$contenedor.on("click", "#modificar-presupuesto-general", async () => {
+            $("#modificar-presupuesto-general").hide();
             try {
                 const tbody = $("#tbody-presupuesto-general");
                 // Procedimientos nuevos: toda la data, procedimientos eliminados solo su id
