@@ -1,5 +1,5 @@
 <?php require 'views/sidebar.php';?>
-<link rel="stylesheet" href="<?php getrute('public/plugins/paginador/jpaginate.css') ?>">
+<link rel="stylesheet" href="<?php getrute('public/js/plugins/jpaginate.css') ?>">
 <div class="grid-container full">
     <div class="grid-x">
         <div class="cell text-center">
