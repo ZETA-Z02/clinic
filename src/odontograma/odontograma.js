@@ -47,7 +47,7 @@ class Odontograma extends ApiService {
                 const datos = { idcliente: idcliente, pieza: pieza };
                 // console.log(datos);
                 const data = await that.readOne(datos, that.controller, "infoPieza");
-                console.log(data);
+                //console.log(data);
                 if (data !== 0) {
                     $("#procedimientos-select").val(data.idprocedimiento);
                     $("#diente-input").val();
@@ -59,7 +59,7 @@ class Odontograma extends ApiService {
                     that.metodo = "update";
                     that.Guardar();
                     //console.log("se debe actualizar el registro");
-                    await that.getColorPieza();
+                    // await that.init();
                 } else {
                     $("#procedimientos-select").val("");
                     //$("#diente-input").val('');
@@ -70,7 +70,7 @@ class Odontograma extends ApiService {
                     $("#imagen-pieza").attr("src", "");
                     that.metodo = "create";
                     that.Guardar();
-                    await that.getColorPieza();
+                    // await that.init();
                     //console.log('se debe insertar nuevo registro sobre el diente seleccionado');
                 }
             } catch (error) {
@@ -89,10 +89,10 @@ class Odontograma extends ApiService {
                 data.append("estado", $("#estado").val());
                 data.append("condicion", $("#condicion").val());
                 data.append("imagen", $("#file")[0].files[0]);
-                console.log(data);
+                //console.log(data);
                 await this.createWithFiles(data, this.controller, this.metodo, "guardar");
                 await this.init();
-                if(this.metodo!== ""){
+                if(this.metodo !== ""){
                     this.metodo = "update";
                 }
             });
@@ -114,7 +114,7 @@ class Odontograma extends ApiService {
     async getPiezasActivas(){
         try{
             const data = await this.readOne({idcliente: this.idcliente}, this.controller, "getPiezasActivas");
-            console.log(data);
+            //console.log(data);
             this.piezasActivas = data;
         }catch(error){
             console.log("ERROR al obtener piezas activas", error);
