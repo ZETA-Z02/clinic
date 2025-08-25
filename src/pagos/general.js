@@ -34,6 +34,7 @@ export default class PresupuestoGeneral extends ApiService {
         this.habilitarModificarPresupuestoGeneral();
         // MAS
         this.formatearFecha();
+        $("#guardar-presupuesto-general").show();
     }
     // OBTIENE EL PRESUPUESTO GENERAL DE UN CLIENTE -> EN ESTADO 0-> no pagado
     async getPresupuestoGeneral() {
@@ -278,7 +279,7 @@ export default class PresupuestoGeneral extends ApiService {
     }
     guardarPresupuestoGeneral() {
         this.$contenedor.on("click", "#guardar-presupuesto-general", async () => {
-            $("#guardar-presupuesto-general").prop("disabled", true);
+            $("#guardar-presupuesto-general").hide();
             try {
                 const tbody = $("#tbody-presupuesto-general");
                 const data = {
@@ -301,14 +302,12 @@ export default class PresupuestoGeneral extends ApiService {
                     console.log("data", data);
                     await this.create({ data: data }, this.controller, "nuevoPresupuestoGeneral","guardar-presupuesto-general");
                     await this.init();
-                    $("#guardar-presupuesto-general").prop("disabled", false);
                 } else {
                     console.log("No hay datos para guardar");
                 }
                 // tbody.empty();
             } catch (error) {
                 console.log("Error al guardar el presupuesto general: ", error);
-                $("#guardar-presupuesto-general").prop("disabled", false);
             }
         });
     }
