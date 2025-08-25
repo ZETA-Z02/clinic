@@ -28,6 +28,11 @@ class OdontogramaModel extends Model{
         $result = $this->conn->ConsultaSin($sql);
         return $result;
     }
+    public function GetPiezasActivas($idcliente){
+        $sql = "SELECT pieza FROM odontograma WHERE idcliente = '$idcliente';";
+        $data = $this->conn->ConsultaCon($sql);
+        return $data;
+    }
     public function ColorPieza($idcliente,$pieza){
         $sql = "SELECT p.color FROM odontograma o JOIN procedimientos p ON o.idprocedimiento = p.idprocedimiento WHERE idcliente = '$idcliente' AND pieza = '$pieza';";
         $data = $this->conn->ConsultaArray($sql);

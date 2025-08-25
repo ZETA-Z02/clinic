@@ -3,18 +3,20 @@ import ApiService from "../../public/js/api/apiservice.js";
 class Odontograma extends ApiService {
     constructor() {
         super();
+        this.idcliente = $("#idcliente").val();
         this.controller = "odontograma";
         this.metodo = "create";
+        this.piezasActivas = [];
+
     }
     async init(){
         $("#info-diente").hide();
-        await this.colorPieza();
+        await this.getPiezasActivas();
+        await this.getColorPieza();
         await this.getProcedimientos();
         await this.mostrarLeyenda();
         this.InfoPieza();
-        this.subirImagen();
-        
-        
+        this.subirImagen();        
     }
     subirImagen() {
         document.getElementById("file").addEventListener("change", function () {
@@ -57,7 +59,7 @@ class Odontograma extends ApiService {
                     that.metodo = "update";
                     that.Guardar();
                     //console.log("se debe actualizar el registro");
-                    await that.colorPieza();
+                    await that.getColorPieza();
                 } else {
                     $("#procedimientos-select").val("");
                     //$("#diente-input").val('');
@@ -68,7 +70,7 @@ class Odontograma extends ApiService {
                     $("#imagen-pieza").attr("src", "");
                     that.metodo = "create";
                     that.Guardar();
-                    await that.colorPieza();
+                    await that.getColorPieza();
                     //console.log('se debe insertar nuevo registro sobre el diente seleccionado');
                 }
             } catch (error) {
@@ -89,7 +91,7 @@ class Odontograma extends ApiService {
                 data.append("imagen", $("#file")[0].files[0]);
                 console.log(data);
                 await this.createWithFiles(data, this.controller, this.metodo, "guardar");
-                await this.colorPieza();
+                await this.init();
                 if(this.metodo!== ""){
                     this.metodo = "update";
                 }
@@ -109,31 +111,42 @@ class Odontograma extends ApiService {
             console.log("ERROR al obtener procedimientos", error);
         }
     }
+    async getPiezasActivas(){
+        try{
+            const data = await this.readOne({idcliente: this.idcliente}, this.controller, "getPiezasActivas");
+            console.log(data);
+            this.piezasActivas = data;
+        }catch(error){
+            console.log("ERROR al obtener piezas activas", error);
+        }
+    }
     // GET -> Obtiene los datos de cada diente y su color
-    async colorPieza() {
-        let idcliente = $("#idcliente").val();
+    async getColorPieza() {
+        let idcliente = this.idcliente;
         let piezas = $(".btn-pieza");
         for (let element of piezas) {
             let pieza = $(element).data("pieza");
-            try {
-                const data = await this.readOne({ idcliente: idcliente, pieza: pieza }, this.controller,"colorPieza");
-                //console.log(data);
-                if (data !== 0) {
-                    $(element).attr(
-                        "style",
-                        `fill: ${data.color}99 !important;`
-                    );
-                    $(element).hover(
-                        function () {
-                            $(this).css(`fill`, ``);
-                        },
-                        function () {
-                            $(this).css(`fill`, `${data.color}99`);
-                        }
-                    );
+            if(this.piezasActivas.includes(pieza)){
+                try {
+                    const data = await this.readOne({ idcliente: idcliente, pieza: pieza }, this.controller,"colorPieza");
+                    //console.log(data);
+                    if (data !== 0) {
+                        $(element).attr(
+                            "style",
+                            `fill: ${data.color}99 !important;`
+                        );
+                        $(element).hover(
+                            function () {
+                                $(this).css(`fill`, ``);
+                            },
+                            function () {
+                                $(this).css(`fill`, `${data.color}99`);
+                            }
+                        );
+                    }
+                } catch (e) {
+                    console.log("ERROR obtener colores", e);
                 }
-            } catch (e) {
-                console.log("ERROR obtener colores", e);
             }
         }
     }

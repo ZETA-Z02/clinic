@@ -85,6 +85,23 @@ class Odontograma extends Controller
             throw new Exception("Error al subir la foto al servidor");
         }
     }
+    public function getPiezasActivas(){
+        $post = json_decode(file_get_contents("php://input"), true);
+        $idcliente = $post['idcliente'];
+        $data = $this->model->GetPiezasActivas($idcliente);
+        $json = [];
+        while($row = mysqli_fetch_assoc($data)){
+            $json[] = intval($row['pieza']);
+        }
+        if ($json) {
+            echo json_encode($json);
+        } else {
+            echo json_encode([
+                "status" => "ok",
+                "message" => "No hay piezas activas",
+            ]);
+        }
+    }
     public function colorPieza()
     {
         $post = json_decode(file_get_contents("php://input"), true);
