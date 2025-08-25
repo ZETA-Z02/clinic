@@ -375,11 +375,13 @@ export default class PresupuestoGeneral extends ApiService {
             try{
                 await this.create({idpresupuestogeneral: this.idpresupuestogeneral,idcliente: this.idcliente},this.controller,"marcarPresupuestoPagado");
                 this.idpresupuestogeneral = null;
-            }catch (error) {
-                console.log("ERROR EN MARCAR PRESUPUESTO PAGADO", error);
-            }finally{
+
                 await this.getPresupuestoGeneral();
                 await this.getPresupuestoPagos();
+                const tfootPago = this.$contenedor.find("#tfoot-agregar-pago-presupuesto");
+                tfootPago.show();
+            }catch (error) {
+                console.log("ERROR EN MARCAR PRESUPUESTO PAGADO", error);
             }
         });
     }

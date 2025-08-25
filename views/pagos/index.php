@@ -112,7 +112,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Monto</th>
+                            <th>Total</th>
                             <th>Adelanto</th>
                             <th>Deuda</th>
                             <th>Fecha</th>
