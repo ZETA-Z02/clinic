@@ -278,6 +278,7 @@ export default class PresupuestoGeneral extends ApiService {
         $("#modificar-mostrar-total-presupuesto").html(total);
     }
     guardarPresupuestoGeneral() {
+        this.$contenedor.off("click", "#guardar-presupuesto-general");
         this.$contenedor.on("click", "#guardar-presupuesto-general", async () => {
             $("#guardar-presupuesto-general").hide();
             try {
@@ -312,6 +313,7 @@ export default class PresupuestoGeneral extends ApiService {
         });
     }
     actulizarPresupuestoGeneral() {
+        this.$contenedor.off("click", "#modificar-presupuesto-general");
         this.$contenedor.on("click", "#modificar-presupuesto-general", async () => {
             try {
                 const tbody = $("#tbody-presupuesto-general");
@@ -348,8 +350,9 @@ export default class PresupuestoGeneral extends ApiService {
                     data.procedimientosnuevos.length > 0 ||
                     data.procedimientoseliminados.length > 0
                 ) {
-                    // console.log("Actulizare data con: ", data);
-                    await this.create({ data: data }, this.controller,"actualizarPresupuestoGeneral","modificar-presupuesto-general");
+                    console.log("Actulizare data con: ", data);
+                    await this.update({ data: data }, this.controller,"actualizarPresupuestoGeneral","modificar-presupuesto-general");
+
                 } else {
                     console.log("No hay datos para Actualizar");
                 }
@@ -360,7 +363,7 @@ export default class PresupuestoGeneral extends ApiService {
                 tfootModificar.hide();
                 this.idpresupuestoprocedimientos = [];
                 await this.getPresupuestoGeneral();
-                await this.getPresupuestoPagos();
+                await this.getPresupuestoPagos();                
             }
         });
     }
