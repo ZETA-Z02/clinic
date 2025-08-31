@@ -24,7 +24,7 @@ export default class PresupuestoGeneral extends ApiService {
         this.guardarPresupuestoGeneral();
         this.actulizarPresupuestoGeneral();
         this.marcarPresupuestoPagado();
-        this.getPresupuestoHistorial();
+        await this.getPresupuestoHistorial();
         // Data extra
         await this.getProcedimientos();
         this.selectProcedimientos();
