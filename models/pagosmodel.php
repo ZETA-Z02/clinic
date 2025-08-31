@@ -381,7 +381,7 @@ class PagosModel extends Model{
         try{
             $this->conn->conn->begin_transaction();
             $sqlgeneral = "SELECT pg.idpresupuestogeneral,pg.deuda_pendiente,p.procedimiento,pg.descuento,pg.total_pagar, pg.feCreate,pp.pieza,pp.precio, pp.fecha FROM presupuesto_general pg JOIN presupuesto_procedimientos pp ON pg.idpresupuestogeneral = pp.idpresupuestogeneral JOIN procedimientos p ON pp.idprocedimiento = p.idprocedimiento WHERE pg.idcliente = '$idcliente' AND pg.estado = 1;";
-            $sqlPagos = "SELECT pg.total_pagar,pg.monto_pagado,pp.idpresupuestogeneral, pp.importe,pp.fecha FROM presupuesto_pagos pp JOIN presupuesto_general pg ON pp.idpresupuestogeneral=pg.idpresupuestogeneral WHERE pg.idcliente='$idcliente' AND pg.estado=1 ORDER BY pg.idpresupuestogeneral AND pp.fecha;";
+            $sqlPagos = "SELECT pg.total_pagar,pg.monto_pagado,pp.idpresupuestogeneral, pp.importe,pp.fecha FROM presupuesto_pagos pp JOIN presupuesto_general pg ON pp.idpresupuestogeneral=pg.idpresupuestogeneral WHERE pg.idcliente='$idcliente' AND pg.estado=1 ORDER BY pg.idpresupuestogeneral, pp.fecha;";
 
             $dataPagos = $this->conn->ConsultaCon($sqlPagos);
             $dataGeneral = $this->conn->ConsultaCon($sqlgeneral);
