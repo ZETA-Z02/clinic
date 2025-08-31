@@ -163,19 +163,20 @@ class PagosModel extends Model{
     // Presupuesto Total */*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/**/*/*/*/*/*/*/*/*/*/*/*/* */
     // informacion del presupuesto general que tiene activo el cliente
     public function GetPresupuestoGeneralTotal($idcliente){
-        $sql = "SELECT pg.idpresupuestogeneral,pg.deuda_pendiente,p.procedimiento,pg.total_pagar, pg.feCreate,pp.pieza,pp.precio FROM presupuesto_general pg JOIN presupuesto_procedimientos pp ON pg.idpresupuestogeneral = pp.idpresupuestogeneral JOIN procedimientos p ON pp.idprocedimiento = p.idprocedimiento WHERE pg.idcliente = '$idcliente' AND pg.estado = 0;";
+        $sql = "SELECT pg.idpresupuestogeneral,pg.deuda_pendiente,p.procedimiento,pg.descuento,pg.total_pagar, pg.feCreate,pp.pieza,pp.precio,pp.fecha FROM presupuesto_general pg JOIN presupuesto_procedimientos pp ON pg.idpresupuestogeneral = pp.idpresupuestogeneral JOIN procedimientos p ON pp.idprocedimiento = p.idprocedimiento WHERE pg.idcliente = '$idcliente' AND pg.estado = 0;";
         $data = $this->conn->ConsultaCon($sql);
         return $data;
     }
     // registra un nuevo presupuesto de un cliente
-    public function NuevoPresupuestoGeneral($idcliente,$data){
-        $this->conn->conn->begin_transaction();
+    public function NuevoPresupuestoGeneral($idcliente, $descuento, $data){
         try{
+            $this->conn->conn->begin_transaction();
             $precio = 0;
             foreach($data as $row){
-                $precio += $row['precio'];
+                $precio += floatval($row['precio']);
             }
-            $sqlgeneral = "INSERT INTO presupuesto_general (idcliente, monto_pagado, deuda_pendiente, total_pagar) VALUES ($idcliente, 0, 0,$precio);";
+            $precio = $precio - floatval($descuento);
+            $sqlgeneral = "INSERT INTO presupuesto_general (idcliente, monto_pagado, deuda_pendiente, descuento, total_pagar) VALUES ($idcliente, 0, 0, $descuento, $precio);";
             $result = $this->conn->ConsultaSin($sqlgeneral);
             $idgeneral = $this->conn->conn->insert_id;
             foreach($data as $row1){
@@ -315,17 +316,18 @@ class PagosModel extends Model{
     public function ActualizarPresupuestoGeneral($idcliente, $idpresupuestogeneral, $procedimientosNuevos, $procedimientosEliminados){
         try{
             $this->conn->conn->begin_transaction();
-            $sqlcheck = "SELECT monto_pagado, deuda_pendiente, total_pagar from presupuesto_general WHERE idpresupuestogeneral = '$idpresupuestogeneral' and idcliente = '$idcliente' FOR UPDATE;";
+            $sqlcheck = "SELECT monto_pagado, deuda_pendiente, descuento,  total_pagar from presupuesto_general WHERE idpresupuestogeneral = '$idpresupuestogeneral' and idcliente = '$idcliente' FOR UPDATE;";
             $resultCheck = $this->conn->ConsultaArray($sqlcheck);
             foreach($procedimientosEliminados as $row){
                 $sqldelete = "DELETE FROM presupuesto_procedimientos WHERE idpresupuestogeneral = '$idpresupuestogeneral' AND idpresupuestoprocedimiento = '$row';";
                 $resultDelete = $this->conn->ConsultaSin($sqldelete);
             }
+            $fecha = date('Y-m-d');
             foreach($procedimientosNuevos as $row1){
                 $idprocedimiento = $row1['idprocedimiento'];
                 $pieza = $row1['pieza'];
                 $precioprocedimiento = $row1['precio'];
-                $sql = "INSERT INTO presupuesto_procedimientos(idpresupuestogeneral,idprocedimiento,pieza,precio) VALUES ($idpresupuestogeneral,$idprocedimiento,'$pieza',$precioprocedimiento);";
+                $sql = "INSERT INTO presupuesto_procedimientos(idpresupuestogeneral,idprocedimiento,pieza,precio, fecha) VALUES ($idpresupuestogeneral,$idprocedimiento,'$pieza',$precioprocedimiento,'$fecha');";
                 $resultprocedimiento = $this->conn->ConsultaSin($sql);
             }
             $sqlcheck2 = "SELECT SUM(precio) as preciototal FROM presupuesto_procedimientos WHERE idpresupuestogeneral = '$idpresupuestogeneral';";
@@ -335,7 +337,7 @@ class PagosModel extends Model{
             if($resultCheckPagos['pagototal'] > $resultCheck2['preciototal']){
                 throw new Exception("El monto total pagado no puede exceder el total a pagar.");
             }
-            $total_pagar_nuevo = $resultCheck2['preciototal'];
+            $total_pagar_nuevo = floatval($resultCheck2['preciototal']) - floatval($resultCheck['descuento']);
             $sqlupdate = "UPDATE presupuesto_general SET total_pagar = '$total_pagar_nuevo' WHERE idpresupuestogeneral = '$idpresupuestogeneral';";
             $resultupdate = $this->conn->ConsultaSin($sqlupdate);
             $this->conn->conn->commit();
@@ -359,7 +361,7 @@ class PagosModel extends Model{
             if(intval($resultCheck['estado']) == 1){
                 throw new Exception("El presupuesto ya está pagado.");
             }
-            if(intval($resultotalpagos['totalpagos']) != intval($resultCheck['total_pagar'])){
+            if(floatval($resultotalpagos['totalpagos']) != floatval($resultCheck['total_pagar'])){
                 throw new Exception("El presupuesto no ha sido completamente pagado.");
                 return false;
             }
@@ -375,14 +377,27 @@ class PagosModel extends Model{
             $this->conn->conn->close();
         }
     }
-    public function MostrarInformacionPagos($idcliente){
-        // Obtiene los presupuestos de un cliente
-        $sqlpresupuestos = "SELECT (SELECT SUM(pg.importe) FROM presupuesto_pagos pg JOIN presupuesto_general pp ON pg.idpresupuestogeneral=pp.idpresupuestogeneral WHERE pp.idcliente='$idcliente') as suma_importe, (SELECT sum(total_pagar) FROM presupuesto_general WHERE idcliente='$idcliente') as suma_total;";
-        $datapresupuesto = $this->conn->ConsultaArray($sqlpresupuestos);
-        // Obtiene los pagos de un cliente escepto ortodoncia
-        $sqlgeneral = "SELECT (SELECT SUM(pdt.monto) FROM pago_detalles pdt JOIN pagos p ON pdt.idpago=p.idpago WHERE p.idcliente='$idcliente' AND p.idprocedimiento!=2) AS suma_monto, (SELECT SUM(DISTINCT p.total_pagar) FROM pagos p JOIN pago_detalles pdt ON p.idpago = pdt.idpago WHERE p.idcliente = '$idcliente' AND p.idprocedimiento!=2) AS suma_total;";
-        $datageneral = $this->conn->ConsultaArray($sqlgeneral);
-        return array("presupuesto" => $datapresupuesto, "general" => $datageneral);
+    public function GetPresupuestoHistorial($idcliente){
+        try{
+            $this->conn->conn->begin_transaction();
+            $sqlgeneral = "SELECT pg.idpresupuestogeneral,pg.deuda_pendiente,p.procedimiento,pg.descuento,pg.total_pagar, pg.feCreate,pp.pieza,pp.precio, pp.fecha FROM presupuesto_general pg JOIN presupuesto_procedimientos pp ON pg.idpresupuestogeneral = pp.idpresupuestogeneral JOIN procedimientos p ON pp.idprocedimiento = p.idprocedimiento WHERE pg.idcliente = '$idcliente' AND pg.estado = 1;";
+            $sqlPagos = "SELECT pg.total_pagar,pg.monto_pagado,pp.idpresupuestogeneral, pp.importe,pp.fecha FROM presupuesto_pagos pp JOIN presupuesto_general pg ON pp.idpresupuestogeneral=pg.idpresupuestogeneral WHERE pg.idcliente='$idcliente' AND pg.estado=1 ORDER BY pg.idpresupuestogeneral AND pp.fecha;";
+
+            $dataPagos = $this->conn->ConsultaCon($sqlPagos);
+            $dataGeneral = $this->conn->ConsultaCon($sqlgeneral);
+            $data = array(
+                'general' => $dataGeneral,
+                'pagos' => $dataPagos,
+            );
+            $this->conn->conn->commit();
+            return $data;
+        }catch(Exception $e){
+            $this->conn->conn->rollback();
+            error_log("ERROR GET PRESUPUESTO HISTORIAL: " . $e->getMessage());
+            throw $e;
+        }finally{
+            $this->conn->conn->close();
+        }
     }
     public function DataBoleta($idcliente,$status){
         $sql = "SELECT p.procedimiento, pd.importe FROM presupuesto_detalles pd JOIN presupuestos pre ON pd.idpresupuesto = pre.idpresupuesto JOIN procedimientos p ON pre.idprocedimiento=p.idprocedimiento WHERE pre.idcliente='$idcliente'";

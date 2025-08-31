@@ -98,6 +98,7 @@ class Odontograma extends Controller
         } else {
             echo json_encode([
                 "status" => "ok",
+                "response" => false,
                 "message" => "No hay piezas activas",
             ]);
         }

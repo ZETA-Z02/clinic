@@ -24,12 +24,18 @@ export default class PresupuestoGeneral extends ApiService {
         this.guardarPresupuestoGeneral();
         this.actulizarPresupuestoGeneral();
         this.marcarPresupuestoPagado();
+        this.getPresupuestoHistorial();
         // Data extra
         await this.getProcedimientos();
         this.selectProcedimientos();
-        // Events 
-        this.calcularDeuda("#monto_pagar", "#importe-presupuesto", "#mostrar-deuda-presupuesto");
-        // Habilitar 
+        // Events
+        this.calcularDeuda(
+            "#monto_pagar",
+            "#importe-presupuesto",
+            "#mostrar-deuda-presupuesto"
+        );
+        this.descuento();
+        // Habilitar
         this.habilitarModificarPagos();
         this.habilitarModificarPresupuestoGeneral();
         // MAS
@@ -40,14 +46,24 @@ export default class PresupuestoGeneral extends ApiService {
     // OBTIENE EL PRESUPUESTO GENERAL DE UN CLIENTE -> EN ESTADO 0-> no pagado
     async getPresupuestoGeneral() {
         // PRESUPUESTO GENERAL -> detalles del presupuesto, procedimientos y precios
-        const tbodyGeneral = this.$contenedor.find("#tbody-presupuesto-general");
+        const tbodyGeneral = this.$contenedor.find(
+            "#tbody-presupuesto-general"
+        );
         const tfoot = this.$contenedor.find("#nuevo-procedimiento");
-        const tfootguardar = this.$contenedor.find("#tfoot-guardar-presupuesto-general");
-        const tfootModificar = this.$contenedor.find("#tr-modificar-presupuesto");
+        const tfootguardar = this.$contenedor.find(
+            "#tfoot-guardar-presupuesto-general"
+        );
+        const tfootModificar = this.$contenedor.find(
+            "#tr-modificar-presupuesto"
+        );
         try {
             const id = this.idcliente;
-            const data = await this.readOne(id, this.controller, "getPresupuestoGeneral");
-            console.log(data);
+            const data = await this.readOne(
+                id,
+                this.controller,
+                "getPresupuestoGeneral"
+            );
+            // console.log(data);
             let html = "";
             this.datapresupuesto = false;
             if (data.response !== false) {
@@ -56,7 +72,7 @@ export default class PresupuestoGeneral extends ApiService {
                 tfootguardar.hide();
                 tfootModificar.hide();
             }
-            if (this.datapresupuesto === false){
+            if (this.datapresupuesto === false) {
                 tbodyGeneral.empty();
                 tfoot.show();
                 tfootguardar.show();
@@ -64,21 +80,33 @@ export default class PresupuestoGeneral extends ApiService {
                 return;
             }
             data.forEach((element) => {
+                let fechaProcedimiento = "";
+                if(validar(element.fechaProcedimiento)){
+                    fechaProcedimiento = element.fechaProcedimiento;
+                }
                 html += `<tr>
-                            <td></td>
+                            <td>${fechaProcedimiento}</td>
                             <td>${element.pieza}</td>
                             <td>${element.procedimiento}</td> 
                             <td>${element.precio}</td>
                         </tr>`;
             });
-            html += `<tr style="border-top: 1px solid black">
+            html += `<tr style="border-top: 1px solid black; font-weight: 600">
+                        <td></td>
+                        <td></td>
+                        <td>Descuento:  </td> 
+                        <td>${data[0].descuento}</td>
+                    </tr>`;
+            html += `<tr style="border-top: 1px solid black; color: #000; font-weight: 900">
                         <td>${data[0].fecha.split(" ")[0]}</td>
-                        <td id="idpresupuestogeneral" data-idpresupuestogeneral="${data[0].idpresupuestogeneral}"></td>
+                        <td id="idpresupuestogeneral" data-idpresupuestogeneral="${
+                            data[0].idpresupuestogeneral
+                        }"></td>
                         <td>Total: </td> 
                         <td>${data[0].total}</td>
                     </tr>`;
-            if(data[0].deuda == 0 || data[0].deuda == null){
-                $("#monto_pagar").val(data[0].total);   
+            if (data[0].deuda == 0 || data[0].deuda == null) {
+                $("#monto_pagar").val(data[0].total);
             }
             this.idpresupuestogeneral = data[0].idpresupuestogeneral;
             tbodyGeneral.html(html);
@@ -91,7 +119,9 @@ export default class PresupuestoGeneral extends ApiService {
         // Presupuesto total -> Pagos del presupuesto
         const tbodyTotal = this.$contenedor.find("#tbody-presupuesto-total");
         const montopagar = this.$contenedor.find("#monto_pagar");
-        const tfootPago = this.$contenedor.find("#tfoot-agregar-pago-presupuesto");
+        const tfootPago = this.$contenedor.find(
+            "#tfoot-agregar-pago-presupuesto"
+        );
         // Verificar si hay presupuesto activo -> sin terminar de pagar
         if (this.datapresupuesto === false) {
             tbodyTotal.empty();
@@ -102,9 +132,13 @@ export default class PresupuestoGeneral extends ApiService {
             const id = this.idcliente;
             const idpresupuestogeneral = this.idpresupuestogeneral;
             const fechaActual = new Date().toISOString().slice(0, 10);
-            const data = await this.readOne({ id, idpresupuestogeneral }, this.controller, "getPresupuestoPagos");
+            const data = await this.readOne(
+                { id, idpresupuestogeneral },
+                this.controller,
+                "getPresupuestoPagos"
+            );
             //console.log(data);
-            if(!validar(data)){
+            if (!validar(data)) {
                 return false;
             }
             let html = "";
@@ -156,52 +190,63 @@ export default class PresupuestoGeneral extends ApiService {
         const importe = this.$contenedor.find("#importe-presupuesto");
         const importeNuevo = this.$contenedor.find("#importe-nuevo");
         const that = this;
-        this.$contenedor.on("input change", "#importe-presupuesto", async function () {
-            try{
-                let timeout;
-                numberFloat("#importe-presupuesto");
-                let trfila = $(this).closest("tr");
-                // REINICIAR EL TIME
-                clearTimeout(trfila.data("timeout"));
-                const data = {};
-                // Esperar 2 segundo después de que todos los inputs estén llenos
-                timeout = setTimeout(async () => {
-                    data.idcliente = that.idcliente;
-                    data.importe = importe.val();
-                    // Validar si los campos están llenos
-                    if (Object.values(data).every((value) => value.trim() !== "")) {
-                        await that.create(data, that.controller, "nuevoPagoPresupuestoGeneral");
-                        importe.val("");
-                        await that.getPresupuestoPagos();
-                    }
-                }, 2000);
-                trfila.data("timeout", timeout); //Guardar timeout en la fila
-            } catch(error) {
-                console.log("Error en NuevoPagoPresupuestoGeneral", error);
+        this.$contenedor.on(
+            "input change",
+            "#importe-presupuesto",
+            async function () {
+                try {
+                    let timeout;
+                    numberFloat("#importe-presupuesto");
+                    let trfila = $(this).closest("tr");
+                    // REINICIAR EL TIME
+                    clearTimeout(trfila.data("timeout"));
+                    const data = {};
+                    // Esperar 2 segundo después de que todos los inputs estén llenos
+                    timeout = setTimeout(async () => {
+                        data.idcliente = that.idcliente;
+                        data.importe = importe.val();
+                        // Validar si los campos están llenos
+                        if (
+                            Object.values(data).every(
+                                (value) => value.trim() !== ""
+                            )
+                        ) {
+                            await that.create(
+                                data,
+                                that.controller,
+                                "nuevoPagoPresupuestoGeneral"
+                            );
+                            importe.val("");
+                            await that.getPresupuestoPagos();
+                        }
+                    }, 2000);
+                    trfila.data("timeout", timeout); //Guardar timeout en la fila
+                } catch (error) {
+                    console.log("Error en NuevoPagoPresupuestoGeneral", error);
+                }
             }
-        });
+        );
     }
     // ELIMINAR UN PAGO DEL PRESUPUESTO
     eliminarPagoPresupuestoTotal() {
         const that = this;
         const tbodyTotal = this.$contenedor.find("#tbody-presupuesto-total");
         this.$contenedor.on("click", ".btn-delete", async function () {
-                let idpresupuestopago = $(this).data("idpresupuestopago");
-                const data = {
-                    idpresupuestopago: `${idpresupuestopago}`,
-                };
-                await that.delete(data, that.controller, "deletePresupuestoPagos");
-                tbodyTotal.empty();
-                await that.getPresupuestoGeneral();
-                await that.getPresupuestoPagos();
-            }
-        );
+            let idpresupuestopago = $(this).data("idpresupuestopago");
+            const data = {
+                idpresupuestopago: `${idpresupuestopago}`,
+            };
+            await that.delete(data, that.controller, "deletePresupuestoPagos");
+            tbodyTotal.empty();
+            await that.getPresupuestoGeneral();
+            await that.getPresupuestoPagos();
+        });
     }
     // EDITAR UN PAGO DEL PRESUPUESTO
     editarPago() {
         const that = this;
         this.$contenedor.on("input change", ".importe-editar", function () {
-            try{
+            try {
                 let timeout;
                 numberFloat(".importe-editar");
                 clearTimeout(timeout);
@@ -217,12 +262,20 @@ export default class PresupuestoGeneral extends ApiService {
                         importe: `${importeActualizado.val()}`,
                     };
                     // Validar si los campos están llenos
-                    if (Object.values(data).every((value) => value.trim() !== "")) {
-                        await that.create(data, that.controller, "updatePresupuestoPagos");
+                    if (
+                        Object.values(data).every(
+                            (value) => value.trim() !== ""
+                        )
+                    ) {
+                        await that.create(
+                            data,
+                            that.controller,
+                            "updatePresupuestoPagos"
+                        );
                         await that.getPresupuestoPagos();
                     }
                 }, 2000);
-            }catch(error){
+            } catch (error) {
                 console.log("Error en editarPago", error);
             }
         });
@@ -232,10 +285,12 @@ export default class PresupuestoGeneral extends ApiService {
     agregarPresupuestoGeneral() {
         let precio_total = 0;
         let html = "";
-        this.$contenedor.on("click","#confirmar-procedimiento", () => {
+        this.$contenedor.on("click", "#confirmar-procedimiento", () => {
             const tbody = $("#tbody-presupuesto-general");
             const pieza = $("#pieza-presupuesto").val();
-            const procedimiento = $("#procedimiento-presupuesto option:selected").text();
+            const procedimiento = $(
+                "#procedimiento-presupuesto option:selected"
+            ).text();
             const idprocedimiento = $("#procedimiento-presupuesto").val();
             const precio = $("#monto-pagar-presupuesto").val();
             precio_total += parseFloat(precio);
@@ -253,12 +308,14 @@ export default class PresupuestoGeneral extends ApiService {
                   </td>
                 </tr>`;
                 tbody.append(html);
-                $("#pieza-presupuesto,#procedimiento-presupuesto,#monto-pagar-presupuesto").val("");
+                $(
+                    "#pieza-presupuesto,#procedimiento-presupuesto,#monto-pagar-presupuesto"
+                ).val("");
                 this.actualizarTotalPagar();
             }
         });
     }
-    // 
+    //
     // QUITAR UN PROCEDIMIENTO DEL PRESUPUESTO GENERAL-> AL CREAR EL PRESUPUESTO
     quitarProcedimiento() {
         const that = this;
@@ -272,7 +329,9 @@ export default class PresupuestoGeneral extends ApiService {
         const tbody = $("#tbody-presupuesto-general");
         let total = 0;
         tbody.find("tr").each(function () {
-            const precio = $(this).find(".precio-procedimiento-presupuesto").text();
+            const precio = $(this)
+                .find(".precio-procedimiento-presupuesto")
+                .text();
             total += parseFloat(precio);
         });
         $("#mostrar-total-presupuesto").html(total);
@@ -280,131 +339,198 @@ export default class PresupuestoGeneral extends ApiService {
     }
     guardarPresupuestoGeneral() {
         this.$contenedor.off("click", "#guardar-presupuesto-general");
-        this.$contenedor.on("click", "#guardar-presupuesto-general", async () => {
-            $("#guardar-presupuesto-general").hide();
-            try {
-                const tbody = $("#tbody-presupuesto-general");
-                const data = {
-                    idcliente: this.idcliente,
-                    procedimientos: [],
-                };
-                tbody.find("tr").each(function () {
-                    const idprocedimiento = $(this).data("idprocedimiento");
-                    const pieza = $(this).data("pieza");
-                    const precio = $(this).data("precio");
-                    if (validar(idprocedimiento) && validar(pieza) && validar(precio)) {
-                        data.procedimientos.push({
-                            idprocedimiento: idprocedimiento,
-                            pieza: pieza,
-                            precio: precio,
-                        });
+        this.$contenedor.on(
+            "click",
+            "#guardar-presupuesto-general",
+            async () => {
+                $("#guardar-presupuesto-general").hide();
+                try {
+                    let descuento;
+                    if (!validar($("#descuento").val())) {
+                        descuento = 0;
                     }
-                });
-                if (data.procedimientos.length > 0) {
-                    console.log("data", data);
-                    await this.create({ data: data }, this.controller, "nuevoPresupuestoGeneral","guardar-presupuesto-general");
-                    await this.init();
-                } else {
-                    console.log("No hay datos para guardar");
+                    const tbody = $("#tbody-presupuesto-general");
+                    const data = {
+                        idcliente: this.idcliente,
+                        descuento: descuento,
+                        precio_total: 0,
+                        procedimientos: [],
+                    };
+                    tbody.find("tr").each(function () {
+                        const idprocedimiento = $(this).data("idprocedimiento");
+                        const pieza = $(this).data("pieza");
+                        const precio = $(this).data("precio");
+                        if (
+                            validar(idprocedimiento) &&
+                            validar(pieza) &&
+                            validar(precio)
+                        ) {
+                            data.procedimientos.push({
+                                idprocedimiento: idprocedimiento,
+                                pieza: pieza,
+                                precio: precio,
+                            });
+                            data.precio_total += parseFloat(precio);
+                        }
+                    });
+                    if (data.procedimientos.length > 0) {
+                        console.log("data", data);
+                        await this.create(
+                            { data: data },
+                            this.controller,
+                            "nuevoPresupuestoGeneral",
+                            "guardar-presupuesto-general"
+                        );
+                        await this.init();
+                    } else {
+                        console.log("No hay datos para guardar");
+                    }
+                    // tbody.empty();
+                } catch (error) {
+                    console.log(
+                        "Error al guardar el presupuesto general: ",
+                        error
+                    );
                 }
-                // tbody.empty();
-            } catch (error) {
-                console.log("Error al guardar el presupuesto general: ", error);
             }
-        });
+        );
     }
     actulizarPresupuestoGeneral() {
         this.$contenedor.off("click", "#modificar-presupuesto-general");
-        this.$contenedor.on("click", "#modificar-presupuesto-general", async () => {
-            $("#modificar-presupuesto-general").hide();
-            try {
-                const tbody = $("#tbody-presupuesto-general");
-                // Procedimientos nuevos: toda la data, procedimientos eliminados solo su id
-                let data = {
-                    idcliente: $("#idcliente").val(),
-                    idpresupuestogeneral: this.idpresupuestogeneral,
-                    procedimientosnuevos: [],
-                    procedimientoseliminados: [],
-                };
-                const that = this;
-                tbody.find("tr").each(function () {
-                    const idpresupuestoprocedimiento = $(this).data("idpresupuestoprocedimiento");
-                    const idprocedimiento = $(this).data("idprocedimiento");
-                    const pieza = $(this).data("pieza");
-                    const precio = $(this).data("precio");
-                    if (validar(idprocedimiento) && validar(pieza) && validar(precio)) {
-                        data.procedimientosnuevos.push({
-                            idprocedimiento: idprocedimiento,
-                            pieza: pieza,
-                            precio: precio,
-                        });
+        this.$contenedor.on(
+            "click",
+            "#modificar-presupuesto-general",
+            async () => {
+                $("#modificar-presupuesto-general").hide();
+                try {
+                    const tbody = $("#tbody-presupuesto-general");
+                    // Procedimientos nuevos: toda la data, procedimientos eliminados solo su id
+                    let data = {
+                        idcliente: $("#idcliente").val(),
+                        idpresupuestogeneral: this.idpresupuestogeneral,
+                        procedimientosnuevos: [],
+                        procedimientoseliminados: [],
+                    };
+                    const that = this;
+                    tbody.find("tr").each(function () {
+                        const idpresupuestoprocedimiento = $(this).data(
+                            "idpresupuestoprocedimiento"
+                        );
+                        const idprocedimiento = $(this).data("idprocedimiento");
+                        const pieza = $(this).data("pieza");
+                        const precio = $(this).data("precio");
+                        if (
+                            validar(idprocedimiento) &&
+                            validar(pieza) &&
+                            validar(precio)
+                        ) {
+                            data.procedimientosnuevos.push({
+                                idprocedimiento: idprocedimiento,
+                                pieza: pieza,
+                                precio: precio,
+                            });
+                        }
+                        if (
+                            that.idpresupuestoprocedimientos.includes(
+                                idpresupuestoprocedimiento
+                            )
+                        ) {
+                            that.idpresupuestoprocedimientos =
+                                that.idpresupuestoprocedimientos.filter(
+                                    (element) =>
+                                        element != idpresupuestoprocedimiento
+                                );
+                        }
+                    });
+                    data.procedimientoseliminados =
+                        this.idpresupuestoprocedimientos;
+                    if (
+                        data.procedimientosnuevos.length > 0 ||
+                        data.procedimientoseliminados.length > 0
+                    ) {
+                        console.log("Actulizare data con: ", data);
+                        await this.update(
+                            { data: data },
+                            this.controller,
+                            "actualizarPresupuestoGeneral",
+                            "modificar-presupuesto-general"
+                        );
+                    } else {
+                        console.log("No hay datos para Actualizar");
                     }
-                    if (that.idpresupuestoprocedimientos.includes(idpresupuestoprocedimiento)) {
-                        that.idpresupuestoprocedimientos =
-                            that.idpresupuestoprocedimientos.filter(
-                                (element) =>
-                                    element != idpresupuestoprocedimiento
-                            );
-                    }
-                });
-                data.procedimientoseliminados = this.idpresupuestoprocedimientos;
-                if (
-                    data.procedimientosnuevos.length > 0 ||
-                    data.procedimientoseliminados.length > 0
-                ) {
-                    console.log("Actulizare data con: ", data);
-                    await this.update({ data: data }, this.controller,"actualizarPresupuestoGeneral","modificar-presupuesto-general");
-
-                } else {
-                    console.log("No hay datos para Actualizar");
+                } catch (error) {
+                    console.log(
+                        "ERROR EN ACTUALIZAR EL PRESUPUESTO GENERAL",
+                        error
+                    );
+                } finally {
+                    const tfootModificar = this.$contenedor.find(
+                        "#tr-modificar-presupuesto-general"
+                    );
+                    tfootModificar.hide();
+                    this.idpresupuestoprocedimientos = [];
+                    await this.init();
                 }
-            } catch (error) {
-                console.log("ERROR EN ACTUALIZAR EL PRESUPUESTO GENERAL",error );
-            } finally {
-                const tfootModificar = this.$contenedor.find("#tr-modificar-presupuesto-general");
-                tfootModificar.hide();
-                this.idpresupuestoprocedimientos = [];
-                await this.init();          
             }
-        });
+        );
     }
     // Marcar presupuesto como pagado y mostrar otro formulario para el cliente, Marca el estado del presupuesto en 1 si los pagos igualan al total a pagar, si falta pagar no lo cambia a 1
     marcarPresupuestoPagado() {
         this.$contenedor.off("click", "#nuevo-presupuesto");
-        this.$contenedor.on("click","#nuevo-presupuesto", async () => {
-            try{
-                await this.create({idpresupuestogeneral: this.idpresupuestogeneral,idcliente: this.idcliente},this.controller,"marcarPresupuestoPagado");
+        this.$contenedor.on("click", "#nuevo-presupuesto", async () => {
+            try {
+                await this.create(
+                    {
+                        idpresupuestogeneral: this.idpresupuestogeneral,
+                        idcliente: this.idcliente,
+                    },
+                    this.controller,
+                    "marcarPresupuestoPagado"
+                );
                 this.idpresupuestogeneral = null;
-            }catch (error) {
+            } catch (error) {
                 console.log("ERROR EN MARCAR PRESUPUESTO PAGADO", error);
-            }finally{
+            } finally {
                 await this.init();
-                const tfootPago = this.$contenedor.find("#tfoot-agregar-pago-presupuesto");
+                const tfootPago = this.$contenedor.find(
+                    "#tfoot-agregar-pago-presupuesto"
+                );
                 tfootPago.show();
             }
         });
     }
     // HABILITAR MODIFICAR PRESUPUESTO
     habilitarModificarPresupuestoGeneral() {
-        if(this.idpresupuestogeneral === null){
+        if (this.idpresupuestogeneral === null) {
             return false;
         }
         let editing = false;
-        this.$contenedor.on("click","#mostrar-modifica-presupuesto", async () =>{
-            const tbody = $("#tbody-presupuesto-general");
-            const tfootModificar = this.$contenedor.find("#tr-modificar-presupuesto");
-            const tfootAgregar = this.$contenedor.find("#nuevo-procedimiento");
-            if (!editing) {
-                editing = true;
-                const id = this.idcliente;
-                const data = await this.readOne(id,this.controller,"mostrarModificarPresupuestoGeneral");
-                tbody.empty();
-                tfootModificar.show();
-                tfootAgregar.show();
-                let html = "";
-                // SE USA THIS.IDPRESUPUESTOPROCEDIMIENTOS -> ATRIBUTO DE LA CLASE PARA QUE SEA UTILIZADA EN CUALQUIER PARTE DEL CODIGO
-                data.forEach((element) => {
-                    html += `<tr data-idpresupuestoprocedimiento="${element.idpresupuestoprocedimiento}" data-pieza="${element.pieza}" data-precio="${element.precio}">
+        this.$contenedor.on(
+            "click",
+            "#mostrar-modifica-presupuesto",
+            async () => {
+                const tbody = $("#tbody-presupuesto-general");
+                const tfootModificar = this.$contenedor.find(
+                    "#tr-modificar-presupuesto"
+                );
+                const tfootAgregar = this.$contenedor.find(
+                    "#nuevo-procedimiento"
+                );
+                if (!editing) {
+                    editing = true;
+                    const id = this.idcliente;
+                    const data = await this.readOne(
+                        id,
+                        this.controller,
+                        "mostrarModificarPresupuestoGeneral"
+                    );
+                    tbody.empty();
+                    tfootModificar.show();
+                    tfootAgregar.show();
+                    let html = "";
+                    // SE USA THIS.IDPRESUPUESTOPROCEDIMIENTOS -> ATRIBUTO DE LA CLASE PARA QUE SEA UTILIZADA EN CUALQUIER PARTE DEL CODIGO
+                    data.forEach((element) => {
+                        html += `<tr data-idpresupuestoprocedimiento="${element.idpresupuestoprocedimiento}" data-pieza="${element.pieza}" data-precio="${element.precio}">
                     <td class="mostrar-fecha"></td>
                     <td>${element.pieza}</td>
                     <td>${element.procedimiento}</td>
@@ -415,18 +541,23 @@ export default class PresupuestoGeneral extends ApiService {
                       </button>
                     </td>
                   </tr>`;
-                    this.idpresupuestoprocedimientos.push(parseInt(element.idpresupuestoprocedimiento));
-                });
-                $("#monto-pagar-presupuesto").val("");
-                $("#modificar-mostrar-total-presupuesto").html(data[0].totalpagar);
-                tbody.html(html);
-                // this.actulizarPresupuestoGeneral(idpresupuestogeneral,idprocedimientos);
-            } else {
-                editing = false;
-                tfootModificar.hide();
-                await this.getPresupuestoGeneral();
+                        this.idpresupuestoprocedimientos.push(
+                            parseInt(element.idpresupuestoprocedimiento)
+                        );
+                    });
+                    $("#monto-pagar-presupuesto").val("");
+                    $("#modificar-mostrar-total-presupuesto").html(
+                        data[0].totalpagar
+                    );
+                    tbody.html(html);
+                    // this.actulizarPresupuestoGeneral(idpresupuestogeneral,idprocedimientos);
+                } else {
+                    editing = false;
+                    tfootModificar.hide();
+                    await this.getPresupuestoGeneral();
+                }
             }
-        });
+        );
     }
     // HABILITAR MODIFICACION DE LOS PAGOS: EDITAR - ELIMINAR
     habilitarModificarPagos() {
@@ -449,9 +580,12 @@ export default class PresupuestoGeneral extends ApiService {
     }
     // OBTENER PROCEDIMIENTOS- se encargar de todo al seleccionar, mostrar precio de los procedimientos
     async getProcedimientos() {
-        const type = "presupuesto"
+        const type = "presupuesto";
         try {
-            const data = await this.read(this.controller, `getProcedimientos${type}`);
+            const data = await this.read(
+                this.controller,
+                `getProcedimientos${type}`
+            );
             let html = "";
             data.forEach((element, index) => {
                 html += `<option value="${element.idprocedimiento}">${element.procedimiento}</option>`;
@@ -465,18 +599,28 @@ export default class PresupuestoGeneral extends ApiService {
     selectProcedimientos() {
         const type = "presupuesto";
         const that = this;
-        this.$contenedor.on("input change", `#procedimiento-${type}`, async function () {
-            let idprocedimiento = $(this).val();
-            try {
-                const data = await that.readOne(idprocedimiento, "procedimientos", "getOne");
-                // console.log(data);
-                $(`#monto-pagar-${type}`).val(data.precio);
-            } catch (error) {
-                console.log("ERror al obtener el precio del procedimiento" + error);
+        this.$contenedor.on(
+            "input change",
+            `#procedimiento-${type}`,
+            async function () {
+                let idprocedimiento = $(this).val();
+                try {
+                    const data = await that.readOne(
+                        idprocedimiento,
+                        "procedimientos",
+                        "getOne"
+                    );
+                    // console.log(data);
+                    $(`#monto-pagar-${type}`).val(data.precio);
+                } catch (error) {
+                    console.log(
+                        "ERror al obtener el precio del procedimiento" + error
+                    );
+                }
             }
-        });
+        );
     }
-    formatearFecha(){
+    formatearFecha() {
         let fechaDate = new Date();
         const fecha = fechaDate.toLocaleDateString("es-MX", {
             day: "2-digit",
@@ -486,12 +630,142 @@ export default class PresupuestoGeneral extends ApiService {
         $(".mostrar-fecha").html(fecha);
     }
     // CALCULA LA DEUDA, RECIBE 3 PARAMETROS
-    calcularDeuda(montoTotal, inputImporte, deudaMostrar){
+    calcularDeuda(montoTotal, inputImporte, deudaMostrar) {
         const monto = $(montoTotal);
         const importe = $(inputImporte);
         const deuda = $(deudaMostrar);
-        this.$contenedor.on("input change", importe, function(){
+        this.$contenedor.on("input change", importe, function () {
             deuda.html(parseFloat(monto.val()) - parseFloat(importe.val()));
         });
+    }
+    descuento() {
+        this.total = 0;
+        this.$contenedor.on("input change", "#descuento", () => {
+            if (this.total == 0) {
+                this.total = parseFloat($("#mostrar-total-presupuesto").html());
+            }
+            const descuento = parseFloat($("#descuento").val());
+            const total = this.total - descuento;
+            $("#mostrar-total-presupuesto").html(total);
+        });
+    }
+    // HISTORIAL -> SOLO GET
+    async getPresupuestoHistorial() {
+        const container = $("#presupuesto_historial");
+        try {
+            const data = await this.readOne(
+                { idcliente: this.idcliente },
+                this.controller,
+                "getPresupuestoHistorial"
+            );
+            container.html(""); // Limpiamos el contenedor antes de renderizar
+            let html = "";
+            data.forEach((presupuesto) => {
+                let tratamientosHTML = "";
+                let fecha = "";
+                presupuesto.general.forEach((element) => {
+                    let fechaProcedimiento = "";
+                    if(validar(element.fechaProcedimiento)){
+                        fechaProcedimiento = element.fechaProcedimiento;
+                    }
+                    fecha = element.fecha;
+                    tratamientosHTML += `
+                    <tr>
+                        <td>${fechaProcedimiento}</td>
+                        <td>${element.pieza}</td>
+                        <td>${element.procedimiento}</td>
+                        <td class="text-right">${element.precio}</td>
+                    </tr>`;
+                });
+
+                // Fila de descuento y total
+                tratamientosHTML += `
+                <tr style="border-top: 1px solid black">
+                    <td></td>
+                    <td></td>
+                    <td>Descuento:</td>
+                    <td class="text-right">${
+                        presupuesto.general[0]?.descuento ?? 0
+                    }</td>
+                </tr>
+                <tr style="border-top: 1px solid black">
+                    <td>${fecha}</td>
+                    <td></td>
+                    <td><b>Total:</b></td>
+                    <td class="text-right"><b>${
+                        presupuesto.general[0]?.total ?? 0
+                    }</b></td>
+                </tr>`;
+
+                // Pagos
+                let pagosHTML = "";
+                if (presupuesto.pagos.length > 0) {
+                    presupuesto.pagos.forEach((pago) => {
+                        pagosHTML += `
+                        <tr>
+                            <td class="text-right">${pago.total}</td>
+                            <td class="text-center">${pago.importe}</td>
+                            <td class="text-right">${pago.monto_pagado}</td>
+                            <td class="text-center">${pago.fecha}</td>
+                        </tr>`;
+                    });
+                } else {
+                    pagosHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center">Sin pagos registrados</td>
+                    </tr>`;
+                }
+
+                // Si está cancelado, mostramos fila especial
+                pagosHTML += `
+                <tr>
+                    <td class="cancelado">Cancelado</td>
+                    <td class="cancelado text-center">Cancelado</td>
+                    <td class="cancelado">Cancelado</td>
+                    <td class="cancelado text-center">-</td>
+                </tr>`;
+
+                // Render final de cada presupuesto
+                html += `
+                <div class="cell grid-x grid-margin-x">
+                    <div class="cell large-6">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Pieza</th>
+                                    <th>Tratamientos</th>
+                                    <th>Precio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tratamientosHTML}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="cell large-6">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Total</th>
+                                    <th>Adelanto</th>
+                                    <th>Pagado</th>
+                                    <th>Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${pagosHTML}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                `;
+                //container.append(html);
+            });
+            container.html(html);
+            console.log("Presupuesto historial:", data);
+        } catch (error) {
+            console.log("Error al obtener presupuesto historial", error);
+        }
     }
 }

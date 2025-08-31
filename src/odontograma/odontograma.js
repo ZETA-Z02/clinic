@@ -116,6 +116,9 @@ class Odontograma extends ApiService {
             const data = await this.readOne({idcliente: this.idcliente}, this.controller, "getPiezasActivas");
             //console.log(data);
             this.piezasActivas = data;
+            if(this.piezasActivas.response === false){
+                this.piezasActivas = [];
+            }
         }catch(error){
             console.log("ERROR al obtener piezas activas", error);
         }

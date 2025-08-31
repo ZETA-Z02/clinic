@@ -174,6 +174,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `idcliente`            | **INT(FK)**       | Relación con la tabla `clientes`            |
 | `monto_pagado`         | **DECIMAL(10,2)** | Monto pagado                                |
 | `deuda_pendiente`      | **DECIMAL(10,2)** | Deuda pendiente                             |
+| `descuento`            | **DECIMAL(10,2)** | Descuento realizado                         |
 | `total_pagar`          | **DECIMAL(10,2)** | Total a pagar                               |
 | `estado`               | **TINYINT**       | Estado: 0 = pendiente, 1 = pagado ,         |
 |                        |                   | solo debe haber un presupuesto en pendiente |
@@ -190,6 +191,7 @@ Esta base de datos gestiona la información de una clínica dental, incluyendo c
 | `idprocedimiento`            | **INT(FK)**       | Relación con `procedimientos`       |
 | `pieza`                      | **VARCHAR(20)**   | Pieza o diente                      |
 | `precio`                     | **DECIMAL(10,2)** | Precio del procedimiento            |
+| `fecha`                      | **DATE**          | Fecha que se agrego el procedimiento|
 
 ---
 

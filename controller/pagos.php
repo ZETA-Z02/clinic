@@ -60,7 +60,7 @@ class Pagos extends Controller
     }
     public function nuevoProcedimientoPago()
     {
-        try{
+        try {
             $post = json_decode(file_get_contents('php://input'), true);
             $idcliente = $post['idcliente'];
             $idprocedimiento = $post['idprocedimiento'];
@@ -72,13 +72,13 @@ class Pagos extends Controller
                 echo json_encode([
                     "success" => true,
                     "message" => "Pago creado correctamente",
-                    "data" => $result,  
+                    "data" => $result,
                     "error" => false
                 ]);
             } else {
                 throw new Exception('Error al crear el pago');
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             http_response_code($e->getCode() ?: 500);
             echo json_encode([
                 "success" => false,
@@ -88,30 +88,30 @@ class Pagos extends Controller
     }
     public function nuevoPago()
     {
-        try{
+        try {
             $this->disabledCache();
-        $post = json_decode(file_get_contents('php://input'), true);
-        $idpago = $post['idpago'];
-        $idcliente = $post['idcliente'];
-        $idpersonal = $post['doctor'];
-        $pieza = $post['pieza'];
-        $monto = $post['importe'];
-        //$pagomonto = $post['monto'];
-        $pagodeuda = $post['deuda'];
-        if ($monto > $pagodeuda) {
-            throw new Exception("El monto pagado es mayor al pago acumulado");
-        }
-        if ($result = $this->model->NuevoPago($idpago, $idcliente, $idpersonal, $monto, $pieza)) {
-            echo json_encode([
-                "success" => true,
-                "message" => "Pago creado correctamente",
-                "data" => $result,
-                "error" => false
-            ]);
-        } else {
-            throw new Exception("Error al crear el pago");
-        }
-        }catch(Exception $e){
+            $post = json_decode(file_get_contents('php://input'), true);
+            $idpago = $post['idpago'];
+            $idcliente = $post['idcliente'];
+            $idpersonal = $post['doctor'];
+            $pieza = $post['pieza'];
+            $monto = $post['importe'];
+            //$pagomonto = $post['monto'];
+            $pagodeuda = $post['deuda'];
+            if ($monto > $pagodeuda) {
+                throw new Exception("El monto pagado es mayor al pago acumulado");
+            }
+            if ($result = $this->model->NuevoPago($idpago, $idcliente, $idpersonal, $monto, $pieza)) {
+                echo json_encode([
+                    "success" => true,
+                    "message" => "Pago creado correctamente",
+                    "data" => $result,
+                    "error" => false
+                ]);
+            } else {
+                throw new Exception("Error al crear el pago");
+            }
+        } catch (Exception $e) {
             http_response_code($e->getCode() ?: 500);
             echo json_encode([
                 "success" => false,
@@ -121,7 +121,7 @@ class Pagos extends Controller
     }
     public function updatePago()
     {
-        try{
+        try {
             $post = json_decode(file_get_contents('php://input'), true);
             $idpago = $post["idpago"];
             $idpagodetalle = $post["idpagodetalle"];
@@ -169,7 +169,7 @@ class Pagos extends Controller
             } else {
                 throw new Exception("Error al actualizar el pago");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             http_response_code($e->getCode() ?: 500);
             echo json_encode([
                 "success" => false,
@@ -179,7 +179,7 @@ class Pagos extends Controller
     }
     public function deletePago()
     {
-        try{
+        try {
             $post = json_decode(file_get_contents('php://input'), true);
             $idpago = $post['idpago'];
             $idpagodetalle = $post['idpagodetalle'];
@@ -199,7 +199,7 @@ class Pagos extends Controller
             } else {
                 throw new Exception("Error al eliminar el pago");
             }
-        }catch(Exception $e){
+        } catch (Exception $e) {
             http_response_code($e->getCode() ?: 500);
             echo json_encode([
                 "success" => false,
@@ -255,7 +255,7 @@ class Pagos extends Controller
         $post = json_decode(file_get_contents('php://input'), true);
         $idcliente = $post['id'];
         $data = $this->model->GetPresupuestoGeneralTotal($idcliente);
-        if (mysqli_num_rows($data)===0) {
+        if (mysqli_num_rows($data) === 0) {
             echo json_encode(array("response" => false));
         } else {
             while ($row = mysqli_fetch_assoc($data)) {
@@ -264,15 +264,17 @@ class Pagos extends Controller
                     "pieza" => $row['pieza'],
                     "procedimiento" => $row['procedimiento'],
                     "precio" => $row['precio'],
-                    "total" => $row['total_pagar'],
                     "deuda" => $row['deuda_pendiente'],
+                    "descuento" => $row['descuento'],
+                    "total" => $row['total_pagar'],
                     "fecha" => $row['feCreate'],
+                    "fechaProcedimiento" => $row['fecha']
                 );
             }
             echo json_encode($json);
         }
     }
-        // Obtiene datos de los pagos de un presupuesto activo
+    // Obtiene datos de los pagos de un presupuesto activo
     public function getPresupuestoPagos()
     {
         $this->disabledCache();
@@ -294,23 +296,28 @@ class Pagos extends Controller
     // Crea el presupuesto general, con informacion de los procedimientos y el total a pagar
     public function nuevoPresupuestoGeneral()
     {
-        try{
+        try {
             $data = json_decode(file_get_contents('php://input'), true);
             //echo json_encode($data['data']);
             $data = $data['data'];
             $idcliente = $data["idcliente"];
+            $descuento = $data["descuento"];
+            $precio_total = $data["precio_total"];
             $datos = $data["procedimientos"];
+            if ($descuento > $precio_total && $descuento > 0) {
+                throw new Exception("Descuento no puede ser mayor al precio total", 400);
+            }
             if (empty($idcliente)) {
                 throw new Exception("Datos incompletos", 400);
             }
-            $result = $this->model->NuevoPresupuestoGeneral($idcliente, $datos);
+            $result = $this->model->NuevoPresupuestoGeneral($idcliente, $descuento, $datos);
             echo json_encode([
                 "success" => true,
                 "message" => "Presupuesto general creado correctamente",
                 "data" => $result,
                 "error" => false
             ]);
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             http_response_code($e->getCode() ?: 500);
             echo json_encode([
                 "success" => false,
@@ -321,7 +328,7 @@ class Pagos extends Controller
     // NUevo pago de un presupuesto general 
     public function nuevoPagoPresupuestoGeneral()
     {
-        try{
+        try {
             $post = json_decode(file_get_contents('php://input'), true);
             $idcliente = $post['idcliente'];
             $importe = $post['importe'];
@@ -331,11 +338,11 @@ class Pagos extends Controller
                     "message" => "Pago creado correctamente",
                     "data" => $result,
                     "error" => false
-                ]);        
+                ]);
             } else {
                 throw new Exception("Error al crear el pago del presupuesto");
             }
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             http_response_code($e->getCode() ?: 500);
             echo json_encode([
                 "success" => false,
@@ -346,7 +353,7 @@ class Pagos extends Controller
     // EDITAR PRESUPUESTO_PAGOS
     public function updatePresupuestoPagos()
     {
-        try{
+        try {
             $post = json_decode(file_get_contents('php://input'), true);
             $idcliente = $post['idcliente'];
             $idpresupuestogeneral = $post['idpresupuestogeneral'];
@@ -358,11 +365,11 @@ class Pagos extends Controller
                     "message" => "Presupuesto Pago actualizado correctamente",
                     "data" => $result,
                     "error" => false
-                ]);       
+                ]);
             } else {
                 throw new Exception("Error al actualizar el presupuesto pagos");
             }
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             http_response_code($e->getCode() ?: 500);
             echo json_encode([
                 "success" => false,
@@ -373,7 +380,7 @@ class Pagos extends Controller
     // Eliminar PRESUPUESTO PAGOS
     public function deletePresupuestoPagos()
     {
-        try{
+        try {
             $post = json_decode(file_get_contents('php://input'), true);
             $idpresupuestopago = $post['idpresupuestopago'];
             if ($result = $this->model->DeletePresupuestoPagos($idpresupuestopago)) {
@@ -382,11 +389,11 @@ class Pagos extends Controller
                     "message" => "Presupuesto Pago eliminado correctamente",
                     "data" => $result,
                     "error" => false
-                ]);    
+                ]);
             } else {
                 throw new Exception("Error al eliminar el presupuesto Pago");
             }
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             http_response_code($e->getCode() ?: 500);
             echo json_encode([
                 "success" => false,
@@ -395,7 +402,8 @@ class Pagos extends Controller
         }
     }
     // MOSTRAR PRESUPUESTO GENERAL PARA MODIFICAR
-    public function mostrarModificarPresupuestoGeneral(){
+    public function mostrarModificarPresupuestoGeneral()
+    {
         $this->disabledCache();
         $post = json_decode(file_get_contents('php://input'), true);
         $idcliente = $post['id'];
@@ -417,8 +425,9 @@ class Pagos extends Controller
             echo json_encode($json);
         }
     }
-    public function actualizarPresupuestoGeneral(){
-        try{
+    public function actualizarPresupuestoGeneral()
+    {
+        try {
             $data = json_decode(file_get_contents('php://input'), true);
             //echo json_encode($data['data']);
             $data = $data['data'];
@@ -436,7 +445,7 @@ class Pagos extends Controller
                 "data" => $result,
                 "error" => false
             ]);
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             http_response_code($e->getCode() ?: 500);
             echo json_encode([
                 "success" => false,
@@ -445,8 +454,9 @@ class Pagos extends Controller
         }
     }
     // Marca el presupuesto como pagado si cumple los criterios
-    public function marcarPresupuestoPagado(){
-        try{
+    public function marcarPresupuestoPagado()
+    {
+        try {
             $data = json_decode(file_get_contents('php://input'), true);
             //echo json_encode($data);
             $idcliente = $data["idcliente"];
@@ -455,7 +465,7 @@ class Pagos extends Controller
                 throw new Exception("Datos incompletos", 400);
             }
             $result = $this->model->MarcarPresupuestoPagado($idcliente, $idpresupuestogeneral);
-            if(!$result){
+            if (!$result) {
                 $result = "Warning: El presupuesto no ha sido pagado completamente, no se puede marcar como pagado.";
             }
             echo json_encode([
@@ -464,7 +474,7 @@ class Pagos extends Controller
                 "data" => $result,
                 "error" => false
             ]);
-        }catch(Exception $e) {
+        } catch (Exception $e) {
             http_response_code($e->getCode() ?: 500);
             echo json_encode([
                 "success" => false,
@@ -472,12 +482,55 @@ class Pagos extends Controller
             ]);
         }
     }
-    // Mostrar informacion de los pagos
-    public function mostrarInformacionPagos()
+    // HISTORIAL DE PRESUPUESTO GENERAL Y PRESUPUESTO PAGOS
+    public function getPresupuestoHistorial()
     {
-        $idcliente = $_POST['id'];
-        $data = $this->model->MostrarInformacionPagos($idcliente);
-        echo json_encode($data);
+        $this->disabledCache();
+        $post = json_decode(file_get_contents('php://input'), true);
+        $idcliente = $post['idcliente'];
+        //$idcliente = 7;
+        $data = $this->model->GetPresupuestoHistorial($idcliente);
+        $json = [];
+        while ($row = mysqli_fetch_assoc($data['general'])) {
+            $id = $row['idpresupuestogeneral'];
+            if (!isset($json[$id]))
+                $json[$id] = [
+                    "idgeneral" => $id,
+                    "general" => [],
+                    "pagos" => []
+                ];
+            $json[$id]['general'][] = [
+                "pieza" => $row['pieza'],
+                "procedimiento" => $row['procedimiento'],
+                "precio" => $row['precio'],
+                "deuda" => $row['deuda_pendiente'],
+                "descuento" => $row['descuento'],
+                "total" => $row['total_pagar'],
+                "fecha" => date("Y-m-d", strtotime($row['feCreate'])),
+                "fechaProcedimiento" => $row['fecha']
+            ];
+        }
+        while ($row = mysqli_fetch_assoc($data['pagos'])) {
+            $id = $row['idpresupuestogeneral'];
+
+            if (!isset($json[$id])) {
+                // En caso de que haya pagos sin procedimientos (raro, pero posible)
+                $json[$id] = [
+                    "idgeneral" => $id,
+                    "general" => [],
+                    "pagos" => []
+                ];
+            }
+
+            $json[$id]["pagos"][] = [
+                'idpresupuestopago' => $row['idpresupuestopago'],
+                'importe' => $row['importe'],
+                'monto_pagado' => $row['monto_pagado'],
+                'total' => $row['total_pagar'],
+                'fecha' => date("Y-m-d", strtotime($row['fecha'])),
+            ];
+        }
+        echo json_encode(array_values($json));
     }
     public function DataBoleta($nparam = null)
     {
@@ -574,7 +627,7 @@ class Boleta extends FPDF
         $this->SetFont('Courier', '', 9);
         $this->Cell(70, 6, 'CHIC CONSULTORIO DENTAL', 0, 1, 'C');
         $this->SetFont('Arial', '', 9);
-        $this->Cell(70,4,'Jr. Lambayeque 123, Puno',0,1,'C');
+        $this->Cell(70, 4, 'Jr. Lambayeque 123, Puno', 0, 1, 'C');
         $this->Cell(70, 4, 'RUC: 12345678901', 0, 1, 'C');
         $this->Cell(70, 4, 'Tel: 951781807', 0, 1, 'C');
         $this->Ln(2);

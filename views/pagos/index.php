@@ -23,6 +23,11 @@
     </div>
     <!-- PRESUPUESTO TOTAL : PRESUPUESTO DONDE SE VE PROCEDIMIENTOS Y SUS PAGOS DESCONTANDO DESDE EL TOTAL -->
     <div class="grid-x modal" id="tabla-general">
+        <!-- Historial de presupuestos y pagos -->
+        <div class="cell grid-x grid-margin-x historial grid-margin-y" id="presupuesto_historial">
+            
+        </div>
+        <hr>
         <!-- tabla presupuesto total -->
         <div class="cell grid-x grid-margin-x">
             <!-- PRESUPUESTO TOTAL GENERAL -->
@@ -89,11 +94,14 @@
                             <td><button class="button btn-success" id="confirmar-procedimiento">✔</button></td>
                         </tr>
                         <tr id="tfoot-guardar-presupuesto-general">
-                            <td></td>
-                            <td><button id="guardar-presupuesto-general" class="button btn-success">Guardar</button>
+                            <td>
+                                <button id="guardar-presupuesto-general" class="button btn-success">Guardar</button>
                             </td>
-                            <td class="text-right">Total: </td>
-                            <td class="text-right">s/. </td>
+                            <td></td>
+                            <td>
+                                <input type="text" id="descuento" class="descuento" name="descuento" placeholder="Descuento">
+                            </td>
+                            <td class="text-right">Total: s/.</td>
                             <td class="text-right" id="mostrar-total-presupuesto"></td>
                         </tr>
                         <tr id="tr-modificar-presupuesto">

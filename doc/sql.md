@@ -145,6 +145,7 @@ CREATE TABLE `presupuesto_general` (
   `idcliente` int(11) NOT NULL,
   `monto_pagado` decimal(10,2) DEFAULT NULL,
   `deuda_pendiente` decimal(10,2) DEFAULT NULL,
+  `descuento` decimal(10,2) DEFAULT NULL,
   `total_pagar` decimal(10,2) DEFAULT NULL,
   `estado` tinyint(4) DEFAULT 0,
   `feCreate` datetime DEFAULT current_timestamp(),
@@ -167,18 +168,13 @@ CREATE TABLE `presupuesto_procedimientos` (
   `idprocedimiento` int(11) NOT NULL,
   `pieza` varchar(20) DEFAULT NULL,
   `precio` decimal(10,2) DEFAULT NULL,
+  `fecha` date DEFAULT NULL,
   PRIMARY KEY (`idpresupuestoprocedimiento`),
   KEY `idpresupuestogeneral` (`idpresupuestogeneral`),
   KEY `idprocedimiento` (`idprocedimiento`),
   CONSTRAINT `presupuesto_procedimientos_ibfk_1` FOREIGN KEY (`idpresupuestogeneral`) REFERENCES `presupuesto_general` (`idpresupuestogeneral`),
   CONSTRAINT `presupuesto_procedimientos_ibfk_2` FOREIGN KEY (`idprocedimiento`) REFERENCES `procedimientos` (`idprocedimiento`)
 );
-
-para la condicion de cada cliente ----><- ->
-#!/bin/bash 
-for id in {1..10}; do 
-  echo "INSERT INTO clientes_condicion (idcliente) VALUES($id)";
-done
 
 -- Primer Personal
 INSERT INTO `personal` VALUES
