@@ -523,7 +523,6 @@ class Pagos extends Controller
             }
 
             $json[$id]["pagos"][] = [
-                'idpresupuestopago' => $row['idpresupuestopago'],
                 'importe' => $row['importe'],
                 'monto_pagado' => $row['monto_pagado'],
                 'total' => $row['total_pagar'],
