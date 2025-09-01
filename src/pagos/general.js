@@ -345,7 +345,7 @@ export default class PresupuestoGeneral extends ApiService {
             async () => {
                 $("#guardar-presupuesto-general").hide();
                 try {
-                    let descuento;
+                    let descuento = $("#descuento").val();
                     if (!validar($("#descuento").val())) {
                         descuento = 0;
                     }
